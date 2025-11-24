@@ -15,7 +15,6 @@ export default function Layout({ children, currentPage = '' }: LayoutProps) {
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
               <Link href="/" className="text-2xl font-bold text-indigo-600">CitizenProject.App</Link>
-              <span className="ml-2 text-sm text-gray-500">citizenproject.app</span>
             </div>
             <div className="flex items-center space-x-4">
               <Link 

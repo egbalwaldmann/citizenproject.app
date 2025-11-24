@@ -9,7 +9,6 @@ export default function Home() {
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
               <h1 className="text-2xl font-bold text-indigo-600">CitizenProject.App</h1>
-              <span className="ml-2 text-sm text-gray-500">citizenproject.app</span>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/dashboard" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
