@@ -396,7 +396,9 @@ export default function Intern() {
                       {renderCell('zielgruppe', row.zielgruppe)}
                       {renderCell('pmLevel', row.pmLevel)}
                       {renderCell('templates', row.templates)}
-                      {renderCell('socialAcademic', row.socialAcademic.content || row.socialAcademic, row.socialAcademic.className)}
+                      {renderCell('socialAcademic', 
+                        typeof row.socialAcademic === 'object' ? row.socialAcademic.content : row.socialAcademic, 
+                        typeof row.socialAcademic === 'object' ? row.socialAcademic.className : undefined)}
                       {renderCell('pmHilfe', row.pmHilfe)}
                       {renderCell('wissenstransfer', row.wissenstransfer)}
                       {renderCell('rechtlich', row.rechtlich)}
