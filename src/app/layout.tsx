@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CitizenProject - Project Management Platform",
+  title: "CitizenProject.App - Project Management Platform",
   description: "A project management platform for global citizenship and educational initiatives - citizenproject.app",
 };
 
