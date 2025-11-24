@@ -2,6 +2,48 @@
 
 import Link from 'next/link';
 
+// Function to copy table data to clipboard in tab-separated format for Google Sheets
+const copyTableToClipboard = async () => {
+  const tableData = [
+    // Header
+    ['Software', 'Open Source', 'EU Datenresidenz', 'DSGVO', 'Max. User', 'Komplexe Projekte', 'Kosten/Nutzer', 'Support Level', 'Anfängerfreundlich', 'Wissensmanagement', 'KI-Integration', 'Projekttypen', 'Anpassbarkeit'],
+    // Data rows - Open Source Solutions
+    ['CitizenProject.App', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community/Enterprise', 'Hoch', 'Ja', 'Geplant', 'Agil/Hybrid/Traditionell', 'Hoch'],
+    ['OpenProject', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community/Enterprise', 'Mittel', 'Ja', 'Indirekt', 'Agil/Hybrid/Traditionell', 'Hoch'],
+    ['Redmine', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community', 'Niedrig-Mittel', 'Ja', 'Indirekt', 'Hybrid/Begrenzt Agil', 'Hoch'],
+    ['Taiga', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community', 'Hoch', 'Begrenzt', 'Indirekt', 'Agil', 'Mittel'],
+    ['Tuleap', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community/Enterprise', 'Mittel', 'Ja', 'Indirekt', 'Agil/Hybrid/Traditionell', 'Hoch'],
+    ['GitLab CE', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community', 'Niedrig', 'Ja', 'Indirekt', 'Agil/Hybrid', 'Hoch'],
+    ['Odoo Project Community', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community', 'Mittel', 'Ja', 'Indirekt', 'Agil/Hybrid/Traditionell', 'Hoch'],
+    ['ERPNext Projects', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community', 'Mittel', 'Ja', 'Indirekt', 'Agil/Hybrid/Traditionell', 'Hoch'],
+    ['Kanboard', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Mittel', '0€', 'Community', 'Hoch', 'Begrenzt', 'Keine', 'Agil', 'Mittel'],
+    ['Wekan', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Mittel', '0€', 'Community', 'Hoch', 'Keine', 'Keine', 'Agil', 'Mittel'],
+    ['Leantime', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community', 'Hoch', 'Ja', 'Indirekt', 'Agil/Hybrid', 'Hoch']
+  ];
+  
+  // Convert to tab-separated values (TSV) for Google Sheets
+  const tsvContent = tableData.map(row => row.join('\t')).join('\n');
+  
+  try {
+    await navigator.clipboard.writeText(tsvContent);
+    
+    // Show success notification
+    const button = document.querySelector('[title="Tabelle für Google Sheets kopieren"]') as HTMLButtonElement;
+    const originalText = button.innerHTML;
+    button.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Kopiert!`;
+    button.className = button.className.replace('bg-indigo-600 hover:bg-indigo-700', 'bg-green-600');
+    
+    setTimeout(() => {
+      button.innerHTML = originalText;
+      button.className = button.className.replace('bg-green-600', 'bg-indigo-600 hover:bg-indigo-700');
+    }, 2000);
+    
+  } catch (err) {
+    console.error('Failed to copy table: ', err);
+    alert('Fehler beim Kopieren. Bitte manuell markieren und kopieren.');
+  }
+};
+
 export default function Intern() {
   return (
     <div className="min-h-screen bg-gray-50">
@@ -42,10 +84,24 @@ export default function Intern() {
 
         {/* Software Comparison Section */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Projektmanagement-Software Vergleich</h2>
-          <p className="text-gray-600 mb-6">
-            Detaillierter Vergleich führender Projektmanagement-Lösungen mit Fokus auf Open Source, EU-Datenresidenz und DSGVO-Konformität
-          </p>
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Projektmanagement-Software Vergleich</h2>
+              <p className="text-gray-600 mt-2">
+                Detaillierter Vergleich führender Projektmanagement-Lösungen mit Fokus auf Open Source, EU-Datenresidenz und DSGVO-Konformität
+              </p>
+            </div>
+            <button
+              onClick={() => copyTableToClipboard()}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+              title="Tabelle für Google Sheets kopieren"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              Copy für Sheets
+            </button>
+          </div>
           
           <div className="bg-white shadow-lg rounded-lg overflow-hidden">
             <div className="overflow-x-auto">
@@ -72,6 +128,9 @@ export default function Intern() {
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Kosten/Nutzer
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Support Level
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Anfängerfreundlich
@@ -103,123 +162,114 @@ export default function Intern() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold text-green-600">0€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★★★</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★★★</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community/Enterprise</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Geplant</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil, Hybrid, Traditionell</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★★★</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
                   </tr>
                   
                   {/* OpenProject */}
                   <tr className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">OpenProject</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">0€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★☆☆</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★☆☆</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil, Traditionell</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★☆☆</td>
-                  </tr>
-                  
-                  {/* Jira */}
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Jira</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community/Enterprise</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Mittel</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">7,50€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★☆☆☆</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★☆☆</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★☆☆</td>
-                  </tr>
-                  
-                  {/* Asana */}
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Asana</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1000</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">10,99€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★★☆</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★☆☆☆</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil, Hybrid</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★☆☆</td>
-                  </tr>
-                  
-                  {/* Trello */}
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Trello</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">200</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">5€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★★★</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★☆☆☆☆</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Kanban</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★☆☆☆</td>
-                  </tr>
-                  
-                  {/* Notion */}
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Notion</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">4€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★☆☆</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★★★</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hybrid</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★★☆</td>
-                  </tr>
-                  
-                  {/* ClickUp */}
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">ClickUp</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">9€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★☆☆</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★☆☆</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Indirekt</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil, Hybrid, Traditionell</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★★☆</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
                   </tr>
                   
-                  {/* Monday.com */}
+                  {/* Redmine */}
                   <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Monday.com</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">❌</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Redmine</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">8€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★★☆</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★☆☆☆</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium text-green-600">0€</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Niedrig-Mittel</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Indirekt</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hybrid, Begrenzt Agil</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
+                  </tr>
+                  
+                  {/* Taiga */}
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Taiga</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium text-green-600">0€</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Begrenzt</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Indirekt</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Mittel</td>
+                  </tr>
+                  
+                  {/* Tuleap */}
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Tuleap</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium text-green-600">0€</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community/Enterprise</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Mittel</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Indirekt</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil, Hybrid, Traditionell</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
+                  </tr>
+                  
+                  {/* GitLab CE */}
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">GitLab CE</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium text-green-600">0€</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Niedrig</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Indirekt</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil, Hybrid</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">★★★★☆</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
+                  </tr>
+                  
+                  {/* Leantime */}
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Leantime</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium text-green-600">0€</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Indirekt</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil, Hybrid</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
                   </tr>
                 </tbody>
               </table>

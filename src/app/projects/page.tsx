@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Layout from '../../components/Layout';
 import { useState } from 'react';
 
 export default function Projects() {
@@ -80,35 +80,7 @@ export default function Projects() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
-              <Link href="/" className="text-2xl font-bold text-indigo-600">CitizenProject</Link>
-              <span className="ml-2 text-sm text-gray-500">citizenproject.app</span>
-            </div>
-            <div className="flex space-x-4">
-              <Link href="/dashboard" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
-                Dashboard
-              </Link>
-              <Link href="/projects" className="text-indigo-600 bg-indigo-50 px-3 py-2 rounded-md text-sm font-medium">
-                Projects
-              </Link>
-              <Link href="/tasks" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
-                Tasks
-              </Link>
-              <Link href="/team" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
-                Team
-              </Link>
-              <Link href="/files" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
-                Files
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <Layout currentPage="projects">
 
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
@@ -255,6 +227,6 @@ export default function Projects() {
           </div>
         )}
       </div>
-    </div>
+    </Layout>
   );
 }
