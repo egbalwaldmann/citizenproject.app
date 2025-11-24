@@ -507,8 +507,8 @@ export default function Intern() {
                       {renderCell('pmLevel', row.pmLevel)}
                       {renderCell('templates', row.templates)}
                       {renderCell('socialAcademic', 
-                        typeof row.socialAcademic === 'object' ? row.socialAcademic.content : row.socialAcademic, 
-                        typeof row.socialAcademic === 'object' ? row.socialAcademic.className : undefined)}
+                        typeof row.socialAcademic === 'object' && row.socialAcademic !== null && 'content' in row.socialAcademic ? row.socialAcademic.content : row.socialAcademic, 
+                        typeof row.socialAcademic === 'object' && row.socialAcademic !== null && 'className' in row.socialAcademic ? row.socialAcademic.className : undefined)}
                       {renderCell('pmHilfe', row.pmHilfe)}
                       {renderCell('wissenstransfer', row.wissenstransfer)}
                       {renderCell('rechtlich', row.rechtlich)}
