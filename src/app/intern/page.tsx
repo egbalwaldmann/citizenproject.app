@@ -28,7 +28,7 @@ const copyTableToClipboard = async (visibleColumns: any) => {
   };
 
   // Get visible columns in order
-  const visibleColumnKeys = Object.keys(visibleColumns).filter(key => visibleColumns[key]);
+  const visibleColumnKeys = Object.keys(visibleColumns).filter(key => visibleColumns[key as keyof typeof visibleColumns]);
   
   // Build header row
   const headerRow = visibleColumnKeys.map(key => columnMapping[key as keyof typeof columnMapping].header);
@@ -118,7 +118,7 @@ export default function Intern() {
   const toggleColumn = (column: string) => {
     setVisibleColumns(prev => ({
       ...prev,
-      [column]: !prev[column]
+      [column]: !prev[column as keyof typeof prev]
     }));
   };
 
