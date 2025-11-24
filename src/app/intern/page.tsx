@@ -1,42 +1,70 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 
 // Function to copy table data to clipboard in tab-separated format for Google Sheets
-const copyTableToClipboard = async () => {
-  const tableData = [
-    // Header
-    ['Software', 'Open Source', 'EU Datenresidenz', 'DSGVO', 'Max. User', 'Komplexe Projekte', 'Kosten/Nutzer', 'Support Level', 'Anfängerfreundlich', 'Wissensmanagement', 'KI-Integration', 'Projekttypen', 'Anpassbarkeit'],
-    // Data rows - Open Source Solutions
-    ['CitizenProject.App', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community/Enterprise', 'Hoch', 'Ja', 'Geplant', 'Agil/Hybrid/Traditionell', 'Hoch'],
-    ['OpenProject', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community/Enterprise', 'Mittel', 'Ja', 'Indirekt', 'Agil/Hybrid/Traditionell', 'Hoch'],
-    ['Redmine', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community', 'Niedrig-Mittel', 'Ja', 'Indirekt', 'Hybrid/Begrenzt Agil', 'Hoch'],
-    ['Taiga', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community', 'Hoch', 'Begrenzt', 'Indirekt', 'Agil', 'Mittel'],
-    ['Tuleap', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community/Enterprise', 'Mittel', 'Ja', 'Indirekt', 'Agil/Hybrid/Traditionell', 'Hoch'],
-    ['GitLab CE', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community', 'Niedrig', 'Ja', 'Indirekt', 'Agil/Hybrid', 'Hoch'],
-    ['Odoo Project Community', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community', 'Mittel', 'Ja', 'Indirekt', 'Agil/Hybrid/Traditionell', 'Hoch'],
-    ['ERPNext Projects', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community', 'Mittel', 'Ja', 'Indirekt', 'Agil/Hybrid/Traditionell', 'Hoch'],
-    ['Kanboard', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Mittel', '0€', 'Community', 'Hoch', 'Begrenzt', 'Keine', 'Agil', 'Mittel'],
-    ['Wekan', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Mittel', '0€', 'Community', 'Hoch', 'Keine', 'Keine', 'Agil', 'Mittel'],
-    ['Leantime', 'Ja', 'Ja', 'Ja', 'Unbegrenzt', 'Ja', '0€', 'Community', 'Hoch', 'Ja', 'Indirekt', 'Agil/Hybrid', 'Hoch']
-  ];
+const copyTableToClipboard = async (visibleColumns: any) => {
+  // Mapping of column keys to their data
+  const columnMapping = {
+    software: { header: 'Software', data: ['CitizenProject.App', 'OpenProject', 'Redmine', 'Taiga', 'Tuleap', 'Kanboard', 'Wekan', 'Odoo Project', 'ERPNext Projects'] },
+    openSource: { header: 'Open Source', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
+    euData: { header: 'EU Datenresidenz', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
+    dsgvo: { header: 'DSGVO', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
+    zielgruppe: { header: 'Zielgruppe', data: ['Unis/NGOs/Öffentlich', 'Unternehmen', 'Technische Teams', 'Agile Teams', 'Engineering', 'Kanban-Nutzer', 'Kanban-Nutzer', 'KMU/ERP', 'ERP-Umgebungen'] },
+    pmLevel: { header: 'PM-Erfahrung', data: ['Anfänger & Experten', 'Fortgeschritten', 'Experte', 'Fortgeschritten', 'Experte', 'Anfänger', 'Anfänger', 'Fortgeschritten', 'Fortgeschritten'] },
+    templates: { header: 'Prozess-Templates', data: ['Ja', 'Teilweise', 'Nein', 'Agile/Scrum', 'Ja', 'Nein', 'Nein', 'Teilweise', 'Teilweise'] },
+    socialAcademic: { header: 'Social/Academic Templates', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
+    pmHilfe: { header: 'PM-Anleitung', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
+    wissenstransfer: { header: 'Wissenstransfer', data: ['Ja', 'Begrenzt', 'Nein', 'Begrenzt', 'Begrenzt', 'Nein', 'Nein', 'Begrenzt', 'Begrenzt'] },
+    rechtlich: { header: 'Rechtliche Anpassung', data: ['Ja', 'Teilweise', 'Nein', 'Nein', 'Teilweise', 'Nein', 'Nein', 'Begrenzt', 'Begrenzt'] },
+    barrierefreiheit: { header: 'Barrierefreiheit', data: ['Hoch', 'Mittel', 'Niedrig', 'Mittel', 'Unbekannt', 'Unbekannt', 'Unbekannt', 'Niedrig', 'Unbekannt'] },
+    vendorLock: { header: 'Vendor Lock-In', data: ['Keine', 'Mittel', 'Nein', 'Nein', 'Mittel', 'Nein', 'Nein', 'Hoch', 'Hoch'] },
+    anpassbar: { header: 'Anpassbarkeit', data: ['Sehr Hoch', 'Hoch', 'Hoch (Plugins)', 'Mittel', 'Sehr Hoch', 'Niedrig', 'Niedrig', 'Hoch', 'Hoch'] },
+    anfaenger: { header: 'Anfängerfreundlich', data: ['Sehr Hoch', 'Niedrig', 'Niedrig', 'Mittel', 'Niedrig', 'Hoch', 'Hoch', 'Mittel', 'Mittel'] },
+    dateien: { header: 'Dateien', data: ['Nextcloud/Sciebo', 'Integriert', 'Anhänge', 'Anhänge', 'Integriert', 'Anhänge', 'Anhänge', 'Integriert', 'Integriert'] },
+    ki: { header: 'KI-Integration', data: ['Geplant', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
+    alleinstellung: { header: 'Alleinstellung', data: ['NonProfit/PM-Laien', 'Enterprise', 'Plugins', 'Agile Features', 'ALM/DevOps', 'Einfachheit', 'Einfaches Kanban', 'ERP-Integration', 'Vollständiges ERP'] }
+  };
+
+  // Get visible columns in order
+  const visibleColumnKeys = Object.keys(visibleColumns).filter(key => visibleColumns[key]);
+  
+  // Build header row
+  const headerRow = visibleColumnKeys.map(key => columnMapping[key as keyof typeof columnMapping].header);
+  
+  // Build data rows
+  const dataRows = [];
+  const numRows = columnMapping.software.data.length;
+  
+  for (let i = 0; i < numRows; i++) {
+    const row = visibleColumnKeys.map(key => columnMapping[key as keyof typeof columnMapping].data[i]);
+    dataRows.push(row);
+  }
+  
+  const tableData = [headerRow, ...dataRows];
   
   // Convert to tab-separated values (TSV) for Google Sheets
   const tsvContent = tableData.map(row => row.join('\t')).join('\n');
+  
+  console.log('Kopiere Spalten:', visibleColumnKeys);
+  console.log('TSV Content:', tsvContent);
   
   try {
     await navigator.clipboard.writeText(tsvContent);
     
     // Show success notification
-    const button = document.querySelector('[title="Tabelle für Google Sheets kopieren"]') as HTMLButtonElement;
-    const originalText = button.innerHTML;
-    button.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Kopiert!`;
-    button.className = button.className.replace('bg-indigo-600 hover:bg-indigo-700', 'bg-green-600');
-    
-    setTimeout(() => {
-      button.innerHTML = originalText;
-      button.className = button.className.replace('bg-green-600', 'bg-indigo-600 hover:bg-indigo-700');
-    }, 2000);
+    const button = document.querySelector('[title="Nur sichtbare Spalten für Google Sheets kopieren"]') as HTMLButtonElement;
+    if (button) {
+      const originalText = button.innerHTML;
+      button.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Kopiert!`;
+      button.className = button.className.replace('bg-indigo-600 hover:bg-indigo-700', 'bg-green-600');
+      
+      setTimeout(() => {
+        button.innerHTML = originalText;
+        button.className = button.className.replace('bg-green-600', 'bg-indigo-600 hover:bg-indigo-700');
+      }, 2000);
+    }
     
   } catch (err) {
     console.error('Failed to copy table: ', err);
@@ -45,6 +73,128 @@ const copyTableToClipboard = async () => {
 };
 
 export default function Intern() {
+  const [visibleColumns, setVisibleColumns] = useState({
+    software: true,
+    openSource: true,
+    euData: true,
+    dsgvo: true,
+    zielgruppe: true,
+    pmLevel: true,
+    templates: true,
+    socialAcademic: true,
+    pmHilfe: true,
+    wissenstransfer: true,
+    rechtlich: true,
+    barrierefreiheit: true,
+    vendorLock: true,
+    anpassbar: true,
+    anfaenger: true,
+    dateien: true,
+    ki: true,
+    alleinstellung: true
+  });
+
+  const columnLabels = {
+    software: 'Software',
+    openSource: 'Open Source',
+    euData: 'EU Data',
+    dsgvo: 'DSGVO',
+    zielgruppe: 'Zielgruppe',
+    pmLevel: 'PM-Level',
+    templates: 'Templates',
+    socialAcademic: 'Social/Academic',
+    pmHilfe: 'PM-Hilfe',
+    wissenstransfer: 'Wissenstransfer',
+    rechtlich: 'Rechtlich',
+    barrierefreiheit: 'Barrierefreiheit',
+    vendorLock: 'Vendor Lock',
+    anpassbar: 'Anpassbar',
+    anfaenger: 'Anfänger',
+    dateien: 'Dateien',
+    ki: 'KI',
+    alleinstellung: 'Alleinstellung'
+  };
+
+  const toggleColumn = (column: string) => {
+    setVisibleColumns(prev => ({
+      ...prev,
+      [column]: !prev[column]
+    }));
+  };
+
+  // Render table cell conditionally
+  const renderCell = (columnKey: keyof typeof visibleColumns, content: React.ReactNode, className = "px-3 py-2 whitespace-nowrap text-xs text-gray-900") => {
+    return visibleColumns[columnKey] ? <td className={className}>{content}</td> : null;
+  };
+
+  // Table data for easy rendering
+  const tableData = [
+    {
+      software: { content: <>CitizenProject.App<span className="ml-1 text-xs bg-indigo-200 text-indigo-800 px-1 py-0.5 rounded-full">★</span></>, className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-indigo-50 text-indigo-900' },
+      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Unis/NGOs/Öffentlich', pmLevel: 'Anfänger & Experten',
+      templates: '✅', socialAcademic: { content: '✅', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 font-bold text-green-600' },
+      pmHilfe: '✅', wissenstransfer: '✅', rechtlich: '✅', barrierefreiheit: 'Hoch', vendorLock: 'Keine',
+      anpassbar: 'Sehr Hoch', anfaenger: 'Sehr Hoch', dateien: 'Nextcloud/Sciebo', ki: 'Geplant', alleinstellung: 'NonProfit/PM-Laien',
+      rowClass: 'bg-indigo-50 border-l-4 border-indigo-500'
+    },
+    {
+      software: { content: 'OpenProject', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Unternehmen', pmLevel: 'Fortgeschritten',
+      templates: 'Teilweise', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: 'Teilweise',
+      barrierefreiheit: 'Mittel', vendorLock: 'Mittel', anpassbar: 'Hoch', anfaenger: 'Niedrig', dateien: 'Integriert',
+      ki: '❌', alleinstellung: 'Enterprise', rowClass: 'hover:bg-gray-50'
+    },
+    {
+      software: { content: 'Redmine', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Technische Teams', pmLevel: 'Experte',
+      templates: '❌', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: '❌', rechtlich: '❌',
+      barrierefreiheit: 'Niedrig', vendorLock: '❌', anpassbar: 'Hoch (Plugins)', anfaenger: 'Niedrig', dateien: 'Anhänge',
+      ki: '❌', alleinstellung: 'Plugins', rowClass: 'hover:bg-gray-50'
+    },
+    {
+      software: { content: 'Taiga', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Agile Teams', pmLevel: 'Fortgeschritten',
+      templates: 'Agile/Scrum', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: '❌',
+      barrierefreiheit: 'Mittel', vendorLock: '❌', anpassbar: 'Mittel', anfaenger: 'Mittel', dateien: 'Anhänge',
+      ki: '❌', alleinstellung: 'Agile Features', rowClass: 'hover:bg-gray-50'
+    },
+    {
+      software: { content: 'Tuleap', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Engineering', pmLevel: 'Experte',
+      templates: '✅', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: 'Teilweise',
+      barrierefreiheit: 'Unbekannt', vendorLock: 'Mittel', anpassbar: 'Sehr Hoch', anfaenger: 'Niedrig', dateien: 'Integriert',
+      ki: '❌', alleinstellung: 'ALM/DevOps', rowClass: 'hover:bg-gray-50'
+    },
+    {
+      software: { content: 'Kanboard', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Kanban-Nutzer', pmLevel: 'Anfänger',
+      templates: '❌', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: '❌', rechtlich: '❌',
+      barrierefreiheit: 'Unbekannt', vendorLock: '❌', anpassbar: 'Niedrig', anfaenger: 'Hoch', dateien: 'Anhänge',
+      ki: '❌', alleinstellung: 'Einfachheit', rowClass: 'hover:bg-gray-50'
+    },
+    {
+      software: { content: 'Wekan', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Kanban-Nutzer', pmLevel: 'Anfänger',
+      templates: '❌', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: '❌', rechtlich: '❌',
+      barrierefreiheit: 'Unbekannt', vendorLock: '❌', anpassbar: 'Niedrig', anfaenger: 'Hoch', dateien: 'Anhänge',
+      ki: '❌', alleinstellung: 'Einfaches Kanban', rowClass: 'hover:bg-gray-50'
+    },
+    {
+      software: { content: 'Odoo Project', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'KMU/ERP', pmLevel: 'Fortgeschritten',
+      templates: 'Teilweise', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: 'Begrenzt',
+      barrierefreiheit: 'Niedrig', vendorLock: 'Hoch', anpassbar: 'Hoch', anfaenger: 'Mittel', dateien: 'Integriert',
+      ki: '❌', alleinstellung: 'ERP-Integration', rowClass: 'hover:bg-gray-50'
+    },
+    {
+      software: { content: 'ERPNext Projects', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'ERP-Umgebungen', pmLevel: 'Fortgeschritten',
+      templates: 'Teilweise', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: 'Begrenzt',
+      barrierefreiheit: 'Unbekannt', vendorLock: 'Hoch', anpassbar: 'Hoch', anfaenger: 'Mittel', dateien: 'Integriert',
+      ki: '❌', alleinstellung: 'Vollständiges ERP', rowClass: 'hover:bg-gray-50'
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
@@ -84,23 +234,59 @@ export default function Intern() {
 
         {/* Software Comparison Section */}
         <div className="mb-12">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">Projektmanagement-Software Vergleich</h2>
-              <p className="text-gray-600 mt-2">
-                Detaillierter Vergleich führender Projektmanagement-Lösungen mit Fokus auf Open Source, EU-Datenresidenz und DSGVO-Konformität
-              </p>
+          <div className="mb-6">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Projektmanagement-Software Vergleich</h2>
+                <p className="text-gray-600 mt-2">
+                  Detaillierter Vergleich führender Projektmanagement-Lösungen mit Fokus auf Open Source, EU-Datenresidenz und DSGVO-Konformität
+                </p>
+              </div>
+              <button
+                onClick={() => copyTableToClipboard(visibleColumns)}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                title="Nur sichtbare Spalten für Google Sheets kopieren"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Copy für Sheets
+              </button>
             </div>
-            <button
-              onClick={() => copyTableToClipboard()}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-              title="Tabelle für Google Sheets kopieren"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-              Copy für Sheets
-            </button>
+
+            {/* Column Selection */}
+            <div className="bg-gray-50 p-4 rounded-lg mb-6">
+              <h3 className="text-sm font-medium text-gray-900 mb-3">Spalten auswählen:</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+                {Object.entries(columnLabels).map(([key, label]) => (
+                  <label key={key} className="flex items-center text-xs">
+                    <input
+                      type="checkbox"
+                      checked={visibleColumns[key as keyof typeof visibleColumns]}
+                      onChange={() => toggleColumn(key)}
+                      disabled={key === 'software'}
+                      className={`mr-2 text-indigo-600 focus:ring-indigo-500 ${key === 'software' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    />
+                    <span className={`${visibleColumns[key as keyof typeof visibleColumns] ? 'text-gray-900' : 'text-gray-500'} ${key === 'software' ? 'font-medium' : ''}`}>
+                      {label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+              <button 
+                onClick={() => setVisibleColumns(Object.fromEntries(Object.keys(columnLabels).map(k => [k, true])) as any)}
+                className="mt-3 text-xs text-indigo-600 hover:text-indigo-800"
+              >
+                Alle auswählen
+              </button>
+              <span className="mx-2 text-gray-300">|</span>
+              <button 
+                onClick={() => setVisibleColumns({...Object.fromEntries(Object.keys(columnLabels).map(k => [k, false])), software: true} as any)}
+                className="text-xs text-indigo-600 hover:text-indigo-800"
+              >
+                Alle abwählen
+              </button>
+            </div>
           </div>
           
           <div className="bg-white shadow-lg rounded-lg overflow-hidden">
@@ -108,169 +294,121 @@ export default function Intern() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50 z-10">
-                      Software
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Open Source
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      EU Datenresidenz
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      DSGVO
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Max. User
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Komplexe Projekte
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Kosten/Nutzer
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Support Level
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Anfängerfreundlich
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Wissensmanagement
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      KI-Integration
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Projekttypen
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Anpassbarkeit
-                    </th>
+                    {visibleColumns.software && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50 z-10">
+                        Software
+                      </th>
+                    )}
+                    {visibleColumns.openSource && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Open Source
+                      </th>
+                    )}
+                    {visibleColumns.euData && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        EU Data
+                      </th>
+                    )}
+                    {visibleColumns.dsgvo && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        DSGVO
+                      </th>
+                    )}
+                    {visibleColumns.zielgruppe && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Zielgruppe
+                      </th>
+                    )}
+                    {visibleColumns.pmLevel && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        PM-Level
+                      </th>
+                    )}
+                    {visibleColumns.templates && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Templates
+                      </th>
+                    )}
+                    {visibleColumns.socialAcademic && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Social/Academic
+                      </th>
+                    )}
+                    {visibleColumns.pmHilfe && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        PM-Hilfe
+                      </th>
+                    )}
+                    {visibleColumns.wissenstransfer && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Wissenstransfer
+                      </th>
+                    )}
+                    {visibleColumns.rechtlich && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Rechtlich
+                      </th>
+                    )}
+                    {visibleColumns.barrierefreiheit && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Barrierefreiheit
+                      </th>
+                    )}
+                    {visibleColumns.vendorLock && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Vendor Lock
+                      </th>
+                    )}
+                    {visibleColumns.anpassbar && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Anpassbar
+                      </th>
+                    )}
+                    {visibleColumns.anfaenger && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Anfänger
+                      </th>
+                    )}
+                    {visibleColumns.dateien && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Dateien
+                      </th>
+                    )}
+                    {visibleColumns.ki && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        KI
+                      </th>
+                    )}
+                    {visibleColumns.alleinstellung && (
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Alleinstellung
+                      </th>
+                    )}
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {/* CitizenProject.App - Highlighted */}
-                  <tr className="bg-indigo-50 border-l-4 border-indigo-500">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-indigo-50 text-indigo-900">
-                      CitizenProject.App
-                      <span className="ml-2 text-xs bg-indigo-200 text-indigo-800 px-2 py-1 rounded-full">Empfehlung</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold text-green-600">0€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community/Enterprise</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Geplant</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil, Hybrid, Traditionell</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
-                  </tr>
-                  
-                  {/* OpenProject */}
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">OpenProject</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">0€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community/Enterprise</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Mittel</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Indirekt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil, Hybrid, Traditionell</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
-                  </tr>
-                  
-                  {/* Redmine */}
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Redmine</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium text-green-600">0€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Niedrig-Mittel</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Indirekt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hybrid, Begrenzt Agil</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
-                  </tr>
-                  
-                  {/* Taiga */}
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Taiga</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium text-green-600">0€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Begrenzt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Indirekt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Mittel</td>
-                  </tr>
-                  
-                  {/* Tuleap */}
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Tuleap</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium text-green-600">0€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community/Enterprise</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Mittel</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Indirekt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil, Hybrid, Traditionell</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
-                  </tr>
-                  
-                  {/* GitLab CE */}
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">GitLab CE</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium text-green-600">0€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Niedrig</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Indirekt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil, Hybrid</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
-                  </tr>
-                  
-                  {/* Leantime */}
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky left-0 z-10 bg-white text-gray-900">Leantime</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Unbegrenzt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium text-green-600">0€</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Community</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">✅</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Indirekt</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Agil, Hybrid</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Hoch</td>
-                  </tr>
+                  {tableData.map((row, index) => (
+                    <tr key={index} className={row.rowClass}>
+                      {renderCell('software', row.software.content, row.software.className)}
+                      {renderCell('openSource', row.openSource)}
+                      {renderCell('euData', row.euData)}
+                      {renderCell('dsgvo', row.dsgvo)}
+                      {renderCell('zielgruppe', row.zielgruppe)}
+                      {renderCell('pmLevel', row.pmLevel)}
+                      {renderCell('templates', row.templates)}
+                      {renderCell('socialAcademic', row.socialAcademic.content || row.socialAcademic, row.socialAcademic.className)}
+                      {renderCell('pmHilfe', row.pmHilfe)}
+                      {renderCell('wissenstransfer', row.wissenstransfer)}
+                      {renderCell('rechtlich', row.rechtlich)}
+                      {renderCell('barrierefreiheit', row.barrierefreiheit)}
+                      {renderCell('vendorLock', row.vendorLock)}
+                      {renderCell('anpassbar', row.anpassbar)}
+                      {renderCell('anfaenger', row.anfaenger)}
+                      {renderCell('dateien', row.dateien)}
+                      {renderCell('ki', row.ki)}
+                      {renderCell('alleinstellung', row.alleinstellung)}
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
