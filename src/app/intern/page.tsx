@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import React from 'react';
 
 // Function to copy table data to clipboard in tab-separated format for Google Sheets
 const copyTableToClipboard = async (visibleColumns: any) => {
@@ -11,8 +12,8 @@ const copyTableToClipboard = async (visibleColumns: any) => {
     openSource: { header: 'Open Source', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
     euData: { header: 'EU Datenresidenz', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
     dsgvo: { header: 'DSGVO', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
-    zielgruppe: { header: 'Zielgruppe', data: ['Unis/NGOs/Öffentlich', 'Unternehmen', 'Technische Teams', 'Agile Teams', 'Engineering', 'Kanban-Nutzer', 'Kanban-Nutzer', 'KMU/ERP', 'ERP-Umgebungen'] },
-    pmLevel: { header: 'PM-Erfahrung', data: ['Anfänger & Experten', 'Fortgeschritten', 'Experte', 'Fortgeschritten', 'Experte', 'Anfänger', 'Anfänger', 'Fortgeschritten', 'Fortgeschritten'] },
+    zielgruppe: { header: 'Zielgruppe', data: ['Unis/NGOs/Vereine', 'Unternehmen', 'Technische Teams', 'Agile Teams', 'Engineering', 'Kanban-Nutzer', 'Kanban-Nutzer', 'KMU/ERP', 'ERP-Umgebungen'] },
+    pmLevel: { header: 'PM-Erfahrung', data: ['Anfänger & Experte', 'Fortgeschritten', 'Experte', 'Fortgeschritten', 'Experte', 'Anfänger', 'Anfänger', 'Fortgeschritten', 'Fortgeschritten'] },
     templates: { header: 'Prozess-Templates', data: ['Ja', 'Teilweise', 'Nein', 'Agile/Scrum', 'Ja', 'Nein', 'Nein', 'Teilweise', 'Teilweise'] },
     socialAcademic: { header: 'Social/Academic Templates', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
     pmHilfe: { header: 'PM-Anleitung', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
@@ -73,6 +74,8 @@ const copyTableToClipboard = async (visibleColumns: any) => {
 };
 
 export default function Intern() {
+  const [sortConfig, setSortConfig] = useState<{key: string, direction: 'asc' | 'desc'} | null>(null);
+  const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const [visibleColumns, setVisibleColumns] = useState({
     software: true,
     openSource: true,
@@ -122,48 +125,173 @@ export default function Intern() {
     }));
   };
 
+  // Convert string values to chips based on content
+  const createChip = (value: string) => {
+    if (value === '✅') return <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>;
+    if (value === '❌') return <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>;
+    if (value === 'Hoch' || value === 'Sehr Hoch') return <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+    if (value === 'Mittel' || value === 'Teilweise' || value === 'Begrenzt') return <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+    if (value === 'Niedrig') return <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+    if (value === 'Keine') return <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+    if (value === 'Geplant') return <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+    if (['Unternehmen', 'Enterprise', 'Integriert'].includes(value)) return <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+    if (['Anhänge', 'Technische Teams', 'Engineering', 'Kanban-Nutzer', 'KMU/ERP', 'ERP-Umgebungen'].includes(value)) return <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+    if (['Agile Teams', 'Fortgeschritten', 'Agile Features'].includes(value)) return <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+    if (value === 'Experte') return <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+    if (['Plugins', 'ERP-Integration', 'Vollständiges ERP', 'Einfachheit', 'Einfaches Kanban'].includes(value)) return <span className="inline-block bg-purple-100 text-purple-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+    if (value === 'Anfänger') return <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+    if (value === 'Unbekannt') return <span className="inline-block bg-gray-200 text-gray-600 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+    return <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+  };
+
   // Render table cell conditionally
   const renderCell = (columnKey: keyof typeof visibleColumns, content: React.ReactNode, className = "px-3 py-2 whitespace-nowrap text-xs text-gray-900") => {
-    return visibleColumns[columnKey] ? <td className={className}>{content}</td> : null;
+    // Auto-convert strings to chips if they're not already JSX
+    const processedContent = typeof content === 'string' ? createChip(content) : content;
+    return visibleColumns[columnKey] ? <td className={className}>{processedContent}</td> : null;
+  };
+
+  // Render sortable header
+  const renderSortableHeader = (columnKey: string, label: string) => {
+    if (!visibleColumns[columnKey as keyof typeof visibleColumns]) return null;
+    
+    const isSorted = sortConfig?.key === columnKey;
+    const direction = sortConfig?.direction;
+    
+    return (
+      <th 
+        className={`px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none ${columnKey === 'software' ? 'sticky left-0 bg-gray-50 z-10 hover:bg-gray-100' : ''}`}
+        onClick={() => handleSort(columnKey)}
+      >
+        <div className="flex items-center gap-1">
+          <span>{label}</span>
+          <div className="flex flex-col">
+            <svg className={`w-3 h-3 ${isSorted && direction === 'asc' ? 'text-indigo-600' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+            </svg>
+            <svg className={`w-3 h-3 -mt-1 ${isSorted && direction === 'desc' ? 'text-indigo-600' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </div>
+        </div>
+      </th>
+    );
   };
 
   // Table data for easy rendering
   const tableData = [
     {
       software: { content: <>CitizenProject.App<span className="ml-1 text-xs bg-indigo-200 text-indigo-800 px-1 py-0.5 rounded-full">★</span></>, className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-indigo-50 text-indigo-900' },
-      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Unis/NGOs/Öffentlich', pmLevel: 'Anfänger & Experten',
-      templates: '✅', socialAcademic: { content: '✅', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 font-bold text-green-600' },
-      pmHilfe: '✅', wissenstransfer: '✅', rechtlich: '✅', barrierefreiheit: 'Hoch', vendorLock: 'Keine',
-      anpassbar: 'Sehr Hoch', anfaenger: 'Sehr Hoch', dateien: 'Nextcloud/Sciebo', ki: 'Geplant', alleinstellung: 'NonProfit/PM-Laien',
+      openSource: '✅', euData: '✅', dsgvo: '✅', 
+      zielgruppe: <>
+        <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Unis</span>
+        <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">NGOs</span>
+        <span className="inline-block bg-purple-100 text-purple-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Vereine</span>
+      </>, 
+      pmLevel: <>
+        <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Anfänger</span>
+        <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Experte</span>
+      </>,
+      templates: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      socialAcademic: { content: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded font-bold">✅</span>, className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900' },
+      pmHilfe: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      wissenstransfer: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      rechtlich: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      barrierefreiheit: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Hoch</span>, 
+      vendorLock: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">Keine</span>,
+      anpassbar: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Sehr Hoch</span>, 
+      anfaenger: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Sehr Hoch</span>, 
+      dateien: <>
+        <span className="inline-block bg-indigo-100 text-indigo-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Nextcloud</span>
+        <span className="inline-block bg-indigo-100 text-indigo-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Sciebo</span>
+      </>, 
+      ki: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Geplant</span>, 
+      alleinstellung: <>
+        <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">NonProfit</span>
+        <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">PM-Laien</span>
+      </>,
       rowClass: 'bg-indigo-50 border-l-4 border-indigo-500'
     },
     {
       software: { content: 'OpenProject', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
-      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Unternehmen', pmLevel: 'Fortgeschritten',
-      templates: 'Teilweise', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: 'Teilweise',
-      barrierefreiheit: 'Mittel', vendorLock: 'Mittel', anpassbar: 'Hoch', anfaenger: 'Niedrig', dateien: 'Integriert',
-      ki: '❌', alleinstellung: 'Enterprise', rowClass: 'hover:bg-gray-50'
+      openSource: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      euData: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      dsgvo: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      zielgruppe: <>
+        <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Unternehmen</span>
+        <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Öffentlich</span>
+      </>, 
+      pmLevel: 'Fortgeschritten',
+      templates: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Teilweise</span>, 
+      socialAcademic: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      pmHilfe: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      wissenstransfer: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Begrenzt</span>, 
+      rechtlich: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Teilweise</span>,
+      barrierefreiheit: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Mittel</span>, 
+      vendorLock: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Mittel</span>, 
+      anpassbar: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Hoch</span>, 
+      anfaenger: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">Niedrig</span>, 
+      dateien: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Integriert</span>,
+      ki: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      alleinstellung: <span className="inline-block bg-purple-100 text-purple-800 text-xs px-1.5 py-0.5 rounded">Enterprise</span>, 
+      rowClass: 'hover:bg-gray-50'
     },
     {
       software: { content: 'Redmine', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
-      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Technische Teams', pmLevel: 'Experte',
-      templates: '❌', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: '❌', rechtlich: '❌',
-      barrierefreiheit: 'Niedrig', vendorLock: '❌', anpassbar: 'Hoch (Plugins)', anfaenger: 'Niedrig', dateien: 'Anhänge',
-      ki: '❌', alleinstellung: 'Plugins', rowClass: 'hover:bg-gray-50'
+      openSource: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      euData: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      dsgvo: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      zielgruppe: <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded">Technische Teams</span>, 
+      pmLevel: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">Experte</span>,
+      templates: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      socialAcademic: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      pmHilfe: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      wissenstransfer: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      rechtlich: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>,
+      barrierefreiheit: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">Niedrig</span>, 
+      vendorLock: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      anpassbar: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Hoch (Plugins)</span>, 
+      anfaenger: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">Niedrig</span>, 
+      dateien: <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded">Anhänge</span>,
+      ki: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      alleinstellung: <span className="inline-block bg-purple-100 text-purple-800 text-xs px-1.5 py-0.5 rounded">Plugins</span>, 
+      rowClass: 'hover:bg-gray-50'
     },
     {
       software: { content: 'Taiga', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
-      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Agile Teams', pmLevel: 'Fortgeschritten',
-      templates: 'Agile/Scrum', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: '❌',
-      barrierefreiheit: 'Mittel', vendorLock: '❌', anpassbar: 'Mittel', anfaenger: 'Mittel', dateien: 'Anhänge',
-      ki: '❌', alleinstellung: 'Agile Features', rowClass: 'hover:bg-gray-50'
+      openSource: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      euData: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      dsgvo: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      zielgruppe: <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded">Agile Teams</span>, 
+      pmLevel: <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded">Fortgeschritten</span>,
+      templates: <>
+        <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Agile</span>
+        <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Scrum</span>
+      </>, 
+      socialAcademic: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      pmHilfe: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      wissenstransfer: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Begrenzt</span>, 
+      rechtlich: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>,
+      barrierefreiheit: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Mittel</span>, 
+      vendorLock: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      anpassbar: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Mittel</span>, 
+      anfaenger: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Mittel</span>, 
+      dateien: <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded">Anhänge</span>,
+      ki: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      alleinstellung: <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded">Agile Features</span>, 
+      rowClass: 'hover:bg-gray-50'
     },
     {
       software: { content: 'Tuleap', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
       openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Engineering', pmLevel: 'Experte',
       templates: '✅', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: 'Teilweise',
       barrierefreiheit: 'Unbekannt', vendorLock: 'Mittel', anpassbar: 'Sehr Hoch', anfaenger: 'Niedrig', dateien: 'Integriert',
-      ki: '❌', alleinstellung: 'ALM/DevOps', rowClass: 'hover:bg-gray-50'
+      ki: '❌', 
+      alleinstellung: <>
+        <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">ALM</span>
+        <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">DevOps</span>
+      </>, 
+      rowClass: 'hover:bg-gray-50'
     },
     {
       software: { content: 'Kanboard', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
@@ -194,6 +322,46 @@ export default function Intern() {
       ki: '❌', alleinstellung: 'Vollständiges ERP', rowClass: 'hover:bg-gray-50'
     }
   ];
+
+  // Sort function
+  const handleSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Sort the table data
+  const sortedTableData = React.useMemo(() => {
+    if (!sortConfig) return tableData;
+
+    return [...tableData].sort((a, b) => {
+      let aValue = a[sortConfig.key as keyof typeof a];
+      let bValue = b[sortConfig.key as keyof typeof b];
+
+      // Handle nested objects (like socialAcademic)
+      if (typeof aValue === 'object' && aValue !== null && 'content' in aValue) {
+        aValue = aValue.content;
+      }
+      if (typeof bValue === 'object' && bValue !== null && 'content' in bValue) {
+        bValue = bValue.content;
+      }
+
+      // Convert to strings for comparison
+      const aStr = String(aValue).toLowerCase();
+      const bStr = String(bValue).toLowerCase();
+
+      if (aStr < bStr) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aStr > bStr) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [tableData, sortConfig]);
+
+  // Handle row selection
+  const handleRowClick = (index: number) => {
+    setSelectedRow(selectedRow === index ? null : index);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -288,107 +456,49 @@ export default function Intern() {
               </button>
             </div>
           </div>
+
           
           <div className="bg-white shadow-lg rounded-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    {visibleColumns.software && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50 z-10">
-                        Software
-                      </th>
-                    )}
-                    {visibleColumns.openSource && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Open Source
-                      </th>
-                    )}
-                    {visibleColumns.euData && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        EU Data
-                      </th>
-                    )}
-                    {visibleColumns.dsgvo && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        DSGVO
-                      </th>
-                    )}
-                    {visibleColumns.zielgruppe && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Zielgruppe
-                      </th>
-                    )}
-                    {visibleColumns.pmLevel && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        PM-Level
-                      </th>
-                    )}
-                    {visibleColumns.templates && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Templates
-                      </th>
-                    )}
-                    {visibleColumns.socialAcademic && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Social/Academic
-                      </th>
-                    )}
-                    {visibleColumns.pmHilfe && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        PM-Hilfe
-                      </th>
-                    )}
-                    {visibleColumns.wissenstransfer && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Wissenstransfer
-                      </th>
-                    )}
-                    {visibleColumns.rechtlich && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Rechtlich
-                      </th>
-                    )}
-                    {visibleColumns.barrierefreiheit && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Barrierefreiheit
-                      </th>
-                    )}
-                    {visibleColumns.vendorLock && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Vendor Lock
-                      </th>
-                    )}
-                    {visibleColumns.anpassbar && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Anpassbar
-                      </th>
-                    )}
-                    {visibleColumns.anfaenger && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Anfänger
-                      </th>
-                    )}
-                    {visibleColumns.dateien && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Dateien
-                      </th>
-                    )}
-                    {visibleColumns.ki && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        KI
-                      </th>
-                    )}
-                    {visibleColumns.alleinstellung && (
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Alleinstellung
-                      </th>
-                    )}
+                    {renderSortableHeader('software', 'Software')}
+                    {renderSortableHeader('openSource', 'Open Source')}
+                    {renderSortableHeader('euData', 'EU Data')}
+                    {renderSortableHeader('dsgvo', 'DSGVO')}
+                    {renderSortableHeader('zielgruppe', 'Zielgruppe')}
+                    {renderSortableHeader('pmLevel', 'PM-Level')}
+                    {renderSortableHeader('templates', 'Templates')}
+                    {renderSortableHeader('socialAcademic', 'Social/Academic')}
+                    {renderSortableHeader('pmHilfe', 'PM-Hilfe')}
+                    {renderSortableHeader('wissenstransfer', 'Wissenstransfer')}
+                    {renderSortableHeader('rechtlich', 'Rechtlich')}
+                    {renderSortableHeader('barrierefreiheit', 'Barrierefreiheit')}
+                    {renderSortableHeader('vendorLock', 'Vendor Lock')}
+                    {renderSortableHeader('anpassbar', 'Anpassbar')}
+                    {renderSortableHeader('anfaenger', 'Anfänger')}
+                    {renderSortableHeader('dateien', 'Dateien')}
+                    {renderSortableHeader('ki', 'KI')}
+                    {renderSortableHeader('alleinstellung', 'Alleinstellung')}
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {tableData.map((row, index) => (
-                    <tr key={index} className={row.rowClass}>
+                  {sortedTableData.map((row, index) => {
+                    const isSelected = selectedRow === index;
+                    const baseRowClass = row.rowClass.includes('bg-indigo-50') ? row.rowClass : 'hover:bg-gray-50';
+                    const rowClass = isSelected ? 
+                      (row.rowClass.includes('bg-indigo-50') ? 
+                        'bg-indigo-100 border-l-4 border-indigo-600' : 
+                        'bg-blue-50 border-l-4 border-blue-500') : 
+                      baseRowClass;
+                    
+                    return (
+                    <tr 
+                      key={index} 
+                      className={`${rowClass} cursor-pointer transition-colors duration-150`}
+                      onClick={() => handleRowClick(index)}
+                    >
                       {renderCell('software', row.software.content, row.software.className)}
                       {renderCell('openSource', row.openSource)}
                       {renderCell('euData', row.euData)}
@@ -410,7 +520,8 @@ export default function Intern() {
                       {renderCell('ki', row.ki)}
                       {renderCell('alleinstellung', row.alleinstellung)}
                     </tr>
-                  ))}
+                  )})}
+                
                 </tbody>
               </table>
             </div>
