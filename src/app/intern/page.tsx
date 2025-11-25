@@ -10,19 +10,17 @@ const copyTableToClipboard = async (visibleColumns: any) => {
   const columnMapping = {
     software: { header: 'Software', data: ['CitizenProject.App', 'OpenProject', 'Redmine', 'Taiga', 'Tuleap', 'Kanboard', 'Wekan', 'Odoo Project', 'ERPNext Projects'] },
     openSource: { header: 'Open Source', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
-    euData: { header: 'EU Datenresidenz', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
+    euData: { header: 'EU-Datenresidenz', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
     dsgvo: { header: 'DSGVO', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
     zielgruppe: { header: 'Zielgruppe', data: ['Unis/NGOs/Vereine', 'Unternehmen', 'Technische Teams', 'Agile Teams', 'Engineering', 'Kanban-Nutzer', 'Kanban-Nutzer', 'KMU/ERP', 'ERP-Umgebungen'] },
     pmLevel: { header: 'PM-Erfahrung', data: ['Anfänger & Experte', 'Fortgeschritten', 'Experte', 'Fortgeschritten', 'Experte', 'Anfänger', 'Anfänger', 'Fortgeschritten', 'Fortgeschritten'] },
     templates: { header: 'Prozess-Templates', data: ['Ja', 'Teilweise', 'Nein', 'Agile/Scrum', 'Ja', 'Nein', 'Nein', 'Teilweise', 'Teilweise'] },
-    socialAcademic: { header: 'Social/Academic Templates', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
+    socialAcademic: { header: 'Soziale/Öffentliche/Bildungs-Vorlagen', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
     pmHilfe: { header: 'PM-Anleitung', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
     wissenstransfer: { header: 'Wissenstransfer', data: ['Ja', 'Begrenzt', 'Nein', 'Begrenzt', 'Begrenzt', 'Nein', 'Nein', 'Begrenzt', 'Begrenzt'] },
-    rechtlich: { header: 'Rechtliche Anpassung', data: ['Ja', 'Teilweise', 'Nein', 'Nein', 'Teilweise', 'Nein', 'Nein', 'Begrenzt', 'Begrenzt'] },
     barrierefreiheit: { header: 'Barrierefreiheit', data: ['Hoch', 'Mittel', 'Niedrig', 'Mittel', 'Unbekannt', 'Unbekannt', 'Unbekannt', 'Niedrig', 'Unbekannt'] },
     vendorLock: { header: 'Vendor Lock-In', data: ['Keine', 'Mittel', 'Nein', 'Nein', 'Mittel', 'Nein', 'Nein', 'Hoch', 'Hoch'] },
     anpassbar: { header: 'Anpassbarkeit', data: ['Sehr Hoch', 'Hoch', 'Hoch (Plugins)', 'Mittel', 'Sehr Hoch', 'Niedrig', 'Niedrig', 'Hoch', 'Hoch'] },
-    anfaenger: { header: 'Anfängerfreundlich', data: ['Sehr Hoch', 'Niedrig', 'Niedrig', 'Mittel', 'Niedrig', 'Hoch', 'Hoch', 'Mittel', 'Mittel'] },
     dateien: { header: 'Dateien', data: ['Nextcloud/Sciebo', 'Integriert', 'Anhänge', 'Anhänge', 'Integriert', 'Anhänge', 'Anhänge', 'Integriert', 'Integriert'] },
     ki: { header: 'KI-Integration', data: ['Geplant', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
     alleinstellung: { header: 'Alleinstellung', data: ['NonProfit/PM-Laien', 'Enterprise', 'Plugins', 'Agile Features', 'ALM/DevOps', 'Einfachheit', 'Einfaches Kanban', 'ERP-Integration', 'Vollständiges ERP'] }
@@ -87,11 +85,9 @@ export default function Intern() {
     socialAcademic: true,
     pmHilfe: true,
     wissenstransfer: true,
-    rechtlich: true,
     barrierefreiheit: true,
     vendorLock: true,
     anpassbar: true,
-    anfaenger: true,
     dateien: true,
     ki: true,
     alleinstellung: true
@@ -100,19 +96,17 @@ export default function Intern() {
   const columnLabels = {
     software: 'Software',
     openSource: 'Open Source',
-    euData: 'EU Data',
+    euData: 'EU-Daten',
     dsgvo: 'DSGVO',
     zielgruppe: 'Zielgruppe',
-    pmLevel: 'PM-Level',
-    templates: 'Templates',
-    socialAcademic: 'Social/Academic',
+    pmLevel: 'PM-Erfahrung',
+    templates: 'Vorlagen',
+    socialAcademic: 'Sozial/Öffentlich/Bildung',
     pmHilfe: 'PM-Hilfe',
     wissenstransfer: 'Wissenstransfer',
-    rechtlich: 'Rechtlich',
     barrierefreiheit: 'Barrierefreiheit',
-    vendorLock: 'Vendor Lock',
-    anpassbar: 'Anpassbar',
-    anfaenger: 'Anfänger',
+    vendorLock: 'Anbieterabhängigkeit',
+    anpassbar: 'Anpassbarkeit',
     dateien: 'Dateien',
     ki: 'KI',
     alleinstellung: 'Alleinstellung'
@@ -125,30 +119,71 @@ export default function Intern() {
     }));
   };
 
-  // Convert string values to chips based on content
-  const createChip = (value: string) => {
-    if (value === '✅') return <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>;
-    if (value === '❌') return <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>;
-    if (value === 'Hoch' || value === 'Sehr Hoch') return <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
-    if (value === 'Mittel' || value === 'Teilweise' || value === 'Begrenzt') return <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
-    if (value === 'Niedrig') return <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
-    if (value === 'Keine') return <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
-    if (value === 'Geplant') return <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
-    if (['Unternehmen', 'Enterprise', 'Integriert'].includes(value)) return <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
-    if (['Anhänge', 'Technische Teams', 'Engineering', 'Kanban-Nutzer', 'KMU/ERP', 'ERP-Umgebungen'].includes(value)) return <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
-    if (['Agile Teams', 'Fortgeschritten', 'Agile Features'].includes(value)) return <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
-    if (value === 'Experte') return <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
-    if (['Plugins', 'ERP-Integration', 'Vollständiges ERP', 'Einfachheit', 'Einfaches Kanban'].includes(value)) return <span className="inline-block bg-purple-100 text-purple-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
-    if (value === 'Anfänger') return <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
-    if (value === 'Unbekannt') return <span className="inline-block bg-gray-200 text-gray-600 text-xs px-1.5 py-0.5 rounded">{value}</span>;
-    return <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded">{value}</span>;
+  // Convert string values to chips - same string always gets same color
+  const createChip = (value: string, isSelected = false) => {
+    // Bei ausgewählten Zeilen: transparenter/weißer Chip-Hintergrund
+    if (isSelected) {
+      return <span className="inline-block bg-white bg-opacity-20 text-white text-xs px-1.5 py-0.5 rounded border border-white border-opacity-30">{value}</span>;
+    }
+    // Einfache Hash-Funktion für konsistente Farbzuweisung
+    const hashCode = (str: string) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // 32bit integer
+      }
+      return Math.abs(hash);
+    };
+
+    // Vordefinierte Farben für spezielle Werte
+    const specialColors: { [key: string]: string } = {
+      '✅': 'bg-green-100 text-green-800',
+      '❌': 'bg-red-100 text-red-800',
+      'Ja': 'bg-green-100 text-green-800',
+      'Nein': 'bg-red-100 text-red-800',
+    };
+
+    // Wenn spezieller Wert, nutze vordefinierte Farbe
+    if (specialColors[value]) {
+      return <span className={`inline-block ${specialColors[value]} text-xs px-1.5 py-0.5 rounded`}>{value}</span>;
+    }
+
+    // Sonst: Konsistente Farbzuweisung basierend auf String-Hash
+    const colorPalette = [
+      'bg-blue-100 text-blue-800',      // Blau
+      'bg-purple-100 text-purple-800',  // Lila
+      'bg-indigo-100 text-indigo-800',  // Indigo
+      'bg-yellow-100 text-yellow-800',  // Gelb
+      'bg-orange-100 text-orange-800',  // Orange
+      'bg-pink-100 text-pink-800',      // Pink
+      'bg-cyan-100 text-cyan-800',      // Cyan
+      'bg-emerald-100 text-emerald-800' // Emerald
+    ];
+
+    const colorIndex = hashCode(value) % colorPalette.length;
+    const colorClass = colorPalette[colorIndex];
+
+    return <span className={`inline-block ${colorClass} text-xs px-1.5 py-0.5 rounded`}>{value}</span>;
   };
 
   // Render table cell conditionally
-  const renderCell = (columnKey: keyof typeof visibleColumns, content: React.ReactNode, className = "px-3 py-2 whitespace-nowrap text-xs text-gray-900") => {
+  const renderCell = (columnKey: keyof typeof visibleColumns, content: React.ReactNode, className = "px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200", isSelected = false) => {
     // Auto-convert strings to chips if they're not already JSX
-    const processedContent = typeof content === 'string' ? createChip(content) : content;
-    return visibleColumns[columnKey] ? <td className={className}>{processedContent}</td> : null;
+    const processedContent = typeof content === 'string' ? createChip(content, isSelected) : content;
+    
+    let finalClassName = className;
+    if (columnKey === 'software') {
+      if (isSelected) {
+        finalClassName = `${className} sticky left-0 bg-blue-600 text-white z-10`;
+      } else {
+        finalClassName = `${className} sticky left-0 bg-white z-10`;
+      }
+    } else if (isSelected) {
+      finalClassName = `${className} text-white`;
+    }
+    
+    return visibleColumns[columnKey] ? <td className={finalClassName}>{processedContent}</td> : null;
   };
 
   // Render sortable header
@@ -160,16 +195,16 @@ export default function Intern() {
     
     return (
       <th 
-        className={`px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none ${columnKey === 'software' ? 'sticky left-0 bg-gray-50 z-10 hover:bg-gray-100' : ''}`}
+        className={`px-3 py-3 text-left text-sm font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-white hover:bg-opacity-10 select-none transition-colors border-r border-gray-300 ${columnKey === 'software' ? 'sticky left-0 bg-indigo-600 z-10' : ''}`}
         onClick={() => handleSort(columnKey)}
       >
         <div className="flex items-center gap-1">
           <span>{label}</span>
           <div className="flex flex-col">
-            <svg className={`w-3 h-3 ${isSorted && direction === 'asc' ? 'text-indigo-600' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+            <svg className={`w-3 h-3 ${isSorted && direction === 'asc' ? 'text-yellow-300' : 'text-white text-opacity-50'}`} fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
             </svg>
-            <svg className={`w-3 h-3 -mt-1 ${isSorted && direction === 'desc' ? 'text-indigo-600' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+            <svg className={`w-3 h-3 -mt-1 ${isSorted && direction === 'desc' ? 'text-yellow-300' : 'text-white text-opacity-50'}`} fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>
           </div>
@@ -181,7 +216,7 @@ export default function Intern() {
   // Table data for easy rendering
   const tableData = [
     {
-      software: { content: <>CitizenProject.App<span className="ml-1 text-xs bg-indigo-200 text-indigo-800 px-1 py-0.5 rounded-full">★</span></>, className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-indigo-50 text-indigo-900' },
+      software: { content: 'CitizenProject.App', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
       openSource: '✅', euData: '✅', dsgvo: '✅', 
       zielgruppe: <>
         <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Unis</span>
@@ -210,10 +245,10 @@ export default function Intern() {
         <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">NonProfit</span>
         <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">PM-Laien</span>
       </>,
-      rowClass: 'bg-indigo-50 border-l-4 border-indigo-500'
+      rowClass: 'hover:bg-gray-50'
     },
     {
-      software: { content: 'OpenProject', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      software: { content: 'OpenProject', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
       openSource: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
       euData: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
       dsgvo: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
@@ -237,7 +272,7 @@ export default function Intern() {
       rowClass: 'hover:bg-gray-50'
     },
     {
-      software: { content: 'Redmine', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      software: { content: 'Redmine', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
       openSource: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
       euData: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
       dsgvo: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
@@ -258,7 +293,7 @@ export default function Intern() {
       rowClass: 'hover:bg-gray-50'
     },
     {
-      software: { content: 'Taiga', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      software: { content: 'Taiga', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
       openSource: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
       euData: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
       dsgvo: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
@@ -282,7 +317,7 @@ export default function Intern() {
       rowClass: 'hover:bg-gray-50'
     },
     {
-      software: { content: 'Tuleap', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      software: { content: 'Tuleap', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
       openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Engineering', pmLevel: 'Experte',
       templates: '✅', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: 'Teilweise',
       barrierefreiheit: 'Unbekannt', vendorLock: 'Mittel', anpassbar: 'Sehr Hoch', anfaenger: 'Niedrig', dateien: 'Integriert',
@@ -294,28 +329,28 @@ export default function Intern() {
       rowClass: 'hover:bg-gray-50'
     },
     {
-      software: { content: 'Kanboard', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      software: { content: 'Kanboard', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
       openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Kanban-Nutzer', pmLevel: 'Anfänger',
       templates: '❌', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: '❌', rechtlich: '❌',
       barrierefreiheit: 'Unbekannt', vendorLock: '❌', anpassbar: 'Niedrig', anfaenger: 'Hoch', dateien: 'Anhänge',
       ki: '❌', alleinstellung: 'Einfachheit', rowClass: 'hover:bg-gray-50'
     },
     {
-      software: { content: 'Wekan', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      software: { content: 'Wekan', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
       openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Kanban-Nutzer', pmLevel: 'Anfänger',
       templates: '❌', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: '❌', rechtlich: '❌',
       barrierefreiheit: 'Unbekannt', vendorLock: '❌', anpassbar: 'Niedrig', anfaenger: 'Hoch', dateien: 'Anhänge',
       ki: '❌', alleinstellung: 'Einfaches Kanban', rowClass: 'hover:bg-gray-50'
     },
     {
-      software: { content: 'Odoo Project', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      software: { content: 'Odoo Project', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
       openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'KMU/ERP', pmLevel: 'Fortgeschritten',
       templates: 'Teilweise', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: 'Begrenzt',
       barrierefreiheit: 'Niedrig', vendorLock: 'Hoch', anpassbar: 'Hoch', anfaenger: 'Mittel', dateien: 'Integriert',
       ki: '❌', alleinstellung: 'ERP-Integration', rowClass: 'hover:bg-gray-50'
     },
     {
-      software: { content: 'ERPNext Projects', className: 'px-3 py-2 whitespace-nowrap text-xs font-medium sticky left-0 z-10 bg-white text-gray-900' },
+      software: { content: 'ERPNext Projects', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
       openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'ERP-Umgebungen', pmLevel: 'Fortgeschritten',
       templates: 'Teilweise', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: 'Begrenzt',
       barrierefreiheit: 'Unbekannt', vendorLock: 'Hoch', anpassbar: 'Hoch', anfaenger: 'Mittel', dateien: 'Integriert',
@@ -460,37 +495,33 @@ export default function Intern() {
           
           <div className="bg-white shadow-lg rounded-lg overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 border-collapse">
+                <thead className="bg-indigo-600 text-white">
                   <tr>
                     {renderSortableHeader('software', 'Software')}
-                    {renderSortableHeader('openSource', 'Open Source')}
-                    {renderSortableHeader('euData', 'EU Data')}
-                    {renderSortableHeader('dsgvo', 'DSGVO')}
-                    {renderSortableHeader('zielgruppe', 'Zielgruppe')}
-                    {renderSortableHeader('pmLevel', 'PM-Level')}
-                    {renderSortableHeader('templates', 'Templates')}
-                    {renderSortableHeader('socialAcademic', 'Social/Academic')}
-                    {renderSortableHeader('pmHilfe', 'PM-Hilfe')}
-                    {renderSortableHeader('wissenstransfer', 'Wissenstransfer')}
-                    {renderSortableHeader('rechtlich', 'Rechtlich')}
-                    {renderSortableHeader('barrierefreiheit', 'Barrierefreiheit')}
-                    {renderSortableHeader('vendorLock', 'Vendor Lock')}
-                    {renderSortableHeader('anpassbar', 'Anpassbar')}
-                    {renderSortableHeader('anfaenger', 'Anfänger')}
-                    {renderSortableHeader('dateien', 'Dateien')}
-                    {renderSortableHeader('ki', 'KI')}
                     {renderSortableHeader('alleinstellung', 'Alleinstellung')}
+                    {renderSortableHeader('anpassbar', 'Anpassbarkeit')}
+                    {renderSortableHeader('vendorLock', 'Anbieterabhängigkeit')}
+                    {renderSortableHeader('barrierefreiheit', 'Barrierefreiheit')}
+                    {renderSortableHeader('dateien', 'Dateien')}
+                    {renderSortableHeader('dsgvo', 'DSGVO')}
+                    {renderSortableHeader('euData', 'EU-Daten')}
+                    {renderSortableHeader('ki', 'KI')}
+                    {renderSortableHeader('openSource', 'Open Source')}
+                    {renderSortableHeader('pmLevel', 'PM-Erfahrung')}
+                    {renderSortableHeader('pmHilfe', 'PM-Hilfe')}
+                    {renderSortableHeader('socialAcademic', 'Sozial/Öffentlich/Bildung')}
+                    {renderSortableHeader('templates', 'Vorlagen')}
+                    {renderSortableHeader('wissenstransfer', 'Wissenstransfer')}
+                    {renderSortableHeader('zielgruppe', 'Zielgruppe')}
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {sortedTableData.map((row, index) => {
                     const isSelected = selectedRow === index;
-                    const baseRowClass = row.rowClass.includes('bg-indigo-50') ? row.rowClass : 'hover:bg-gray-50';
+                    const baseRowClass = 'hover:bg-gray-50';
                     const rowClass = isSelected ? 
-                      (row.rowClass.includes('bg-indigo-50') ? 
-                        'bg-indigo-100 border-l-4 border-indigo-600' : 
-                        'bg-blue-50 border-l-4 border-blue-500') : 
+                      'bg-blue-600 text-white border-l-8 border-blue-600 shadow-lg' : 
                       baseRowClass;
                     
                     return (
@@ -499,26 +530,24 @@ export default function Intern() {
                       className={`${rowClass} cursor-pointer transition-colors duration-150`}
                       onClick={() => handleRowClick(index)}
                     >
-                      {renderCell('software', row.software.content, row.software.className)}
-                      {renderCell('openSource', row.openSource)}
-                      {renderCell('euData', row.euData)}
-                      {renderCell('dsgvo', row.dsgvo)}
-                      {renderCell('zielgruppe', row.zielgruppe)}
-                      {renderCell('pmLevel', row.pmLevel)}
-                      {renderCell('templates', row.templates)}
+                      {renderCell('software', row.software.content, row.software.className, isSelected)}
+                      {renderCell('alleinstellung', row.alleinstellung, undefined, isSelected)}
+                      {renderCell('anpassbar', row.anpassbar, undefined, isSelected)}
+                      {renderCell('vendorLock', row.vendorLock, undefined, isSelected)}
+                      {renderCell('barrierefreiheit', row.barrierefreiheit, undefined, isSelected)}
+                      {renderCell('dateien', row.dateien, undefined, isSelected)}
+                      {renderCell('dsgvo', row.dsgvo, undefined, isSelected)}
+                      {renderCell('euData', row.euData, undefined, isSelected)}
+                      {renderCell('ki', row.ki, undefined, isSelected)}
+                      {renderCell('openSource', row.openSource, undefined, isSelected)}
+                      {renderCell('pmLevel', row.pmLevel, undefined, isSelected)}
+                      {renderCell('pmHilfe', row.pmHilfe, undefined, isSelected)}
                       {renderCell('socialAcademic', 
                         typeof row.socialAcademic === 'object' && row.socialAcademic !== null && 'content' in row.socialAcademic ? row.socialAcademic.content : row.socialAcademic, 
-                        typeof row.socialAcademic === 'object' && row.socialAcademic !== null && 'className' in row.socialAcademic ? row.socialAcademic.className : undefined)}
-                      {renderCell('pmHilfe', row.pmHilfe)}
-                      {renderCell('wissenstransfer', row.wissenstransfer)}
-                      {renderCell('rechtlich', row.rechtlich)}
-                      {renderCell('barrierefreiheit', row.barrierefreiheit)}
-                      {renderCell('vendorLock', row.vendorLock)}
-                      {renderCell('anpassbar', row.anpassbar)}
-                      {renderCell('anfaenger', row.anfaenger)}
-                      {renderCell('dateien', row.dateien)}
-                      {renderCell('ki', row.ki)}
-                      {renderCell('alleinstellung', row.alleinstellung)}
+                        typeof row.socialAcademic === 'object' && row.socialAcademic !== null && 'className' in row.socialAcademic ? row.socialAcademic.className : undefined, isSelected)}
+                      {renderCell('templates', row.templates, undefined, isSelected)}
+                      {renderCell('wissenstransfer', row.wissenstransfer, undefined, isSelected)}
+                      {renderCell('zielgruppe', row.zielgruppe, undefined, isSelected)}
                     </tr>
                   )})}
                 
