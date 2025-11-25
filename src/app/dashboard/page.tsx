@@ -63,7 +63,7 @@ export default function Dashboard() {
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-2">Welcome back! Here's what's happening with your projects.</p>
+          <p className="text-gray-800 mt-2">Welcome back! Here's what's happening with your projects.</p>
         </div>
 
 
@@ -73,7 +73,7 @@ export default function Dashboard() {
             <div className="flex items-center">
               <div className="text-3xl text-blue-500 mr-4">📊</div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Active Projects</p>
+                <p className="text-sm font-medium text-gray-800">Active Projects</p>
                 <p className="text-2xl font-bold text-gray-900">4</p>
               </div>
             </div>
@@ -82,7 +82,7 @@ export default function Dashboard() {
             <div className="flex items-center">
               <div className="text-3xl text-green-500 mr-4">✅</div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Completed Tasks</p>
+                <p className="text-sm font-medium text-gray-800">Completed Tasks</p>
                 <p className="text-2xl font-bold text-gray-900">23</p>
               </div>
             </div>
@@ -91,7 +91,7 @@ export default function Dashboard() {
             <div className="flex items-center">
               <div className="text-3xl text-yellow-500 mr-4">⏰</div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Pending Tasks</p>
+                <p className="text-sm font-medium text-gray-800">Pending Tasks</p>
                 <p className="text-2xl font-bold text-gray-900">8</p>
               </div>
             </div>
@@ -100,7 +100,7 @@ export default function Dashboard() {
             <div className="flex items-center">
               <div className="text-3xl text-purple-500 mr-4">👥</div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Team Members</p>
+                <p className="text-sm font-medium text-gray-800">Team Members</p>
                 <p className="text-2xl font-bold text-gray-900">15</p>
               </div>
             </div>
@@ -136,9 +136,9 @@ export default function Dashboard() {
                           ></div>
                         </div>
                       </div>
-                      <span className="text-sm text-gray-600">{project.progress}%</span>
+                      <span className="text-sm text-gray-800">{project.progress}%</span>
                     </div>
-                    <p className="text-sm text-gray-600 mt-2">👥 {project.team} team members</p>
+                    <p className="text-sm text-gray-800 mt-2">👥 {project.team} team members</p>
                   </div>
                 ))}
               </div>
@@ -165,7 +165,7 @@ export default function Dashboard() {
                     <div className="flex justify-between items-start">
                       <div>
                         <h3 className="font-medium text-gray-900">{task.title}</h3>
-                        <p className="text-sm text-gray-600">{task.project}</p>
+                        <p className="text-sm text-gray-800">{task.project}</p>
                       </div>
                       <span className={`px-2 py-1 text-xs rounded-full ${
                         task.priority === 'high' ? 'bg-red-100 text-red-800' :
@@ -175,7 +175,7 @@ export default function Dashboard() {
                         {task.priority}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mt-2">Due: {task.dueDate}</p>
+                    <p className="text-sm text-gray-800 mt-2">Due: {task.dueDate}</p>
                   </div>
                 ))}
               </div>

@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b">
+      <nav className="bg-white shadow-sm border-b sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
@@ -46,11 +46,11 @@ export default function Home() {
       <main className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h1 className="text-5xl font-extrabold text-gray-900 mb-6">
-            Welcome to <span className="text-indigo-600">CitizenProject.App</span>
+            Projektmanagement für Bildung, NGOs und öffentliche Institutionen
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Empowering global citizenship through collaborative project management. 
-            Connecting educational institutions, NGOs, and citizens worldwide for positive impact.
+          <p className="text-xl text-gray-800 mb-8 max-w-3xl mx-auto">
+            CitizenProject.App unterstützt Hochschulen, NGOs, Vereine und öffentliche Einrichtungen dabei, komplexe Projekte ohne teure Software
+            und Spezialwissen zu planen, umzusetzen und nachhaltig zu dokumentieren.
           </p>
           
           <div className="flex justify-center space-x-4 mb-12">
@@ -58,35 +58,103 @@ export default function Home() {
               href="/dashboard"
               className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
             >
-              Get Started
+              Dashboard
             </Link>
             <Link 
               href="/projects"
               className="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold border border-indigo-600 hover:bg-indigo-50 transition-colors"
             >
-              View Projects
+              Projekte entdecken
             </Link>
           </div>
 
           {/* Feature Grid */}
           <div className="grid md:grid-cols-3 gap-8 mt-16">
             <div className="bg-white p-6 rounded-xl shadow-sm">
+              <div className="text-3xl mb-4">🎯</div>
+              <h3 className="text-xl font-semibold mb-2 text-gray-900">Für Nonprofits & Bildung gemacht</h3>
+              <p className="text-gray-800">
+                Optimierte Workflows für Hochschulen, NGOs, Vereine und öffentliche Einrichtungen – von Drittmittelprojekten bis Kulturveranstaltungen.
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-sm">
               <div className="text-3xl mb-4">🔒</div>
-              <h3 className="text-xl font-semibold mb-2">GDPR Compliant</h3>
-              <p className="text-gray-600">Built with privacy in mind, ensuring all data handling meets GDPR requirements.</p>
+              <h3 className="text-xl font-semibold mb-2 text-gray-900">DSGVO-konform & Vendor-Lock-in-frei</h3>
+              <p className="text-gray-800">
+                Open Source, Datenresidenz in Europa und keine proprietären Abhängigkeiten – geeignet für den öffentlichen Dienst.
+              </p>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-sm">
-              <div className="text-3xl mb-4">🌱</div>
-              <h3 className="text-xl font-semibold mb-2">Open Source</h3>
-              <p className="text-gray-600">Transparent, community-driven development with full source code access.</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-sm">
-              <div className="text-3xl mb-4">🎓</div>
-              <h3 className="text-xl font-semibold mb-2">Education Focus</h3>
-              <p className="text-gray-600">Tailored templates and workflows for universities and educational organizations.</p>
+              <div className="text-3xl mb-4">🧭</div>
+              <h3 className="text-xl font-semibold mb-2 text-gray-900">Hilft Projektmanagement-Laien</h3>
+              <p className="text-gray-800">
+                Geführte Abläufe, Vorlagen und Wissenstransfer statt leerer Tools – damit Teams ohne PM-Erfahrung sicher starten können.
+              </p>
             </div>
           </div>
         </div>
+
+        {/* Challenge Section */}
+        <section className="mt-20 max-w-7xl mx-auto text-left">
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">Warum CitizenProject.App?</h2>
+          <p className="text-gray-700 mb-2">
+            Projekte sind Alltag in Hochschulen, Verwaltungen, NGOs und Vereinen – doch oft fehlen Zeit, Budget und Projektmanagement-Wissen.
+          </p>
+          <p className="text-gray-700 mb-2">
+            Bestehende Tools sind häufig zu teuer, zu komplex oder nicht DSGVO-konform. Wissen aus Projekten bleibt an einzelnen Personen hängen
+            und geht beim Wechsel von Mitarbeitenden verloren.
+          </p>
+          <p className="text-gray-700">
+            CitizenProject.App setzt hier an: als offene, anpassbare Plattform, die gute Projektpraxis für zivilgesellschaftliche Akteure
+            zugänglich macht – im Sinne der Sustainable Development Goals (SDGs).
+          </p>
+        </section>
+
+        {/* Target Groups Section */}
+        <section className="mt-16 max-w-7xl mx-auto text-left">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Wer profitiert?</h2>
+          <ul className="space-y-2 text-gray-700">
+            <li>
+              <span className="font-semibold">Bildung & Forschung:</span> Hochschulen, Schulen und Forschungseinrichtungen mit komplexen
+              Projektlandschaften.
+            </li>
+            <li>
+              <span className="font-semibold">NGOs & Vereine:</span> gemeinnützige Organisationen, Kultur- und Bürgerinitiativen mit knappen Ressourcen.
+            </li>
+            <li>
+              <span className="font-semibold">Öffentliche Einrichtungen:</span> Ministerien, Verwaltungen und andere öffentlich-rechtliche Träger
+              mit hohen Compliance-Anforderungen.
+            </li>
+            <li>
+              <span className="font-semibold">Internationale Partner ohne IT-Know-how:</span> Projektverbünde, die einfache, webbasierte Lösungen brauchen.
+            </li>
+          </ul>
+        </section>
+
+        {/* Team Section */}
+        <section className="mt-16 max-w-7xl mx-auto text-left">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Wer wir sind</h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-white p-6 rounded-xl shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Egbal Waldmann – Tech & Produkt</h3>
+              <p className="text-gray-800 mb-2">
+                Full‑Stack‑Entwickler mit Fokus auf Webanwendungen, agilen Projekten und digitalen Tools in Hochschulen und NGOs.
+              </p>
+              <p className="text-gray-800">
+                Motivation: faire, zugängliche Open‑Source‑Software für Bildung und Zivilgesellschaft, die komplexe Projekte ohne Vendor‑Lock‑in ermöglicht.
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Dr. Manuela Hackel – Projektmanagement & Inhalte</h3>
+              <p className="text-gray-800 mb-2">
+                Projektmanagerin mit PMP‑Zertifikat und langjähriger Erfahrung in Hochschulen, Vereinen und öffentlichen Institutionen.
+              </p>
+              <p className="text-gray-800">
+                Bringt Wissen aus traditionellen und hybriden Projektformen ein, definiert Qualitätskriterien und sorgt für praxisnahe Vorlagen und Abläufe.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );

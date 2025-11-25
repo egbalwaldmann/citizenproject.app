@@ -10,19 +10,18 @@ const copyTableToClipboard = async (visibleColumns: any) => {
   const columnMapping = {
     software: { header: 'Software', data: ['CitizenProject.App', 'OpenProject', 'Redmine', 'Taiga', 'Tuleap', 'Kanboard', 'Wekan', 'Odoo Project', 'ERPNext Projects'] },
     openSource: { header: 'Open Source', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
-    euData: { header: 'EU-Datenresidenz', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
-    dsgvo: { header: 'DSGVO', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
-    zielgruppe: { header: 'Zielgruppe', data: ['Unis/NGOs/Vereine', 'Unternehmen', 'Technische Teams', 'Agile Teams', 'Engineering', 'Kanban-Nutzer', 'Kanban-Nutzer', 'KMU/ERP', 'ERP-Umgebungen'] },
-    pmLevel: { header: 'PM-Erfahrung', data: ['Anfänger & Experte', 'Fortgeschritten', 'Experte', 'Fortgeschritten', 'Experte', 'Anfänger', 'Anfänger', 'Fortgeschritten', 'Fortgeschritten'] },
+    dsgvo: { header: 'DSGVO', data: ['Hoch', 'Hoch', 'Mittel', 'Mittel', 'Hoch', 'Niedrig', 'Niedrig', 'Mittel', 'Mittel'] },
+    zielgruppe: { header: 'Zielgruppe', data: ['Bildung / Nonprofit', 'Unternehmen / Organisationen', 'Tech / Engineering-Teams', 'Tech / Engineering-Teams', 'Tech / Engineering-Teams', 'Kanban-Teams', 'Kanban-Teams', 'Unternehmen / Organisationen', 'Unternehmen / Organisationen'] },
+    pmLevel: { header: 'PM-Erfahrung', data: ['Anfänger', 'Fortgeschritten', 'Experte', 'Fortgeschritten', 'Experte', 'Anfänger', 'Anfänger', 'Fortgeschritten', 'Fortgeschritten'] },
     templates: { header: 'Prozess-Templates', data: ['Ja', 'Teilweise', 'Nein', 'Agile/Scrum', 'Ja', 'Nein', 'Nein', 'Teilweise', 'Teilweise'] },
-    socialAcademic: { header: 'Soziale/Öffentliche/Bildungs-Vorlagen', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
-    pmHilfe: { header: 'PM-Anleitung', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
+    socialAcademic: { header: 'Fokus: Sozial / Öffentlich / Bildung', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
+    pmHilfe: { header: 'Geführte Abläufe', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
     wissenstransfer: { header: 'Wissenstransfer', data: ['Ja', 'Begrenzt', 'Nein', 'Begrenzt', 'Begrenzt', 'Nein', 'Nein', 'Begrenzt', 'Begrenzt'] },
-    barrierefreiheit: { header: 'Barrierefreiheit', data: ['Hoch', 'Mittel', 'Niedrig', 'Mittel', 'Unbekannt', 'Unbekannt', 'Unbekannt', 'Niedrig', 'Unbekannt'] },
-    vendorLock: { header: 'Vendor Lock-In', data: ['Keine', 'Mittel', 'Nein', 'Nein', 'Mittel', 'Nein', 'Nein', 'Hoch', 'Hoch'] },
+    barrierefreiheit: { header: 'Barrierefreiheit', data: ['Hoch', 'Mittel', 'Niedrig', 'Mittel', 'Mittel', 'Niedrig', 'Niedrig', 'Niedrig', 'Mittel'] },
+    vendorLock: { header: 'Vendor Lock-In', data: ['Kein / wenig', 'Mittel', 'Kein / wenig', 'Kein / wenig', 'Mittel', 'Kein / wenig', 'Kein / wenig', 'Hoch', 'Hoch'] },
     anpassbar: { header: 'Anpassbarkeit', data: ['Sehr Hoch', 'Hoch', 'Hoch (Plugins)', 'Mittel', 'Sehr Hoch', 'Niedrig', 'Niedrig', 'Hoch', 'Hoch'] },
-    dateien: { header: 'Dateien', data: ['Nextcloud/Sciebo', 'Integriert', 'Anhänge', 'Anhänge', 'Integriert', 'Anhänge', 'Anhänge', 'Integriert', 'Integriert'] },
-    ki: { header: 'KI-Integration', data: ['Geplant', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
+    dateien: { header: 'Dateiablage', data: ['Integriert', 'Integriert', 'Anhänge', 'Anhänge', 'Integriert', 'Anhänge', 'Anhänge', 'Integriert', 'Integriert'] },
+    ki: { header: 'KI-Agenten', data: ['Geplant', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
     alleinstellung: { header: 'Alleinstellung', data: ['NonProfit/PM-Laien', 'Enterprise', 'Plugins', 'Agile Features', 'ALM/DevOps', 'Einfachheit', 'Einfaches Kanban', 'ERP-Integration', 'Vollständiges ERP'] }
   };
 
@@ -77,7 +76,6 @@ export default function Intern() {
   const [visibleColumns, setVisibleColumns] = useState({
     software: true,
     openSource: true,
-    euData: true,
     dsgvo: true,
     zielgruppe: true,
     pmLevel: true,
@@ -96,19 +94,18 @@ export default function Intern() {
   const columnLabels = {
     software: 'Software',
     openSource: 'Open Source',
-    euData: 'EU-Daten',
     dsgvo: 'DSGVO',
     zielgruppe: 'Zielgruppe',
     pmLevel: 'PM-Erfahrung',
     templates: 'Vorlagen',
-    socialAcademic: 'Sozial/Öffentlich/Bildung',
-    pmHilfe: 'PM-Hilfe',
+    socialAcademic: 'Fokus: Sozial / Öffentlich / Bildung',
+    pmHilfe: 'Geführte Abläufe',
     wissenstransfer: 'Wissenstransfer',
     barrierefreiheit: 'Barrierefreiheit',
     vendorLock: 'Anbieterabhängigkeit',
     anpassbar: 'Anpassbarkeit',
-    dateien: 'Dateien',
-    ki: 'KI',
+    dateien: 'Dateiablage',
+    ki: 'KI-Agenten',
     alleinstellung: 'Alleinstellung'
   };
 
@@ -120,7 +117,7 @@ export default function Intern() {
   };
 
   // Convert string values to chips - same string always gets same color
-  const createChip = (value: string, isSelected = false) => {
+  const createChip = (value: string, isSelected = false, columnKey?: keyof typeof visibleColumns) => {
     // Bei ausgewählten Zeilen: transparenter/weißer Chip-Hintergrund
     if (isSelected) {
       return <span className="inline-block bg-white bg-opacity-20 text-white text-xs px-1.5 py-0.5 rounded border border-white border-opacity-30">{value}</span>;
@@ -142,7 +139,41 @@ export default function Intern() {
       '❌': 'bg-red-100 text-red-800',
       'Ja': 'bg-green-100 text-green-800',
       'Nein': 'bg-red-100 text-red-800',
+      'Geplant': 'bg-yellow-100 text-yellow-800',
+      // Vendor-Lock-Skala
+      'Kein / wenig': 'bg-green-100 text-green-800',
+      'Mittel': 'bg-yellow-100 text-yellow-800',
+      // Anpassbarkeit-/Qualitäts-Skalen
+      'Sehr Hoch': 'bg-green-100 text-green-800',
+      'Hoch': 'bg-green-100 text-green-800',
+      'Niedrig': 'bg-red-100 text-red-800',
+      // Dateiablage
+      'Integriert': 'bg-green-100 text-green-800',
+      'Anhänge': 'bg-yellow-100 text-yellow-800',
     };
+
+    // Spaltenspezifische Bewertung (z.B. PM-Erfahrung, Barrierefreiheit)
+    if (columnKey === 'pmLevel') {
+      const pmColors: { [key: string]: string } = {
+        'Anfänger': 'bg-green-100 text-green-800',
+        'Fortgeschritten': 'bg-yellow-100 text-yellow-800',
+        'Experte': 'bg-red-100 text-red-800',
+      };
+      const colorClass = pmColors[value] || 'bg-gray-100 text-gray-800';
+      return <span className={`inline-block ${colorClass} text-xs px-1.5 py-0.5 rounded`}>{value}</span>;
+    }
+
+    // Barrierefreiheit-Skala
+    if (columnKey === 'barrierefreiheit') {
+      const barriereColors: { [key: string]: string } = {
+        'Hoch': 'bg-green-100 text-green-800',
+        'Mittel': 'bg-yellow-100 text-yellow-800',
+        'Niedrig': 'bg-red-100 text-red-800',
+        'Unbekannt': 'bg-gray-100 text-gray-800',
+      };
+      const colorClass = barriereColors[value] || 'bg-gray-100 text-gray-800';
+      return <span className={`inline-block ${colorClass} text-xs px-1.5 py-0.5 rounded`}>{value}</span>;
+    }
 
     // Wenn spezieller Wert, nutze vordefinierte Farbe
     if (specialColors[value]) {
@@ -169,8 +200,11 @@ export default function Intern() {
 
   // Render table cell conditionally
   const renderCell = (columnKey: keyof typeof visibleColumns, content: React.ReactNode, className = "px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200", isSelected = false) => {
-    // Auto-convert strings to chips if they're not already JSX
-    const processedContent = typeof content === 'string' ? createChip(content, isSelected) : content;
+    // In der Software-Spalte keine Chips erzeugen, nur Text
+    const processedContent =
+      columnKey === 'software'
+        ? content
+        : (typeof content === 'string' ? createChip(content, isSelected, columnKey) : content);
     
     let finalClassName = className;
     if (columnKey === 'software') {
@@ -195,7 +229,7 @@ export default function Intern() {
     
     return (
       <th 
-        className={`px-3 py-3 text-left text-sm font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-white hover:bg-opacity-10 select-none transition-colors border-r border-gray-300 ${columnKey === 'software' ? 'sticky left-0 bg-indigo-600 z-10' : ''}`}
+        className={`px-3 py-3 text-left text-sm font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-indigo-500 select-none transition-colors border-r border-gray-300 ${columnKey === 'software' ? 'sticky left-0 bg-indigo-600 z-10' : ''}`}
         onClick={() => handleSort(columnKey)}
       >
         <div className="flex items-center gap-1">
@@ -217,30 +251,20 @@ export default function Intern() {
   const tableData = [
     {
       software: { content: 'CitizenProject.App', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: '✅', euData: '✅', dsgvo: '✅', 
-      zielgruppe: <>
-        <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Unis</span>
-        <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">NGOs</span>
-        <span className="inline-block bg-purple-100 text-purple-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Vereine</span>
-      </>, 
-      pmLevel: <>
-        <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Anfänger</span>
-        <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Experte</span>
-      </>,
-      templates: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
-      socialAcademic: { content: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded font-bold">✅</span>, className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900' },
-      pmHilfe: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
-      wissenstransfer: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      openSource: 'Ja', dsgvo: 'Hoch', 
+      zielgruppe: 'Bildung / Nonprofit',
+      pmLevel: 'Anfänger',
+      templates: 'Ja',
+      socialAcademic: 'Ja',
+      pmHilfe: 'Ja', 
+      wissenstransfer: 'Ja', 
       rechtlich: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
-      barrierefreiheit: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Hoch</span>, 
-      vendorLock: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">Keine</span>,
-      anpassbar: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Sehr Hoch</span>, 
+      barrierefreiheit: 'Hoch',
+      vendorLock: 'Kein / wenig',
+      anpassbar: 'Sehr Hoch', 
       anfaenger: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Sehr Hoch</span>, 
-      dateien: <>
-        <span className="inline-block bg-indigo-100 text-indigo-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Nextcloud</span>
-        <span className="inline-block bg-indigo-100 text-indigo-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Sciebo</span>
-      </>, 
-      ki: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Geplant</span>, 
+      dateien: 'Integriert',
+      ki: 'Geplant', 
       alleinstellung: <>
         <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">NonProfit</span>
         <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">PM-Laien</span>
@@ -249,79 +273,70 @@ export default function Intern() {
     },
     {
       software: { content: 'OpenProject', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
-      euData: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
-      dsgvo: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
-      zielgruppe: <>
-        <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Unternehmen</span>
-        <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Öffentlich</span>
-      </>, 
+      openSource: 'Ja', 
+      dsgvo: 'Hoch', 
+      zielgruppe: 'Unternehmen / Organisationen',
       pmLevel: 'Fortgeschritten',
-      templates: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Teilweise</span>, 
-      socialAcademic: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
-      pmHilfe: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
-      wissenstransfer: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Begrenzt</span>, 
+      templates: 'Teilweise',
+      socialAcademic: 'Nein', 
+      pmHilfe: 'Nein', 
+      wissenstransfer: 'Begrenzt', 
       rechtlich: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Teilweise</span>,
-      barrierefreiheit: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Mittel</span>, 
-      vendorLock: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Mittel</span>, 
-      anpassbar: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Hoch</span>, 
+      barrierefreiheit: 'Mittel',
+      vendorLock: 'Mittel',
+      anpassbar: 'Hoch', 
       anfaenger: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">Niedrig</span>, 
-      dateien: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Integriert</span>,
-      ki: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      dateien: 'Integriert',
+      ki: 'Nein', 
       alleinstellung: <span className="inline-block bg-purple-100 text-purple-800 text-xs px-1.5 py-0.5 rounded">Enterprise</span>, 
       rowClass: 'hover:bg-gray-50'
     },
     {
       software: { content: 'Redmine', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
-      euData: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
-      dsgvo: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
-      zielgruppe: <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded">Technische Teams</span>, 
-      pmLevel: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">Experte</span>,
-      templates: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
-      socialAcademic: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
-      pmHilfe: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
-      wissenstransfer: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      openSource: 'Ja', 
+      dsgvo: 'Mittel', 
+      zielgruppe: 'Tech / Engineering-Teams', 
+      pmLevel: 'Experte',
+      templates: 'Nein',
+      socialAcademic: 'Nein', 
+      pmHilfe: 'Nein', 
+      wissenstransfer: 'Nein', 
       rechtlich: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>,
-      barrierefreiheit: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">Niedrig</span>, 
-      vendorLock: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
-      anpassbar: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Hoch (Plugins)</span>, 
+      barrierefreiheit: 'Niedrig',
+      vendorLock: 'Kein / wenig',
+      anpassbar: 'Hoch', 
       anfaenger: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">Niedrig</span>, 
-      dateien: <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded">Anhänge</span>,
-      ki: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      dateien: 'Anhänge',
+      ki: 'Nein', 
       alleinstellung: <span className="inline-block bg-purple-100 text-purple-800 text-xs px-1.5 py-0.5 rounded">Plugins</span>, 
       rowClass: 'hover:bg-gray-50'
     },
     {
       software: { content: 'Taiga', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
-      euData: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
-      dsgvo: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
-      zielgruppe: <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded">Agile Teams</span>, 
-      pmLevel: <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded">Fortgeschritten</span>,
-      templates: <>
-        <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Agile</span>
-        <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">Scrum</span>
-      </>, 
-      socialAcademic: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
-      pmHilfe: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
-      wissenstransfer: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Begrenzt</span>, 
+      openSource: 'Ja', 
+      dsgvo: 'Mittel', 
+      zielgruppe: 'Tech / Engineering-Teams', 
+      pmLevel: 'Fortgeschritten',
+      templates: 'Agile/Scrum',
+      socialAcademic: 'Nein', 
+      pmHilfe: 'Nein', 
+      wissenstransfer: 'Begrenzt', 
       rechtlich: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>,
-      barrierefreiheit: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Mittel</span>, 
-      vendorLock: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
-      anpassbar: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Mittel</span>, 
+      barrierefreiheit: 'Mittel',
+      vendorLock: 'Kein / wenig',
+      anpassbar: 'Mittel', 
       anfaenger: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Mittel</span>, 
-      dateien: <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded">Anhänge</span>,
-      ki: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>, 
+      dateien: 'Anhänge',
+      ki: 'Nein', 
       alleinstellung: <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded">Agile Features</span>, 
       rowClass: 'hover:bg-gray-50'
     },
     {
       software: { content: 'Tuleap', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Engineering', pmLevel: 'Experte',
-      templates: '✅', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: 'Teilweise',
-      barrierefreiheit: 'Unbekannt', vendorLock: 'Mittel', anpassbar: 'Sehr Hoch', anfaenger: 'Niedrig', dateien: 'Integriert',
-      ki: '❌', 
+      openSource: 'Ja', dsgvo: 'Hoch', zielgruppe: 'Tech / Engineering-Teams', pmLevel: 'Experte',
+      templates: 'Ja', socialAcademic: 'Nein', pmHilfe: 'Nein', wissenstransfer: 'Begrenzt', rechtlich: 'Teilweise',
+      barrierefreiheit: 'Mittel', vendorLock: 'Mittel', anpassbar: 'Sehr Hoch', anfaenger: 'Niedrig', dateien: 'Integriert',
+      ki: 'Nein', 
       alleinstellung: <>
         <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">ALM</span>
         <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">DevOps</span>
@@ -330,31 +345,31 @@ export default function Intern() {
     },
     {
       software: { content: 'Kanboard', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Kanban-Nutzer', pmLevel: 'Anfänger',
-      templates: '❌', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: '❌', rechtlich: '❌',
-      barrierefreiheit: 'Unbekannt', vendorLock: '❌', anpassbar: 'Niedrig', anfaenger: 'Hoch', dateien: 'Anhänge',
-      ki: '❌', alleinstellung: 'Einfachheit', rowClass: 'hover:bg-gray-50'
+      openSource: 'Ja', dsgvo: 'Niedrig', zielgruppe: 'Kanban-Teams', pmLevel: 'Anfänger',
+      templates: 'Nein', socialAcademic: 'Nein', pmHilfe: 'Nein', wissenstransfer: 'Nein', rechtlich: '❌',
+      barrierefreiheit: 'Niedrig', vendorLock: 'Kein / wenig', anpassbar: 'Niedrig', anfaenger: 'Hoch', dateien: 'Anhänge',
+      ki: 'Nein', alleinstellung: 'Einfachheit', rowClass: 'hover:bg-gray-50'
     },
     {
       software: { content: 'Wekan', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'Kanban-Nutzer', pmLevel: 'Anfänger',
-      templates: '❌', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: '❌', rechtlich: '❌',
-      barrierefreiheit: 'Unbekannt', vendorLock: '❌', anpassbar: 'Niedrig', anfaenger: 'Hoch', dateien: 'Anhänge',
-      ki: '❌', alleinstellung: 'Einfaches Kanban', rowClass: 'hover:bg-gray-50'
+      openSource: 'Ja', dsgvo: 'Niedrig', zielgruppe: 'Kanban-Teams', pmLevel: 'Anfänger',
+      templates: 'Nein', socialAcademic: 'Nein', pmHilfe: 'Nein', wissenstransfer: 'Nein', rechtlich: '❌',
+      barrierefreiheit: 'Niedrig', vendorLock: 'Kein / wenig', anpassbar: 'Niedrig', anfaenger: 'Hoch', dateien: 'Anhänge',
+      ki: 'Nein', alleinstellung: 'Einfaches Kanban', rowClass: 'hover:bg-gray-50'
     },
     {
       software: { content: 'Odoo Project', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'KMU/ERP', pmLevel: 'Fortgeschritten',
-      templates: 'Teilweise', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: 'Begrenzt',
+      openSource: 'Ja', dsgvo: 'Mittel', zielgruppe: 'Unternehmen / Organisationen', pmLevel: 'Fortgeschritten',
+      templates: 'Teilweise', socialAcademic: 'Nein', pmHilfe: 'Nein', wissenstransfer: 'Begrenzt', rechtlich: 'Begrenzt',
       barrierefreiheit: 'Niedrig', vendorLock: 'Hoch', anpassbar: 'Hoch', anfaenger: 'Mittel', dateien: 'Integriert',
-      ki: '❌', alleinstellung: 'ERP-Integration', rowClass: 'hover:bg-gray-50'
+      ki: 'Nein', alleinstellung: 'ERP-Integration', rowClass: 'hover:bg-gray-50'
     },
     {
       software: { content: 'ERPNext Projects', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: '✅', euData: '✅', dsgvo: '✅', zielgruppe: 'ERP-Umgebungen', pmLevel: 'Fortgeschritten',
-      templates: 'Teilweise', socialAcademic: '❌', pmHilfe: '❌', wissenstransfer: 'Begrenzt', rechtlich: 'Begrenzt',
-      barrierefreiheit: 'Unbekannt', vendorLock: 'Hoch', anpassbar: 'Hoch', anfaenger: 'Mittel', dateien: 'Integriert',
-      ki: '❌', alleinstellung: 'Vollständiges ERP', rowClass: 'hover:bg-gray-50'
+      openSource: 'Ja', dsgvo: 'Mittel', zielgruppe: 'Unternehmen / Organisationen', pmLevel: 'Fortgeschritten',
+      templates: 'Teilweise', socialAcademic: 'Nein', pmHilfe: 'Nein', wissenstransfer: 'Begrenzt', rechtlich: 'Begrenzt',
+      barrierefreiheit: 'Mittel', vendorLock: 'Hoch', anpassbar: 'Hoch', anfaenger: 'Mittel', dateien: 'Integriert',
+      ki: 'Nein', alleinstellung: 'Vollständiges ERP', rowClass: 'hover:bg-gray-50'
     }
   ];
 
@@ -432,7 +447,7 @@ export default function Intern() {
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Interne Ressourcen</h1>
-          <p className="text-gray-600 mt-2">Vergleiche, Analysen und interne Dokumentation für das CitizenProject.App Team</p>
+          <p className="text-gray-800 mt-2">Vergleiche, Analysen und interne Dokumentation für das CitizenProject.App Team</p>
         </div>
 
         {/* Software Comparison Section */}
@@ -441,7 +456,7 @@ export default function Intern() {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">Projektmanagement-Software Vergleich</h2>
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                   Detaillierter Vergleich führender Projektmanagement-Lösungen mit Fokus auf Open Source, EU-Datenresidenz und DSGVO-Konformität
                 </p>
               </div>
@@ -461,7 +476,13 @@ export default function Intern() {
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
               <h3 className="text-sm font-medium text-gray-900 mb-3">Spalten auswählen:</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
-                {Object.entries(columnLabels).map(([key, label]) => (
+                {Object.entries(columnLabels)
+                  .sort(([keyA, labelA], [keyB, labelB]) => {
+                    if (keyA === 'software') return -1;
+                    if (keyB === 'software') return 1;
+                    return labelA.localeCompare(labelB, 'de', { sensitivity: 'base' });
+                  })
+                  .map(([key, label]) => (
                   <label key={key} className="flex items-center text-xs">
                     <input
                       type="checkbox"
@@ -503,14 +524,13 @@ export default function Intern() {
                     {renderSortableHeader('anpassbar', 'Anpassbarkeit')}
                     {renderSortableHeader('vendorLock', 'Anbieterabhängigkeit')}
                     {renderSortableHeader('barrierefreiheit', 'Barrierefreiheit')}
-                    {renderSortableHeader('dateien', 'Dateien')}
+                    {renderSortableHeader('dateien', 'Dateiablage')}
                     {renderSortableHeader('dsgvo', 'DSGVO')}
-                    {renderSortableHeader('euData', 'EU-Daten')}
-                    {renderSortableHeader('ki', 'KI')}
+                    {renderSortableHeader('ki', 'KI-Agenten')}
                     {renderSortableHeader('openSource', 'Open Source')}
                     {renderSortableHeader('pmLevel', 'PM-Erfahrung')}
-                    {renderSortableHeader('pmHilfe', 'PM-Hilfe')}
-                    {renderSortableHeader('socialAcademic', 'Sozial/Öffentlich/Bildung')}
+                    {renderSortableHeader('pmHilfe', 'Geführte Abläufe')}
+                    {renderSortableHeader('socialAcademic', 'Fokus: Sozial / Öffentlich / Bildung')}
                     {renderSortableHeader('templates', 'Vorlagen')}
                     {renderSortableHeader('wissenstransfer', 'Wissenstransfer')}
                     {renderSortableHeader('zielgruppe', 'Zielgruppe')}
@@ -537,14 +557,11 @@ export default function Intern() {
                       {renderCell('barrierefreiheit', row.barrierefreiheit, undefined, isSelected)}
                       {renderCell('dateien', row.dateien, undefined, isSelected)}
                       {renderCell('dsgvo', row.dsgvo, undefined, isSelected)}
-                      {renderCell('euData', row.euData, undefined, isSelected)}
                       {renderCell('ki', row.ki, undefined, isSelected)}
                       {renderCell('openSource', row.openSource, undefined, isSelected)}
                       {renderCell('pmLevel', row.pmLevel, undefined, isSelected)}
                       {renderCell('pmHilfe', row.pmHilfe, undefined, isSelected)}
-                      {renderCell('socialAcademic', 
-                        typeof row.socialAcademic === 'object' && row.socialAcademic !== null && 'content' in row.socialAcademic ? row.socialAcademic.content : row.socialAcademic, 
-                        typeof row.socialAcademic === 'object' && row.socialAcademic !== null && 'className' in row.socialAcademic ? row.socialAcademic.className : undefined, isSelected)}
+                      {renderCell('socialAcademic', row.socialAcademic, undefined, isSelected)}
                       {renderCell('templates', row.templates, undefined, isSelected)}
                       {renderCell('wissenstransfer', row.wissenstransfer, undefined, isSelected)}
                       {renderCell('zielgruppe', row.zielgruppe, undefined, isSelected)}

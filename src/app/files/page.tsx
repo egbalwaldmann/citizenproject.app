@@ -90,7 +90,7 @@ export default function Files() {
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">File Manager</h1>
-          <p className="text-gray-600 mt-2">Upload, organize, and share project files</p>
+          <p className="text-gray-800 mt-2">Upload, organize, and share project files</p>
         </div>
 
         {/* Stats Cards */}
@@ -99,7 +99,7 @@ export default function Files() {
             <div className="flex items-center">
               <div className="text-3xl mr-4">📁</div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Files</p>
+                <p className="text-sm font-medium text-gray-800">Total Files</p>
                 <p className="text-2xl font-bold text-gray-900">{files.length}</p>
               </div>
             </div>
@@ -108,7 +108,7 @@ export default function Files() {
             <div className="flex items-center">
               <div className="text-3xl mr-4">💾</div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Storage Used</p>
+                <p className="text-sm font-medium text-gray-800">Storage Used</p>
                 <p className="text-2xl font-bold text-gray-900">35.1 MB</p>
               </div>
             </div>
@@ -117,7 +117,7 @@ export default function Files() {
             <div className="flex items-center">
               <div className="text-3xl mr-4">🎨</div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Design Files</p>
+                <p className="text-sm font-medium text-gray-800">Design Files</p>
                 <p className="text-2xl font-bold text-gray-900">{files.filter(f => f.category === 'design').length}</p>
               </div>
             </div>
@@ -126,7 +126,7 @@ export default function Files() {
             <div className="flex items-center">
               <div className="text-3xl mr-4">📊</div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Documents</p>
+                <p className="text-sm font-medium text-gray-800">Documents</p>
                 <p className="text-2xl font-bold text-gray-900">{files.filter(f => f.category === 'documentation').length}</p>
               </div>
             </div>
@@ -171,7 +171,7 @@ export default function Files() {
               <div className="flex items-start justify-between mb-4">
                 <div className="text-4xl">{file.icon}</div>
                 <div className="flex space-x-2">
-                  <button className="text-gray-400 hover:text-gray-600">
+                  <button className="text-gray-400 hover:text-gray-800">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                     </svg>
@@ -181,7 +181,7 @@ export default function Files() {
               
               <h3 className="font-medium text-gray-900 mb-2 text-sm leading-tight">{file.name}</h3>
               
-              <div className="space-y-2 text-sm text-gray-600 mb-4">
+              <div className="space-y-2 text-sm text-gray-800 mb-4">
                 <div className="flex justify-between">
                   <span>Size</span>
                   <span className="font-medium">{file.size}</span>
@@ -217,7 +217,7 @@ export default function Files() {
           <div className="text-center py-12">
             <div className="text-gray-400 text-6xl mb-4">📁</div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No files found</h3>
-            <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
+            <p className="text-gray-800">Try adjusting your search or filter criteria.</p>
           </div>
         )}
       </div>

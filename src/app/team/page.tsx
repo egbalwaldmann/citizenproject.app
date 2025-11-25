@@ -100,7 +100,7 @@ export default function Team() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Team Members</h1>
-            <p className="text-gray-600 mt-2">Manage your team and collaborate effectively</p>
+            <p className="text-gray-800 mt-2">Manage your team and collaborate effectively</p>
           </div>
           <button
             onClick={() => setShowInviteModal(true)}
@@ -116,7 +116,7 @@ export default function Team() {
             <div className="flex items-center">
               <div className="text-3xl text-blue-500 mr-4">👥</div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Members</p>
+                <p className="text-sm font-medium text-gray-800">Total Members</p>
                 <p className="text-2xl font-bold text-gray-900">{teamMembers.length}</p>
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function Team() {
             <div className="flex items-center">
               <div className="text-3xl text-green-500 mr-4">✅</div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Active Members</p>
+                <p className="text-sm font-medium text-gray-800">Active Members</p>
                 <p className="text-2xl font-bold text-gray-900">{teamMembers.filter(m => m.status === 'active').length}</p>
               </div>
             </div>
@@ -134,7 +134,7 @@ export default function Team() {
             <div className="flex items-center">
               <div className="text-3xl text-yellow-500 mr-4">🏖️</div>
               <div>
-                <p className="text-sm font-medium text-gray-600">On Vacation</p>
+                <p className="text-sm font-medium text-gray-800">On Vacation</p>
                 <p className="text-2xl font-bold text-gray-900">{teamMembers.filter(m => m.status === 'vacation').length}</p>
               </div>
             </div>
@@ -143,7 +143,7 @@ export default function Team() {
             <div className="flex items-center">
               <div className="text-3xl text-purple-500 mr-4">💼</div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Roles</p>
+                <p className="text-sm font-medium text-gray-800">Roles</p>
                 <p className="text-2xl font-bold text-gray-900">{new Set(teamMembers.map(m => m.role)).size}</p>
               </div>
             </div>
@@ -159,7 +159,7 @@ export default function Team() {
                   <div className="text-4xl mr-4">{member.avatar}</div>
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-900">{member.name}</h3>
-                    <p className="text-sm text-gray-600">{member.role}</p>
+                    <p className="text-sm text-gray-800">{member.role}</p>
                     <div className="flex items-center mt-1">
                       <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                         member.status === 'active' ? 'bg-green-100 text-green-800' :
@@ -174,7 +174,7 @@ export default function Team() {
 
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">📧 {member.email}</p>
+                    <p className="text-sm text-gray-800 mb-1">📧 {member.email}</p>
                   </div>
 
                   <div>

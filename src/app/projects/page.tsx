@@ -87,7 +87,7 @@ export default function Projects() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Projects</h1>
-            <p className="text-gray-600 mt-2">Manage all your projects in one place</p>
+            <p className="text-gray-800 mt-2">Manage all your projects in one place</p>
           </div>
           <button
             onClick={() => setShowNewProjectModal(true)}
@@ -113,11 +113,11 @@ export default function Projects() {
                   </span>
                 </div>
                 
-                <p className="text-gray-600 mb-4 text-sm">{project.description}</p>
+                <p className="text-gray-800 mb-4 text-sm">{project.description}</p>
                 
                 <div className="mb-4">
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-600">Progress</span>
+                    <span className="text-gray-800">Progress</span>
                     <span className="font-medium">{project.progress}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -130,15 +130,15 @@ export default function Projects() {
 
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Team</span>
+                    <span className="text-gray-800">Team</span>
                     <span className="font-medium">{project.team.length} members</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Deadline</span>
+                    <span className="text-gray-800">Deadline</span>
                     <span className="font-medium">{project.deadline}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Budget</span>
+                    <span className="text-gray-800">Budget</span>
                     <span className="font-medium">{project.budget}</span>
                   </div>
                 </div>
