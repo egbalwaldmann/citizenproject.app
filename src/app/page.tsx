@@ -136,21 +136,21 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Wer wir sind</h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-white p-6 rounded-xl shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Egbal Waldmann – Tech & Produkt</h3>
-              <p className="text-gray-800 mb-2">
-                Full‑Stack‑Entwickler mit Fokus auf Webanwendungen, agilen Projekten und digitalen Tools in Hochschulen und NGOs.
-              </p>
-              <p className="text-gray-800">
-                Motivation: faire, zugängliche Open‑Source‑Software für Bildung und Zivilgesellschaft, die komplexe Projekte ohne Vendor‑Lock‑in ermöglicht.
-              </p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Dr. Manuela Hackel – Projektmanagement & Inhalte</h3>
               <p className="text-gray-800 mb-2">
                 Projektmanagerin mit PMP‑Zertifikat und langjähriger Erfahrung in Hochschulen, Vereinen und öffentlichen Institutionen.
               </p>
               <p className="text-gray-800">
                 Bringt Wissen aus traditionellen und hybriden Projektformen ein, definiert Qualitätskriterien und sorgt für praxisnahe Vorlagen und Abläufe.
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Egbal Waldmann – Tech & Produkt</h3>
+              <p className="text-gray-800 mb-2">
+                Full‑Stack‑Entwickler mit Fokus auf Webanwendungen, agilen Projekten und digitalen Tools in Hochschulen und NGOs.
+              </p>
+              <p className="text-gray-800">
+                Motivation: faire, zugängliche Open‑Source‑Software für Bildung und Zivilgesellschaft, die komplexe Projekte ohne Vendor‑Lock‑in ermöglicht.
               </p>
             </div>
           </div>
