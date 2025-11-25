@@ -591,6 +591,292 @@ export default function Intern() {
             </div>
           </div>
         </div>
+
+        {/* Divider for application questions */}
+        <div className="border-t border-gray-200 mt-12 pt-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Fragen und Antworten – Förderantrag
+          </h2>
+
+          {/* 1. Projekttitel */}
+          <details className="mb-4 bg-white rounded-lg shadow-sm">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
+              1. Projekttitel
+            </summary>
+            <div className="px-4 pb-4 pt-2 space-y-2">
+              <p className="text-sm text-gray-800">
+                <span className="font-semibold">Name:</span> Die CitizenProject.App (CPA)
+              </p>
+              <p className="text-sm text-gray-800">
+                <span className="font-semibold">Website:</span>{' '}
+                <a href="https://www.citizenproject.app" className="text-indigo-600 underline" target="_blank" rel="noreferrer">
+                  https://www.citizenproject.app
+                </a>
+              </p>
+              <p className="text-sm text-gray-800">
+                <span className="font-semibold">Quellcode:</span>{' '}
+                <a
+                  href="https://github.com/egbalwaldmann/citizenproject.app"
+                  className="text-indigo-600 underline"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  https://github.com/egbalwaldmann/citizenproject.app
+                </a>
+              </p>
+            </div>
+          </details>
+
+          {/* 2. Kurzbeschreibung */}
+          <details className="mb-4 bg-white rounded-lg shadow-sm">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
+              2. Beschreibe dein Projekt kurz
+            </summary>
+            <div className="px-4 pb-4 pt-2 space-y-2">
+              <p className="text-sm text-gray-800">
+                Abstract für das Projekt: Ziele, Zielgruppen, Produkt und Mehrwert der CitizenProject.App kurz zusammenfassen.
+              </p>
+            </div>
+          </details>
+
+          {/* 3. Gesellschaftliche Herausforderung */}
+          <details className="mb-4 bg-white rounded-lg shadow-sm">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
+              3. Gesellschaftliche Herausforderung
+            </summary>
+            <div className="px-4 pb-4 pt-2 space-y-3">
+              <p className="text-sm text-gray-800">
+                Projekte sind ein wichtiger Teil unseres Lebens – im Beruf, im Ehrenamt und auch privat. Wir stehen immer wieder vor der
+                Herausforderung, Vorhaben zu planen und umzusetzen, die neu für uns sind und oft einzigartig bleiben.
+              </p>
+              <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
+                <li>Ein Literaturverein organisiert eine Lesereihe in einer kulturfernen Region.</li>
+                <li>Eine NonProfit-Organisation plant eine Kampagne zum Thema Lebensmittelverschwendung.</li>
+                <li>Ein neues Hochschulteam arbeitet mit externen Partnern in einem mehrjährigen Drittmittelprojekt zusammen.</li>
+              </ul>
+              <p className="text-sm text-gray-800">
+                Ob einfach oder komplex, klar definiert oder noch vage, vorhersehbar oder von Wandlungen durchzogen – Projekte fordern uns
+                heraus, den Überblick zu behalten, Ressourcen zu gewinnen und sinnvoll einzusetzen, Teams zusammenzuhalten, Stakeholder
+                einzubeziehen und gleichzeitig auf die eigenen Kräfte zu achten.
+              </p>
+              <p className="text-sm text-gray-800">
+                Obwohl Projekte zum Alltagsgeschäft vieler Institutionen gehören und ein wichtiges Erfolgs-, wenn nicht Überlebenskriterium
+                darstellen, stehen insbesondere nicht-kommerzielle Institutionen vor besonderen Schwierigkeiten:
+              </p>
+              <ol className="list-decimal list-inside text-sm text-gray-800 space-y-1">
+                <li>
+                  Mitarbeitende verfügen häufig nicht über hinreichendes Projektmanagement-Wissen. Dieses Wissen ist oft an einzelne Personen
+                  gebunden und geht mit deren Ausscheiden verloren – besonders im Ehrenamt oder bei befristeten Stellen.
+                </li>
+                <li>
+                  Verfügbare Projektmanagement-Software wird selten genutzt. Stattdessen werden Tabellen- oder Textprogramme verwendet, die
+                  für mittlere bis größere oder dynamische Projekte ungeeignet sind.
+                </li>
+              </ol>
+              <p className="text-sm text-gray-800">
+                Gründe dafür sind unter anderem: Kostenstrukturen kommerzieller Tools, fehlende Eignung für größere Teams, mangelnde
+                DSGVO-Konformität, fehlende Anpassbarkeit und die fehlende Unterstützung von Projektmanagement-Anfängerinnen und -Anfängern.
+              </p>
+              <p className="text-sm text-gray-800">
+                Hinzu kommt, dass das in Projekten generierte Wissen selten systematisch gesichert wird. Mangelnde Ressourcen führen dazu, dass
+                Wissensmanagement oft unter den Tisch fällt – mit der Folge, dass Teams „jedes Mal von vorn“ beginnen müssen.
+              </p>
+              <p className="text-sm text-gray-800">
+                CitizenProject.App reagiert darauf, indem es speziell für diese Zielgruppen eine offene, kostenfreie und anpassbare
+                Projektmanagement-Plattform bereitstellt, die ihre gesellschaftlich relevanten Projekte – im Sinne der SDGs – unterstützt.
+              </p>
+            </div>
+          </details>
+
+          {/* 4. Technische Umsetzung */}
+          <details className="mb-4 bg-white rounded-lg shadow-sm">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
+              4. Technische Umsetzung
+            </summary>
+            <div className="px-4 pb-4 pt-2 space-y-2">
+              <p className="text-sm text-gray-800">
+                Technische Architektur, Tech-Stack (z. B. Next.js, TypeScript, Open Source), Hosting-Strategie, Datenhaltung und
+                Datenschutzkonzept beschreiben.
+              </p>
+            </div>
+          </details>
+
+          {/* 5. Stand der Idee */}
+          <details className="mb-4 bg-white rounded-lg shadow-sm">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
+              5. Stand der Idee
+            </summary>
+            <div className="px-4 pb-4 pt-2 space-y-2">
+              <p className="text-sm text-gray-800">
+                Aktuellen Prototyp-Stand von CitizenProject.App skizzieren (Dashboard, Vergleichsmatrix, erste Workflows) und geplante
+                Erweiterungen im Förderzeitraum benennen.
+              </p>
+            </div>
+          </details>
+
+          {/* 6. Marktanalyse & Vorteil */}
+          <details className="mb-4 bg-white rounded-lg shadow-sm">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
+              6. Marktanalyse & unser Vorteil
+            </summary>
+            <div className="px-4 pb-4 pt-2 space-y-3">
+              <p className="text-sm text-gray-800">
+                Marktanalyse: bestehende Projektmanagement-Software wird anhand definierter Qualitätskriterien geprüft.
+              </p>
+              <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
+                <li>Qualitätskriterien aufstellen, die für unsere Zielgruppen und Zwecke wichtig sind.</li>
+                <li>Diese Kriterien kurz erläutern (Bedeutung und Relevanz).</li>
+                <li>
+                  Basis: PM-Erfahrungen mit zivilgesellschaftlichen Projekten und Projekten an Hochschulen/Bildungseinrichtungen, rechtliche
+                  Vorgaben (z. B. DSGVO), ministerielle Qualitätsanforderungen (z. B. Barrierefreiheit).
+                </li>
+                <li>
+                  Verknüpfbarkeit mit einer DSGVO-konformen Dateiablage berücksichtigen (auch wenn eine komplett kostenlose Dateiablage
+                  evtl. nicht möglich ist).
+                </li>
+              </ul>
+              <p className="text-sm text-gray-800 font-semibold mt-2">Unser Vorteil:</p>
+              <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
+                <li>Komplett Open Source</li>
+                <li>Geeignet für den öffentlichen Dienst (Datenresidenz in Europa, DSGVO-konform)</li>
+                <li>Kein Vendor-Lock-in</li>
+                <li>Kostenfrei nutzbar</li>
+                <li>Intuitiv für Projektmanagement-Laien</li>
+                <li>Abbildung verschiedener Projektarten</li>
+                <li>Vorlagemasken für übliche Projektprozesse</li>
+                <li>Templates für einzelne Prozesse</li>
+                <li>Nützliche Hinweise und Tipps zum Ausfüllen</li>
+              </ul>
+              <p className="text-sm text-gray-800 font-semibold mt-2">Viermonatige Weiterentwicklungsphase:</p>
+              <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
+                <li>Probeläufe des Piloten mit Institutionen</li>
+                <li>Evaluation und Anpassung der Software</li>
+                <li>
+                  Prüfung institutionsspezifischer Anpassungen (z. B. besondere Anforderungen von Universitäten vs. kleinen Kulturvereinen)
+                </li>
+              </ul>
+            </div>
+          </details>
+
+          {/* 7. Zielgruppen & Erreichung */}
+          <details className="mb-4 bg-white rounded-lg shadow-sm">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
+              7. Zielgruppen & Erreichung
+            </summary>
+            <div className="px-4 pb-4 pt-2 space-y-3">
+              <h3 className="text-base font-semibold text-gray-900">Wer ist die Zielgruppe?</h3>
+              <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
+                <li>Staatliche/öffentlich-rechtliche Institutionen (z. B. Hochschulen, Ministerien)</li>
+                <li>Forschungseinrichtungen</li>
+                <li>NGOs und gemeinnützige Vereine</li>
+                <li>Zivilgesellschaftliche Akteure (z. B. Bürgerinitiativen)</li>
+                <li>Stiftungen</li>
+                <li>Bildungseinrichtungen (z. B. Schulen)</li>
+                <li>Kirchen und soziale Einrichtungen</li>
+                <li>Internationale Projektpartner ohne IT-Know-how</li>
+              </ul>
+              <p className="text-sm text-gray-800">
+                Ziel: einfache Nutzung trotz komplexer Anforderungen – insbesondere im Kontext der Sustainable Development Goals (SDGs).
+              </p>
+
+              <h3 className="text-base font-semibold text-gray-900 mt-2">
+                Wie soll das Projekt die Zielgruppen erreichen?
+              </h3>
+              <p className="text-sm text-gray-800">
+                Geplante Kommunikations- und Disseminationswege skizzieren (z. B. Pilotprojekte mit Hochschulen/NGOs, Fachnetzwerke,
+                Community-Building rund um das Open-Source-Projekt, Online-Dokumentation und Handbuch).
+              </p>
+            </div>
+          </details>
+
+          {/* 8. Meilensteine */}
+          <details className="mb-4 bg-white rounded-lg shadow-sm">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
+              8. Meilensteine im Förderzeitraum
+            </summary>
+            <div className="px-4 pb-4 pt-2 space-y-3">
+              <p className="text-sm text-gray-800">Platzhalter für M1–M7 (konkrete Meilensteine gemeinsam definieren):</p>
+              <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
+                <li>M1 – Projektplanung, Architektur und Detailkonzept</li>
+                <li>M2 – Kernfunktionen der CitizenProject.App implementieren</li>
+                <li>M3 – Pilotierung mit ersten Institutionen</li>
+                <li>M4 – Evaluation und Anpassung</li>
+                <li>M5 – Ausbau von Templates und geführten Abläufen</li>
+                <li>M6 – Dokumentation und Handbuch</li>
+                <li>M7 – Vorbereitung der Second-Stage-Förderung</li>
+              </ul>
+            </div>
+          </details>
+
+          {/* 9. Team, Erfahrung & Motivation */}
+          <details className="mb-4 bg-white rounded-lg shadow-sm">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
+              9. Team, Erfahrung & Motivation
+            </summary>
+            <div className="px-4 pb-4 pt-2 space-y-4">
+              <h3 className="text-base font-semibold text-gray-900">
+                Bewerbt ihr euch als Team um die Förderung? Wer gehört dazu?
+              </h3>
+              <p className="text-sm text-gray-800">
+                Team: Dr. Manuela Hackel (Projektmanagement & Inhalte) und Egbal Waldmann (Technik & Produktentwicklung).
+              </p>
+
+              <h3 className="text-base font-semibold text-gray-900">
+                An welchen Software-Projekten hast du/habt ihr bisher gearbeitet?
+              </h3>
+              <p className="text-sm text-gray-800">
+                Relevante Projekte im Bildungs-, NGO- oder öffentlichen Kontext auflisten, inkl. Links zu Open-Source-Repositories.
+              </p>
+
+              <h3 className="text-base font-semibold text-gray-900">
+                Bei Open-Source-Projekten: Links zu den Repositories
+              </h3>
+              <p className="text-sm text-gray-800">
+                GitHub-Links zu bisherigen Projekten ergänzen (CitizenProject.App, weitere relevante Repos).
+              </p>
+
+              <h3 className="text-base font-semibold text-gray-900">
+                Wie viele Stunden wollt ihr im Förderzeitraum insgesamt arbeiten?
+              </h3>
+              <p className="text-sm text-gray-800">Aktuelle Planung: 40 + 10 = 50 Stunden pro Woche.</p>
+
+              <h3 className="text-base font-semibold text-gray-900">
+                Erfahrung, Hintergrund, Motivation, Perspektive – was sollen wir über euch wissen?
+              </h3>
+              <div className="space-y-2 text-sm text-gray-800">
+                <p className="font-semibold">Egbal Waldmann:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Erfahrung mit agilen Projekten und digitalen Tools in Universitäten und NGOs</li>
+                  <li>Technischer Hintergrund in der Webentwicklung</li>
+                  <li>Motivation: faire, zugängliche Software für Bildung und Zivilgesellschaft</li>
+                  <li>Ziel: Open-Source-Alternative für komplexe akademische Projekte</li>
+                </ul>
+
+                <p className="font-semibold mt-4">Dr. Manuela Hackel:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Erfahrung mit verschiedenen Projektarten und -komplexitäten</li>
+                  <li>Erfahrungen mit traditionellen (Wasserfall) und hybriden Projekten</li>
+                  <li>Kenntnis der Zielgruppen von innen (Arbeit für Hochschulen, Vereine, öffentliche Institutionen)</li>
+                  <li>PMP-Zertifikat</li>
+                </ul>
+              </div>
+            </div>
+          </details>
+
+          {/* 10. Second-Stage-Förderung */}
+          <details className="mb-4 bg-white rounded-lg shadow-sm">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
+              10. Second-Stage-Förderung
+            </summary>
+            <div className="px-4 pb-4 pt-2 space-y-3">
+              <p className="text-sm text-gray-800">Geplante Antwort: ja.</p>
+              <p className="text-sm text-gray-800">
+                Anschließend kurz beschreiben, was das Projekt braucht, um aus dem Prototypen-Stadium herauszukommen und wie in vier Monaten
+                ein nachhaltiger Aufbau aussehen soll (inklusive Meilensteine für die Verlängerung).
+              </p>
+            </div>
+          </details>
+        </div>
       </div>
     </div>
   );
