@@ -17,57 +17,67 @@ export default function Layout({ children, currentPage = '' }: LayoutProps) {
               <Link href="/" className="text-2xl font-bold text-indigo-600">CitizenProject.App</Link>
             </div>
             <div className="flex items-center space-x-4">
-              <Link 
-                href="/dashboard" 
+              <Link
+                href="/dashboard"
                 className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  currentPage === 'dashboard' 
-                    ? 'text-indigo-600 bg-indigo-50' 
+                  currentPage === 'dashboard'
+                    ? 'text-indigo-600 bg-indigo-50'
                     : 'text-gray-700 hover:text-indigo-600'
                 }`}
               >
                 Dashboard
               </Link>
-              <Link 
-                href="/projects" 
+              <Link
+                href="/projects"
                 className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  currentPage === 'projects' 
-                    ? 'text-indigo-600 bg-indigo-50' 
+                  currentPage === 'projects'
+                    ? 'text-indigo-600 bg-indigo-50'
                     : 'text-gray-700 hover:text-indigo-600'
                 }`}
               >
                 Projects
               </Link>
-              <Link 
-                href="/tasks" 
+              <Link
+                href="/tasks"
                 className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  currentPage === 'tasks' 
-                    ? 'text-indigo-600 bg-indigo-50' 
+                  currentPage === 'tasks'
+                    ? 'text-indigo-600 bg-indigo-50'
                     : 'text-gray-700 hover:text-indigo-600'
                 }`}
               >
                 Tasks
               </Link>
-              <Link 
-                href="/team" 
+              <Link
+                href="/team"
                 className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  currentPage === 'team' 
-                    ? 'text-indigo-600 bg-indigo-50' 
+                  currentPage === 'team'
+                    ? 'text-indigo-600 bg-indigo-50'
                     : 'text-gray-700 hover:text-indigo-600'
                 }`}
               >
                 Team
               </Link>
-              <Link 
-                href="/files" 
+              <Link
+                href="/files"
                 className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  currentPage === 'files' 
-                    ? 'text-indigo-600 bg-indigo-50' 
+                  currentPage === 'files'
+                    ? 'text-indigo-600 bg-indigo-50'
                     : 'text-gray-700 hover:text-indigo-600'
                 }`}
               >
                 Files
               </Link>
-              <a 
+              <Link
+                href="/templates"
+                className={`px-3 py-2 rounded-md text-sm font-medium ${
+                  currentPage === 'templates'
+                    ? 'text-indigo-600 bg-indigo-50'
+                    : 'text-gray-700 hover:text-indigo-600'
+                }`}
+              >
+                Templates
+              </Link>
+              <a
                 href="https://github.com/egbalwaldmann/citizenproject.app"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -82,7 +92,7 @@ export default function Layout({ children, currentPage = '' }: LayoutProps) {
           </div>
         </div>
       </nav>
-      
+
       {children}
     </div>
   );
