@@ -770,6 +770,40 @@ export default function Intern() {
               <div className="flex items-center gap-1"><span className="w-3 h-3 bg-emerald-500 rounded"></span> Konzept Epics</div>
               <div className="flex items-center gap-1"><span className="w-3 h-3 bg-red-500 rounded-full"></span> Meilensteine</div>
             </div>
+
+            {/* Inline Item Details */}
+            {selectedTimelineItem && (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <div className="bg-indigo-50 rounded-md p-4 relative">
+                  <button
+                    onClick={() => setSelectedTimelineItem(null)}
+                    className="absolute top-2 right-2 text-indigo-400 hover:text-indigo-600"
+                    title="Schließen"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                  <h4 className="font-bold text-indigo-900 text-lg mb-1">{selectedTimelineItem.title}</h4>
+                  <div className="flex flex-wrap gap-4 text-sm text-indigo-800">
+                    <div>
+                      <span className="font-semibold opacity-75 block text-xs uppercase tracking-wider">Zeitraum</span>
+                      {moment(selectedTimelineItem.start_time).format('DD.MM.YYYY')} - {moment(selectedTimelineItem.end_time).format('DD.MM.YYYY')}
+                    </div>
+                    <div>
+                      <span className="font-semibold opacity-75 block text-xs uppercase tracking-wider">Kategorie</span>
+                      {groups.find(g => g.id === selectedTimelineItem.group)?.title || 'Unbekannt'}
+                    </div>
+                    {selectedTimelineItem.description && (
+                      <div className="w-full mt-2">
+                        <span className="font-semibold opacity-75 block text-xs uppercase tracking-wider">Beschreibung</span>
+                        {selectedTimelineItem.description}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -1062,57 +1096,6 @@ export default function Intern() {
         {/* <Timeline items={timelineData} onItemSelect={handleItemSelect} /> */}
       </div>
 
-      {/* Timeline Item Detail Modal */}
-      {selectedTimelineItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50" onClick={() => setSelectedTimelineItem(null)}>
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-xl font-bold text-gray-900">{selectedTimelineItem.title}</h3>
-              <button
-                onClick={() => setSelectedTimelineItem(null)}
-                className="text-gray-400 hover:text-gray-500"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              <div>
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Zeitraum</span>
-                <p className="text-gray-700">
-                  {moment(selectedTimelineItem.start_time).format('DD.MM.YYYY')} - {moment(selectedTimelineItem.end_time).format('DD.MM.YYYY')}
-                </p>
-              </div>
-
-              <div>
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Kategorie</span>
-                <p className="text-gray-700">
-                  {groups.find(g => g.id === selectedTimelineItem.group)?.title || 'Unbekannt'}
-                </p>
-              </div>
-
-              {/* Placeholder for description if we add it later */}
-              {selectedTimelineItem.description && (
-                <div>
-                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Beschreibung</span>
-                  <p className="text-gray-600 text-sm mt-1">{selectedTimelineItem.description}</p>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={() => setSelectedTimelineItem(null)}
-                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors text-sm font-medium"
-              >
-                Schließen
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
