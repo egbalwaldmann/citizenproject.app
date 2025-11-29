@@ -500,37 +500,37 @@ export default function Intern() {
 
   const items = [
     // --- SPRINTS (2-week cycles, starting March 2025) ---
-    { id: 101, group: 1, title: 'Sprint 1', start_time: moment('2025-03-01'), end_time: moment('2025-03-14'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
-    { id: 102, group: 1, title: 'Sprint 2', start_time: moment('2025-03-15'), end_time: moment('2025-03-28'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
-    { id: 103, group: 1, title: 'Sprint 3', start_time: moment('2025-03-29'), end_time: moment('2025-04-11'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
-    { id: 104, group: 1, title: 'Sprint 4', start_time: moment('2025-04-12'), end_time: moment('2025-04-25'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
-    { id: 105, group: 1, title: 'Sprint 5', start_time: moment('2025-04-26'), end_time: moment('2025-05-09'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
-    { id: 106, group: 1, title: 'Sprint 6', start_time: moment('2025-05-10'), end_time: moment('2025-05-23'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
-    { id: 107, group: 1, title: 'Sprint 7', start_time: moment('2025-05-24'), end_time: moment('2025-06-06'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
-    { id: 108, group: 1, title: 'Sprint 8', start_time: moment('2025-06-07'), end_time: moment('2025-06-20'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
-    { id: 109, group: 1, title: 'Sprint 9', start_time: moment('2025-06-21'), end_time: moment('2025-07-04'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
-    { id: 110, group: 1, title: 'Sprint 10', start_time: moment('2025-07-05'), end_time: moment('2025-07-18'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
-    { id: 111, group: 1, title: 'Sprint 11', start_time: moment('2025-07-19'), end_time: moment('2025-08-01'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
-    { id: 112, group: 1, title: 'Sprint 12', start_time: moment('2025-08-02'), end_time: moment('2025-08-15'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
-    { id: 113, group: 1, title: 'Sprint 13', start_time: moment('2025-08-16'), end_time: moment('2025-08-29'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 101, group: 1, title: 'Sprint 1', start_time: moment('2025-03-01'), end_time: moment('2025-03-14'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    { id: 102, group: 1, title: 'Sprint 2', start_time: moment('2025-03-15'), end_time: moment('2025-03-28'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    { id: 103, group: 1, title: 'Sprint 3', start_time: moment('2025-03-29'), end_time: moment('2025-04-11'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    { id: 104, group: 1, title: 'Sprint 4', start_time: moment('2025-04-12'), end_time: moment('2025-04-25'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    { id: 105, group: 1, title: 'Sprint 5', start_time: moment('2025-04-26'), end_time: moment('2025-05-09'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    { id: 106, group: 1, title: 'Sprint 6', start_time: moment('2025-05-10'), end_time: moment('2025-05-23'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    { id: 107, group: 1, title: 'Sprint 7', start_time: moment('2025-05-24'), end_time: moment('2025-06-06'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    { id: 108, group: 1, title: 'Sprint 8', start_time: moment('2025-06-07'), end_time: moment('2025-06-20'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    { id: 109, group: 1, title: 'Sprint 9', start_time: moment('2025-06-21'), end_time: moment('2025-07-04'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    { id: 110, group: 1, title: 'Sprint 10', start_time: moment('2025-07-05'), end_time: moment('2025-07-18'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    { id: 111, group: 1, title: 'Sprint 11', start_time: moment('2025-07-19'), end_time: moment('2025-08-01'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    { id: 112, group: 1, title: 'Sprint 12', start_time: moment('2025-08-02'), end_time: moment('2025-08-15'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    { id: 113, group: 1, title: 'Sprint 13', start_time: moment('2025-08-16'), end_time: moment('2025-08-29'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
 
     // --- EPICS: DEV ---
-    { id: 201, group: 2, title: 'Setup & Tech-Stack', start_time: moment('2025-03-01'), end_time: moment('2025-03-15'), itemProps: { style: { background: '#4f46e5', border: 'none' } } },
-    { id: 202, group: 2, title: 'Prototyp Core (Auth/DB)', start_time: moment('2025-03-15'), end_time: moment('2025-05-01'), itemProps: { style: { background: '#4f46e5', border: 'none' } } },
-    { id: 203, group: 2, title: 'Feature: Templates', start_time: moment('2025-05-01'), end_time: moment('2025-06-15'), itemProps: { style: { background: '#4f46e5', border: 'none' } } },
-    { id: 204, group: 2, title: 'Institutions-Spezifika (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-10-30'), itemProps: { style: { background: '#818cf8', border: 'none' } } },
-    { id: 205, group: 2, title: 'Wissensmanagement (Stage 2)', start_time: moment('2025-11-01'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#818cf8', border: 'none' } } },
+    { id: 201, group: 2, title: 'Setup & Tech-Stack', start_time: moment('2025-03-01'), end_time: moment('2025-03-15'), itemProps: { style: { background: '#4f46e5', borderStyle: 'none' } } },
+    { id: 202, group: 2, title: 'Prototyp Core (Auth/DB)', start_time: moment('2025-03-15'), end_time: moment('2025-05-01'), itemProps: { style: { background: '#4f46e5', borderStyle: 'none' } } },
+    { id: 203, group: 2, title: 'Feature: Templates', start_time: moment('2025-05-01'), end_time: moment('2025-06-15'), itemProps: { style: { background: '#4f46e5', borderStyle: 'none' } } },
+    { id: 204, group: 2, title: 'Institutions-Spezifika (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-10-30'), itemProps: { style: { background: '#818cf8', borderStyle: 'none' } } },
+    { id: 205, group: 2, title: 'Wissensmanagement (Stage 2)', start_time: moment('2025-11-01'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#818cf8', borderStyle: 'none' } } },
 
     // --- EPICS: KONZEPT/ORGA ---
-    { id: 301, group: 3, title: 'Analyse & Konzept', start_time: moment('2025-03-01'), end_time: moment('2025-04-15'), itemProps: { style: { background: '#10b981', border: 'none' } } },
-    { id: 302, group: 3, title: 'Pilot-Phase 1', start_time: moment('2025-07-01'), end_time: moment('2025-08-30'), itemProps: { style: { background: '#10b981', border: 'none' } } },
-    { id: 303, group: 3, title: 'Pilot-Phase 2 (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-11-30'), itemProps: { style: { background: '#34d399', border: 'none' } } },
+    { id: 301, group: 3, title: 'Analyse & Konzept', start_time: moment('2025-03-01'), end_time: moment('2025-04-15'), itemProps: { style: { background: '#10b981', borderStyle: 'none' } } },
+    { id: 302, group: 3, title: 'Pilot-Phase 1', start_time: moment('2025-07-01'), end_time: moment('2025-08-30'), itemProps: { style: { background: '#10b981', borderStyle: 'none' } } },
+    { id: 303, group: 3, title: 'Pilot-Phase 2 (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-11-30'), itemProps: { style: { background: '#34d399', borderStyle: 'none' } } },
 
     // --- MEILENSTEINE ---
-    { id: 401, group: 4, title: 'M1: Analyse', start_time: moment('2025-03-30'), end_time: moment('2025-03-31'), itemProps: { style: { background: '#ef4444', border: 'none', width: '20px', borderRadius: '50%' } } },
-    { id: 402, group: 4, title: 'M3: Prototyp', start_time: moment('2025-04-30'), end_time: moment('2025-05-01'), itemProps: { style: { background: '#ef4444', border: 'none', width: '20px', borderRadius: '50%' } } },
-    { id: 403, group: 4, title: 'M6: Abschluss Stage 1', start_time: moment('2025-08-30'), end_time: moment('2025-08-31'), itemProps: { style: { background: '#b91c1c', border: 'none', width: '20px', borderRadius: '50%' } } },
-    { id: 404, group: 4, title: 'Abschluss Stage 2', start_time: moment('2025-12-30'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#b91c1c', border: 'none', width: '20px', borderRadius: '50%' } } },
+    { id: 401, group: 4, title: 'M1: Analyse', start_time: moment('2025-03-30'), end_time: moment('2025-03-31'), itemProps: { style: { background: '#ef4444', borderStyle: 'none', width: '20px', borderRadius: '50%' } } },
+    { id: 402, group: 4, title: 'M3: Prototyp', start_time: moment('2025-04-30'), end_time: moment('2025-05-01'), itemProps: { style: { background: '#ef4444', borderStyle: 'none', width: '20px', borderRadius: '50%' } } },
+    { id: 403, group: 4, title: 'M6: Abschluss Stage 1', start_time: moment('2025-08-30'), end_time: moment('2025-08-31'), itemProps: { style: { background: '#b91c1c', borderStyle: 'none', width: '20px', borderRadius: '50%' } } },
+    { id: 404, group: 4, title: 'Abschluss Stage 2', start_time: moment('2025-12-30'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#b91c1c', borderStyle: 'none', width: '20px', borderRadius: '50%' } } },
   ];
 
 
