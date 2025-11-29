@@ -53,6 +53,36 @@ const COLUMN_CONFIG = {
 // Column display order (derived from COLUMN_CONFIG)
 const COLUMN_ORDER = Object.keys(COLUMN_CONFIG) as (keyof typeof COLUMN_CONFIG)[];
 
+// Helper component for section headings with copy link
+const SectionHeading = ({ id, title, level = 'h2', className = '' }: { id: string, title: React.ReactNode, level?: 'h1' | 'h2', className?: string }) => {
+  const copyLink = () => {
+    if (typeof window !== 'undefined') {
+      const url = `${window.location.origin}${window.location.pathname}#${id}`;
+      navigator.clipboard.writeText(url);
+    }
+  };
+
+  const Tag = level;
+
+  return (
+    <div className="group flex items-center gap-2 -ml-8 pl-8">
+      <button
+        onClick={copyLink}
+        className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity -ml-8 absolute"
+        title="Link kopieren"
+        aria-label="Link zu diesem Abschnitt kopieren"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </button>
+      <Tag id={id} className={className}>
+        {title}
+      </Tag>
+    </div>
+  );
+};
+
 export default function Intern() {
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
@@ -607,7 +637,7 @@ export default function Intern() {
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Interne Ressourcen</h1>
+          <SectionHeading id="interne-ressourcen" level="h1" title="Interne Ressourcen" className="text-3xl font-bold text-gray-900" />
           <p className="text-gray-800 mt-2">Vergleiche, Analysen und interne Dokumentation für das CitizenProject.App Team</p>
         </div>
 
@@ -616,7 +646,7 @@ export default function Intern() {
           <div className="mb-6">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Marktanalyse</h2>
+                <SectionHeading id="marktanalyse" title="Marktanalyse" className="text-2xl font-bold text-gray-900" />
                 <p className="text-gray-800 mt-2">
                   Detaillierter Vergleich führender Projektmanagement-Lösungen mit Fokus auf Open Source, EU-Datenresidenz und DSGVO-Konformität
                 </p>
@@ -770,7 +800,7 @@ export default function Intern() {
         <div className="mb-12">
           <div className="flex justify-between items-end mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Roadmap</h2>
+              <SectionHeading id="roadmap" title="Roadmap" className="text-2xl font-bold text-gray-900" />
               <p className="text-gray-600 mt-1">Übersicht der parallelen Entwicklungsstränge und Meilensteine</p>
             </div>
             <div className="flex gap-2">
@@ -874,9 +904,7 @@ export default function Intern() {
 
         {/* Divider for application questions */}
         <div className="border-t border-gray-200 mt-12 pt-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            FAQ
-          </h2>
+          <SectionHeading id="faq" title="FAQ" className="text-2xl font-bold text-gray-900 mb-4" />
 
           {/* 1. Projekttitel */}
           <details className="mb-4 bg-white rounded-lg shadow-sm">
