@@ -759,14 +759,14 @@ export default function Intern() {
                 </div>
               )}
             >
-              <TimelineHeaders className="bg-gray-100">
+              <TimelineHeaders className="bg-gray-100 text-gray-700">
                 <SidebarHeader>
                   {({ getRootProps }) => {
-                    return <div {...getRootProps()} className="p-2 font-bold text-gray-900 bg-gray-100" style={{ color: '#111827', backgroundColor: '#f3f4f6' }}>Tracks</div>;
+                    return <div {...getRootProps()} className="p-2 font-bold text-gray-700">Tracks</div>;
                   }}
                 </SidebarHeader>
-                <DateHeader unit="primaryHeader" className="bg-gray-100 text-gray-900" style={{ color: '#111827', backgroundColor: '#f3f4f6' }} />
-                <DateHeader className="bg-gray-100 text-gray-900" style={{ color: '#111827', backgroundColor: '#f3f4f6' }} />
+                <DateHeader unit="primaryHeader" />
+                <DateHeader />
               </TimelineHeaders>
             </Timeline>
             <div className="mt-4 flex gap-4 text-xs text-gray-500 justify-end">
