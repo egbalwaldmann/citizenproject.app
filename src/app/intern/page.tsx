@@ -750,9 +750,9 @@ export default function Intern() {
                   <p>• <strong>Kostenlos</strong> - Keine versteckten Kosten oder User-Limits</p>
                   <p>• <strong>Gesellschaftlicher Fokus</strong> - Speziell für nicht-kommerzielle Institutionen und Hochschulen geeignet</p>
                   <p>• <strong>Anfängerfreundlichkeit</strong> - geführte Prozesse, Templates und Tipps</p>
+                  <p>• <strong>Maximal anpassbar</strong> - Für alle Projekttypen und Prozesse</p>
                   <p>• <strong>Wissensmanagement</strong> - Erfahrungen für zukünftige Projekte nutzbar</p>
                   <p>• <strong>EU-Datenresidenz</strong> - Ihre Daten bleiben in Europa</p>
-                  <p>• <strong>Maximal anpassbar</strong> - Für alle Projekttypen und Prozesse</p>
                   <p>• <strong>DSGVO-konform</strong> - Datenschutz von Grund auf mitgedacht</p>
                 </div>
               </div>
