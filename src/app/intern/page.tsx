@@ -527,7 +527,8 @@ export default function Intern() {
     { id: 205, group: 2, title: 'Wissensmanagement (Stage 2)', start_time: moment('2025-11-01'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#818cf8', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
 
     // --- EPICS: KONZEPT/ORGA ---
-    { id: 301, group: 3, title: 'Analyse & Konzept', start_time: moment('2025-03-01'), end_time: moment('2025-04-15'), itemProps: { style: { background: '#10b981', borderStyle: 'none' } } },
+    { id: 301, group: 3, title: 'Analyse', start_time: moment('2025-03-01'), end_time: moment('2025-03-20'), itemProps: { style: { background: '#10b981', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
+    { id: 304, group: 3, title: 'Konzept', start_time: moment('2025-03-21'), end_time: moment('2025-04-15'), itemProps: { style: { background: '#10b981', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
     { id: 302, group: 3, title: 'Pilot-Phase 1', start_time: moment('2025-07-01'), end_time: moment('2025-08-30'), itemProps: { style: { background: '#10b981', borderStyle: 'none' } } },
     { id: 303, group: 3, title: 'Pilot-Phase 2 (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-11-30'), itemProps: { style: { background: '#34d399', borderStyle: 'none' } } },
 
