@@ -753,6 +753,11 @@ export default function Intern() {
               canMove={false}
               canResize={false}
               onItemSelect={handleItemSelect}
+              groupRenderer={({ group }) => (
+                <div className="px-2 text-gray-900 font-medium" style={{ color: '#111827' }}>
+                  {group.title}
+                </div>
+              )}
             >
               <TimelineHeaders className="bg-gray-100">
                 <SidebarHeader>
