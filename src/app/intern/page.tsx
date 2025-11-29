@@ -498,8 +498,8 @@ export default function Intern() {
 
   const groups = [
     { id: 3, title: 'Epics: Konzept/Orga', stackItems: true },
-    { id: 1, title: 'Sprints', stackItems: true, height: 50 },
     { id: 2, title: 'Epics: Dev', stackItems: true },
+    { id: 1, title: 'Sprints', stackItems: true, height: 50 },
     { id: 4, title: 'Meilensteine', stackItems: false }
   ];
 
