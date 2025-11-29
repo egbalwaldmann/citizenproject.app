@@ -810,7 +810,7 @@ export default function Intern() {
         <div className="mb-12">
           <div className="flex justify-between items-end mb-6">
             <div>
-              <SectionHeading id="roadmap" title="Meilensteinplanung" className="text-2xl font-bold text-gray-900" />
+              <SectionHeading id="meilensteinplanung" title="Meilensteinplanung" className="text-2xl font-bold text-gray-900" />
               <p className="text-gray-600 mt-1">Übersicht der parallelen Entwicklungsstränge und Meilensteine</p>
             </div>
             <div className="flex gap-2">
