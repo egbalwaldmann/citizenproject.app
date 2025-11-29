@@ -746,6 +746,8 @@ export default function Intern() {
                   Warum CitizenProject.App?
                 </h3>
                 <div className="mt-2 text-sm text-blue-700">
+                  <p>• <strong>Anfängerfreundlichkeit</strong> - geführte Prozesse, Templates und Tipps</p>
+                  <p>• <strong>Wissensmanagement</strong> - Erfahrungen für zukünftige Projekte nutzbar</p>
                   <p>• <strong>Vollständig Open Source</strong> - Transparenz und Community-getrieben</p>
                   <p>• <strong>EU-Datenresidenz</strong> - Ihre Daten bleiben in Europa</p>
                   <p>• <strong>Kostenlos</strong> - Keine versteckten Kosten oder User-Limits</p>
