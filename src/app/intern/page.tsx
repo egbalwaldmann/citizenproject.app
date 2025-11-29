@@ -520,11 +520,11 @@ export default function Intern() {
     { id: 113, group: 1, title: 'Sprint 13', start_time: moment('2025-08-16'), end_time: moment('2025-08-29'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
 
     // --- EPICS: DEV ---
-    { id: 201, group: 2, title: 'Setup & Tech-Stack', start_time: moment('2025-03-01'), end_time: moment('2025-03-15'), itemProps: { style: { background: '#4f46e5', borderStyle: 'none' } } },
-    { id: 202, group: 2, title: 'Prototyp Core (Auth/DB)', start_time: moment('2025-03-15'), end_time: moment('2025-05-01'), itemProps: { style: { background: '#4f46e5', borderStyle: 'none' } } },
-    { id: 203, group: 2, title: 'Feature: Templates', start_time: moment('2025-05-01'), end_time: moment('2025-06-15'), itemProps: { style: { background: '#4f46e5', borderStyle: 'none' } } },
-    { id: 204, group: 2, title: 'Institutions-Spezifika (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-10-30'), itemProps: { style: { background: '#818cf8', borderStyle: 'none' } } },
-    { id: 205, group: 2, title: 'Wissensmanagement (Stage 2)', start_time: moment('2025-11-01'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#818cf8', borderStyle: 'none' } } },
+    { id: 201, group: 2, title: 'Setup & Tech-Stack', start_time: moment('2025-03-01'), end_time: moment('2025-03-15'), itemProps: { style: { background: '#4f46e5', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
+    { id: 202, group: 2, title: 'Prototyp Core (Auth/DB)', start_time: moment('2025-03-15'), end_time: moment('2025-05-01'), itemProps: { style: { background: '#4f46e5', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
+    { id: 203, group: 2, title: 'Feature: Templates', start_time: moment('2025-05-01'), end_time: moment('2025-06-15'), itemProps: { style: { background: '#4f46e5', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
+    { id: 204, group: 2, title: 'Institutions-Spezifika (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-10-30'), itemProps: { style: { background: '#818cf8', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
+    { id: 205, group: 2, title: 'Wissensmanagement (Stage 2)', start_time: moment('2025-11-01'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#818cf8', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
 
     // --- EPICS: KONZEPT/ORGA ---
     { id: 301, group: 3, title: 'Analyse & Konzept', start_time: moment('2025-03-01'), end_time: moment('2025-04-15'), itemProps: { style: { background: '#10b981', borderStyle: 'none' } } },
