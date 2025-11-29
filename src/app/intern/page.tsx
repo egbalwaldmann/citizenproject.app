@@ -823,6 +823,11 @@ export default function Intern() {
                 <DateHeader unit="primaryHeader" />
                 <DateHeader />
               </TimelineHeaders>
+              <CustomMarker date={moment('2025-09-01').valueOf()}>
+                {({ styles }) => (
+                  <div style={{ ...styles, backgroundColor: '#ef4444', width: '2px', zIndex: 100 }} />
+                )}
+              </CustomMarker>
             </Timeline>
             <div className="mt-4 flex gap-4 text-xs text-gray-500 justify-end">
               <div className="flex items-center gap-1"><span className="w-3 h-3 bg-indigo-100 border border-indigo-300 rounded"></span> Sprints</div>
