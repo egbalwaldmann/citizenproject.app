@@ -59,6 +59,10 @@ export default function Intern() {
   const [columnOrderMode, setColumnOrderMode] = useState<'default' | 'alphabetical'>('default');
   const [selectedTimelineItem, setSelectedTimelineItem] = useState<any>(null);
 
+  // Timeline zoom state
+  const [visibleTimeStart, setVisibleTimeStart] = useState(moment('2025-02-01').valueOf());
+  const [visibleTimeEnd, setVisibleTimeEnd] = useState(moment('2025-12-31').valueOf());
+
   // Initialize visible columns from COLUMN_CONFIG
   const [visibleColumns, setVisibleColumns] = useState<Record<keyof typeof COLUMN_CONFIG, boolean>>(
     () => Object.fromEntries(COLUMN_ORDER.map(key => [key, true])) as Record<keyof typeof COLUMN_CONFIG, boolean>
@@ -541,6 +545,28 @@ export default function Intern() {
     }
   };
 
+  const handleTimeChange = (visibleTimeStart: number, visibleTimeEnd: number, updateScrollCanvas: (start: number, end: number) => void) => {
+    setVisibleTimeStart(visibleTimeStart);
+    setVisibleTimeEnd(visibleTimeEnd);
+    updateScrollCanvas(visibleTimeStart, visibleTimeEnd);
+  };
+
+  const handleZoomIn = () => {
+    const duration = visibleTimeEnd - visibleTimeStart;
+    const newDuration = duration * 0.75; // Zoom in
+    const center = visibleTimeStart + duration / 2;
+    setVisibleTimeStart(center - newDuration / 2);
+    setVisibleTimeEnd(center + newDuration / 2);
+  };
+
+  const handleZoomOut = () => {
+    const duration = visibleTimeEnd - visibleTimeStart;
+    const newDuration = duration * 1.25; // Zoom out
+    const center = visibleTimeStart + duration / 2;
+    setVisibleTimeStart(center - newDuration / 2);
+    setVisibleTimeEnd(center + newDuration / 2);
+  };
+
 
   return (
     <div className="min-h-screen bg-gray-50" >
@@ -739,14 +765,35 @@ export default function Intern() {
               <h2 className="text-2xl font-bold text-gray-900">Projekt-Roadmap</h2>
               <p className="text-gray-600 mt-1">Übersicht der parallelen Entwicklungsstränge und Meilensteine</p>
             </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleZoomIn}
+                className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-md text-sm font-medium shadow-sm transition-colors flex items-center gap-1"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                </svg>
+                Zoom In
+              </button>
+              <button
+                onClick={handleZoomOut}
+                className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-md text-sm font-medium shadow-sm transition-colors flex items-center gap-1"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
+                </svg>
+                Zoom Out
+              </button>
+            </div>
           </div>
 
           <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <Timeline
               groups={groups}
               items={items}
-              defaultTimeStart={moment('2025-02-01').valueOf()}
-              defaultTimeEnd={moment('2025-12-31').valueOf()}
+              visibleTimeStart={visibleTimeStart}
+              visibleTimeEnd={visibleTimeEnd}
+              onTimeChange={handleTimeChange}
               sidebarWidth={150}
               lineHeight={50}
               itemHeightRatio={0.75}
