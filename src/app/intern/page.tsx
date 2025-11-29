@@ -748,7 +748,7 @@ export default function Intern() {
                 <div className="mt-2 text-sm text-blue-700">
                   <p>• <strong>Vollständig Open Source</strong> - Transparenz und Community-getrieben</p>
                   <p>• <strong>Kostenlos</strong> - Keine versteckten Kosten oder User-Limits</p>
-                  <p>• <strong>Bildungsfokus</strong> - Speziell für nicht-kommerzielle Institutionen und Hochschulen geeignet</p>
+                  <p>• <strong>Gesellschaftlicher Fokus</strong> - Speziell für nicht-kommerzielle Institutionen und Hochschulen geeignet</p>
                   <p>• <strong>Anfängerfreundlichkeit</strong> - geführte Prozesse, Templates und Tipps</p>
                   <p>• <strong>Wissensmanagement</strong> - Erfahrungen für zukünftige Projekte nutzbar</p>
                   <p>• <strong>EU-Datenresidenz</strong> - Ihre Daten bleiben in Europa</p>
