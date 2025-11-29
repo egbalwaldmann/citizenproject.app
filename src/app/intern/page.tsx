@@ -65,10 +65,10 @@ const SectionHeading = ({ id, title, level = 'h2', className = '' }: { id: strin
   const Tag = level;
 
   return (
-    <div className="group flex items-center gap-2 -ml-8 pl-8">
+    <div className="group flex items-center gap-3">
       <button
         onClick={copyLink}
-        className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-indigo-600 transition-colors -ml-8 absolute"
+        className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-indigo-600 transition-colors"
         title="Link kopieren"
         aria-label="Link zu diesem Abschnitt kopieren"
       >
