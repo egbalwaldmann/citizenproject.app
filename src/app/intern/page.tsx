@@ -3,6 +3,12 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import React from 'react';
+import Timeline, { TimelineHeaders, SidebarHeader, DateHeader } from 'react-calendar-timeline';
+import 'react-calendar-timeline/dist/style.css';
+import moment from 'moment';
+import 'moment/locale/de';
+
+moment.locale('de');
 
 // Helper to extract text from React elements
 const extractText = (content: React.ReactNode): string => {
@@ -481,8 +487,55 @@ export default function Intern() {
     }
   };
 
+  // ============================================
+  // SCRUM ROADMAP (React-Calendar-Timeline)
+  // ============================================
+
+  const groups = [
+    { id: 1, title: 'Sprints', stackItems: true, height: 50 },
+    { id: 2, title: 'Epics: Dev', stackItems: true },
+    { id: 3, title: 'Epics: Konzept/Orga', stackItems: true },
+    { id: 4, title: 'Meilensteine', stackItems: false }
+  ];
+
+  const items = [
+    // --- SPRINTS (2-week cycles, starting March 2025) ---
+    { id: 101, group: 1, title: 'Sprint 1', start_time: moment('2025-03-01'), end_time: moment('2025-03-14'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 102, group: 1, title: 'Sprint 2', start_time: moment('2025-03-15'), end_time: moment('2025-03-28'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 103, group: 1, title: 'Sprint 3', start_time: moment('2025-03-29'), end_time: moment('2025-04-11'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 104, group: 1, title: 'Sprint 4', start_time: moment('2025-04-12'), end_time: moment('2025-04-25'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 105, group: 1, title: 'Sprint 5', start_time: moment('2025-04-26'), end_time: moment('2025-05-09'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 106, group: 1, title: 'Sprint 6', start_time: moment('2025-05-10'), end_time: moment('2025-05-23'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 107, group: 1, title: 'Sprint 7', start_time: moment('2025-05-24'), end_time: moment('2025-06-06'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 108, group: 1, title: 'Sprint 8', start_time: moment('2025-06-07'), end_time: moment('2025-06-20'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 109, group: 1, title: 'Sprint 9', start_time: moment('2025-06-21'), end_time: moment('2025-07-04'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 110, group: 1, title: 'Sprint 10', start_time: moment('2025-07-05'), end_time: moment('2025-07-18'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 111, group: 1, title: 'Sprint 11', start_time: moment('2025-07-19'), end_time: moment('2025-08-01'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 112, group: 1, title: 'Sprint 12', start_time: moment('2025-08-02'), end_time: moment('2025-08-15'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+    { id: 113, group: 1, title: 'Sprint 13', start_time: moment('2025-08-16'), end_time: moment('2025-08-29'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', border: 'none' } } },
+
+    // --- EPICS: DEV ---
+    { id: 201, group: 2, title: 'Setup & Tech-Stack', start_time: moment('2025-03-01'), end_time: moment('2025-03-15'), itemProps: { style: { background: '#4f46e5', border: 'none' } } },
+    { id: 202, group: 2, title: 'Prototyp Core (Auth/DB)', start_time: moment('2025-03-15'), end_time: moment('2025-05-01'), itemProps: { style: { background: '#4f46e5', border: 'none' } } },
+    { id: 203, group: 2, title: 'Feature: Templates', start_time: moment('2025-05-01'), end_time: moment('2025-06-15'), itemProps: { style: { background: '#4f46e5', border: 'none' } } },
+    { id: 204, group: 2, title: 'Institutions-Spezifika (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-10-30'), itemProps: { style: { background: '#818cf8', border: 'none' } } },
+    { id: 205, group: 2, title: 'Wissensmanagement (Stage 2)', start_time: moment('2025-11-01'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#818cf8', border: 'none' } } },
+
+    // --- EPICS: KONZEPT/ORGA ---
+    { id: 301, group: 3, title: 'Analyse & Konzept', start_time: moment('2025-03-01'), end_time: moment('2025-04-15'), itemProps: { style: { background: '#10b981', border: 'none' } } },
+    { id: 302, group: 3, title: 'Pilot-Phase 1', start_time: moment('2025-07-01'), end_time: moment('2025-08-30'), itemProps: { style: { background: '#10b981', border: 'none' } } },
+    { id: 303, group: 3, title: 'Pilot-Phase 2 (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-11-30'), itemProps: { style: { background: '#34d399', border: 'none' } } },
+
+    // --- MEILENSTEINE ---
+    { id: 401, group: 4, title: 'M1: Analyse', start_time: moment('2025-03-30'), end_time: moment('2025-03-31'), itemProps: { style: { background: '#ef4444', border: 'none', width: '20px', borderRadius: '50%' } } },
+    { id: 402, group: 4, title: 'M3: Prototyp', start_time: moment('2025-04-30'), end_time: moment('2025-05-01'), itemProps: { style: { background: '#ef4444', border: 'none', width: '20px', borderRadius: '50%' } } },
+    { id: 403, group: 4, title: 'M6: Abschluss Stage 1', start_time: moment('2025-08-30'), end_time: moment('2025-08-31'), itemProps: { style: { background: '#b91c1c', border: 'none', width: '20px', borderRadius: '50%' } } },
+    { id: 404, group: 4, title: 'Abschluss Stage 2', start_time: moment('2025-12-30'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#b91c1c', border: 'none', width: '20px', borderRadius: '50%' } } },
+  ];
+
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" >
       {/* Navigation */}
       <nav className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -673,17 +726,41 @@ export default function Intern() {
 
         {/* Timeline Section */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Projekt-Zeitplan</h2>
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <iframe
-              src="https://time.graphics/de/embed?v=1&id=1021041"
-              width="100%"
-              height="400"
-              frameBorder="0"
-              allowFullScreen
-              className="w-full"
-              title="Projekt-Zeitplan"
-            ></iframe>
+          <div className="flex justify-between items-end mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Projekt-Roadmap</h2>
+              <p className="text-gray-600 mt-1">Übersicht der parallelen Entwicklungsstränge und Meilensteine</p>
+            </div>
+          </div>
+
+          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <Timeline
+              groups={groups}
+              items={items}
+              defaultTimeStart={moment('2025-02-01').valueOf()}
+              defaultTimeEnd={moment('2025-12-31').valueOf()}
+              sidebarWidth={150}
+              lineHeight={50}
+              itemHeightRatio={0.75}
+              canMove={false}
+              canResize={false}
+            >
+              <TimelineHeaders className="bg-gray-100 text-gray-700">
+                <SidebarHeader>
+                  {({ getRootProps }) => {
+                    return <div {...getRootProps()} className="p-2 font-bold text-gray-700">Tracks</div>;
+                  }}
+                </SidebarHeader>
+                <DateHeader unit="primaryHeader" />
+                <DateHeader />
+              </TimelineHeaders>
+            </Timeline>
+            <div className="mt-4 flex gap-4 text-xs text-gray-500 justify-end">
+              <div className="flex items-center gap-1"><span className="w-3 h-3 bg-indigo-100 border border-indigo-300 rounded"></span> Sprints</div>
+              <div className="flex items-center gap-1"><span className="w-3 h-3 bg-indigo-600 rounded"></span> Dev Epics</div>
+              <div className="flex items-center gap-1"><span className="w-3 h-3 bg-emerald-500 rounded"></span> Konzept Epics</div>
+              <div className="flex items-center gap-1"><span className="w-3 h-3 bg-red-500 rounded-full"></span> Meilensteine</div>
+            </div>
           </div>
         </div>
 
@@ -973,6 +1050,6 @@ export default function Intern() {
           </details>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
