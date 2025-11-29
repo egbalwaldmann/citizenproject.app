@@ -497,6 +497,7 @@ export default function Intern() {
   // ============================================
 
   const groups = [
+    { id: 0, title: 'Förderphasen', stackItems: false, height: 40 },
     { id: 3, title: 'Epics: Konzept/Orga', stackItems: true },
     { id: 2, title: 'Epics: Dev', stackItems: true },
     { id: 1, title: 'Sprints', stackItems: true, height: 50 },
@@ -504,6 +505,10 @@ export default function Intern() {
   ];
 
   const items = [
+    // --- FÖRDERPHASEN ---
+    { id: 1, group: 0, title: '1. Förderphase (Prototype Fund)', start_time: moment('2025-03-01'), end_time: moment('2025-08-31'), itemProps: { style: { background: '#64748b', borderStyle: 'none' } } },
+    { id: 2, group: 0, title: '2. Förderphase (Second Stage)', start_time: moment('2025-09-01'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#f59e0b', borderStyle: 'none' } } },
+
     // --- SPRINTS (2-week cycles, starting March 2025) ---
     { id: 101, group: 1, title: 'Sprint 1', start_time: moment('2025-03-01'), end_time: moment('2025-03-14'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
     { id: 102, group: 1, title: 'Sprint 2', start_time: moment('2025-03-15'), end_time: moment('2025-03-28'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
@@ -523,14 +528,14 @@ export default function Intern() {
     { id: 201, group: 2, title: 'Setup & Tech-Stack', start_time: moment('2025-03-01'), end_time: moment('2025-03-15'), itemProps: { style: { background: '#4f46e5', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
     { id: 202, group: 2, title: 'Prototyp Core (Auth/DB)', start_time: moment('2025-03-15'), end_time: moment('2025-05-01'), itemProps: { style: { background: '#4f46e5', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
     { id: 203, group: 2, title: 'Feature: Templates', start_time: moment('2025-05-01'), end_time: moment('2025-06-15'), itemProps: { style: { background: '#4f46e5', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
-    { id: 204, group: 2, title: 'Institutions-Spezifika (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-10-30'), itemProps: { style: { background: '#d97706', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
-    { id: 205, group: 2, title: 'Wissensmanagement (Stage 2)', start_time: moment('2025-11-01'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#d97706', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
+    { id: 204, group: 2, title: 'Institutions-Spezifika (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-10-30'), itemProps: { style: { background: '#818cf8', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
+    { id: 205, group: 2, title: 'Wissensmanagement (Stage 2)', start_time: moment('2025-11-01'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#818cf8', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
 
     // --- EPICS: KONZEPT/ORGA ---
     { id: 301, group: 3, title: 'Analyse', start_time: moment('2025-03-01'), end_time: moment('2025-03-20'), itemProps: { style: { background: '#10b981', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
     { id: 304, group: 3, title: 'Konzept', start_time: moment('2025-03-21'), end_time: moment('2025-04-15'), itemProps: { style: { background: '#10b981', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
     { id: 302, group: 3, title: 'Pilot-Phase 1', start_time: moment('2025-07-01'), end_time: moment('2025-08-30'), itemProps: { style: { background: '#10b981', borderStyle: 'none' } } },
-    { id: 303, group: 3, title: 'Pilot-Phase 2 (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-11-30'), itemProps: { style: { background: '#b45309', borderStyle: 'none' } } },
+    { id: 303, group: 3, title: 'Pilot-Phase 2 (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-11-30'), itemProps: { style: { background: '#34d399', borderStyle: 'none' } } },
 
     // --- MEILENSTEINE ---
     { id: 401, group: 4, title: 'M1: Analyse', start_time: moment('2025-03-30'), end_time: moment('2025-03-31'), itemProps: { style: { background: '#ef4444', borderStyle: 'none', width: '20px', borderRadius: '50%' } } },
@@ -818,17 +823,6 @@ export default function Intern() {
                 <DateHeader unit="primaryHeader" />
                 <DateHeader />
               </TimelineHeaders>
-              <CustomMarker date={moment('2025-09-01').valueOf()}>
-                {({ styles }) => (
-                  <div style={{ ...styles, backgroundColor: '#dc2626', width: '2px', zIndex: 100 }}>
-                    <div className="relative h-full">
-                      <div className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded whitespace-nowrap font-bold shadow-md">
-                        Start 2. Förderphase (Stage 2)
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </CustomMarker>
             </Timeline>
             <div className="mt-4 flex gap-4 text-xs text-gray-500 justify-end">
               <div className="flex items-center gap-1"><span className="w-3 h-3 bg-indigo-100 border border-indigo-300 rounded"></span> Sprints</div>
