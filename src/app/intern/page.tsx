@@ -745,16 +745,16 @@ export default function Intern() {
                 <h3 className="text-sm font-medium text-blue-800">
                   Warum CitizenProject.App?
                 </h3>
-                <div className="mt-2 text-sm text-blue-700">
-                  <p>• <strong>Vollständig Open Source</strong> - Transparenz und Community-getrieben</p>
-                  <p>• <strong>Kostenlos</strong> - Keine versteckten Kosten oder User-Limits</p>
-                  <p>• <strong>Gesellschaftlicher Fokus</strong> - Speziell für nicht-kommerzielle Institutionen und Hochschulen geeignet</p>
-                  <p>• <strong>Anfängerfreundlichkeit</strong> - geführte Prozesse, Templates und Tipps</p>
-                  <p>• <strong>Maximal anpassbar</strong> - Für alle Projekttypen und Prozesse</p>
-                  <p>• <strong>Wissensmanagement</strong> - Erfahrungen für zukünftige Projekte nutzbar</p>
-                  <p>• <strong>EU-Datenresidenz</strong> - Ihre Daten bleiben in Europa</p>
-                  <p>• <strong>DSGVO-konform</strong> - Datenschutz von Grund auf mitgedacht</p>
-                </div>
+                <ol className="mt-2 text-sm text-blue-700 list-decimal list-inside space-y-1">
+                  <li><strong>Vollständig Open Source</strong> - Transparenz und Community-getrieben</li>
+                  <li><strong>Kostenlos</strong> - Keine versteckten Kosten oder User-Limits</li>
+                  <li><strong>Gesellschaftlicher Fokus</strong> - Speziell für nicht-kommerzielle Institutionen und Hochschulen geeignet</li>
+                  <li><strong>Anfängerfreundlichkeit</strong> - geführte Prozesse, Templates und Tipps</li>
+                  <li><strong>Maximal anpassbar</strong> - Für alle Projekttypen und Prozesse</li>
+                  <li><strong>Wissensmanagement</strong> - Erfahrungen für zukünftige Projekte nutzbar</li>
+                  <li><strong>EU-Datenresidenz</strong> - Ihre Daten bleiben in Europa</li>
+                  <li><strong>DSGVO-konform</strong> - Datenschutz von Grund auf mitgedacht</li>
+                </ol>
               </div>
             </div>
           </div>
