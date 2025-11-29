@@ -770,7 +770,7 @@ export default function Intern() {
         <div className="mb-12">
           <div className="flex justify-between items-end mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Projekt-Roadmap</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Roadmap</h2>
               <p className="text-gray-600 mt-1">Übersicht der parallelen Entwicklungsstränge und Meilensteine</p>
             </div>
             <div className="flex gap-2">
