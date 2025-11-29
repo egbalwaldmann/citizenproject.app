@@ -4,110 +4,73 @@ import Link from 'next/link';
 import { useState } from 'react';
 import React from 'react';
 
-// Function to copy table data to clipboard in tab-separated format for Google Sheets
-const copyTableToClipboard = async (visibleColumns: any) => {
-  // Mapping of column keys to their data
-  const columnMapping = {
-    software: { header: 'Software', data: ['CitizenProject.App', 'OpenProject', 'Redmine', 'Taiga', 'Tuleap', 'Kanboard', 'Wekan', 'Odoo Project', 'ERPNext Projects'] },
-    openSource: { header: 'Open Source', data: ['Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja', 'Ja'] },
-    dsgvo: { header: 'DSGVO', data: ['Hoch', 'Hoch', 'Mittel', 'Mittel', 'Hoch', 'Niedrig', 'Niedrig', 'Mittel', 'Mittel'] },
-    zielgruppe: { header: 'Zielgruppe', data: ['Bildung / Nonprofit', 'Unternehmen / Organisationen', 'Tech / Engineering-Teams', 'Tech / Engineering-Teams', 'Tech / Engineering-Teams', 'Kanban-Teams', 'Kanban-Teams', 'Unternehmen / Organisationen', 'Unternehmen / Organisationen'] },
-    pmLevel: { header: 'PM-Erfahrung', data: ['Anfänger', 'Fortgeschritten', 'Experte', 'Fortgeschritten', 'Experte', 'Anfänger', 'Anfänger', 'Fortgeschritten', 'Fortgeschritten'] },
-    templates: { header: 'Prozess-Templates', data: ['Ja', 'Teilweise', 'Nein', 'Agile/Scrum', 'Ja', 'Nein', 'Nein', 'Teilweise', 'Teilweise'] },
-    socialAcademic: { header: 'Fokus: Sozial / Öffentlich / Bildung', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
-    pmHilfe: { header: 'Geführte Abläufe', data: ['Ja', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
-    wissenstransfer: { header: 'Wissenstransfer', data: ['Ja', 'Begrenzt', 'Nein', 'Begrenzt', 'Begrenzt', 'Nein', 'Nein', 'Begrenzt', 'Begrenzt'] },
-    barrierefreiheit: { header: 'Barrierefreiheit', data: ['Hoch', 'Mittel', 'Niedrig', 'Mittel', 'Mittel', 'Niedrig', 'Niedrig', 'Niedrig', 'Mittel'] },
-    vendorLock: { header: 'Vendor Lock-In', data: ['Kein / wenig', 'Mittel', 'Kein / wenig', 'Kein / wenig', 'Mittel', 'Kein / wenig', 'Kein / wenig', 'Hoch', 'Hoch'] },
-    anpassbar: { header: 'Anpassbarkeit', data: ['Sehr Hoch', 'Hoch', 'Hoch (Plugins)', 'Mittel', 'Sehr Hoch', 'Niedrig', 'Niedrig', 'Hoch', 'Hoch'] },
-    dateien: { header: 'Dateiablage', data: ['Integriert', 'Integriert', 'Anhänge', 'Anhänge', 'Integriert', 'Anhänge', 'Anhänge', 'Integriert', 'Integriert'] },
-    ki: { header: 'KI-Agenten', data: ['Geplant', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein', 'Nein'] },
-    alleinstellung: { header: 'Alleinstellung', data: ['NonProfit/PM-Laien', 'Enterprise', 'Plugins', 'Agile Features', 'ALM/DevOps', 'Einfachheit', 'Einfaches Kanban', 'ERP-Integration', 'Vollständiges ERP'] }
-  };
-
-  // Get visible columns in order
-  const visibleColumnKeys = Object.keys(visibleColumns).filter(key => visibleColumns[key as keyof typeof visibleColumns]);
-  
-  // Build header row
-  const headerRow = visibleColumnKeys.map(key => columnMapping[key as keyof typeof columnMapping].header);
-  
-  // Build data rows
-  const dataRows = [];
-  const numRows = columnMapping.software.data.length;
-  
-  for (let i = 0; i < numRows; i++) {
-    const row = visibleColumnKeys.map(key => columnMapping[key as keyof typeof columnMapping].data[i]);
-    dataRows.push(row);
-  }
-  
-  const tableData = [headerRow, ...dataRows];
-  
-  // Convert to tab-separated values (TSV) for Google Sheets
-  const tsvContent = tableData.map(row => row.join('\t')).join('\n');
-  
-  console.log('Kopiere Spalten:', visibleColumnKeys);
-  console.log('TSV Content:', tsvContent);
-  
-  try {
-    await navigator.clipboard.writeText(tsvContent);
-    
-    // Show success notification
-    const button = document.querySelector('[title="Nur sichtbare Spalten für Google Sheets kopieren"]') as HTMLButtonElement;
-    if (button) {
-      const originalText = button.innerHTML;
-      button.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Kopiert!`;
-      button.className = button.className.replace('bg-indigo-600 hover:bg-indigo-700', 'bg-green-600');
-      
-      setTimeout(() => {
-        button.innerHTML = originalText;
-        button.className = button.className.replace('bg-green-600', 'bg-indigo-600 hover:bg-indigo-700');
-      }, 2000);
+// Helper to extract text from React elements
+const extractText = (content: React.ReactNode): string => {
+  if (typeof content === 'string') return content;
+  if (typeof content === 'number') return String(content);
+  if (content === null || content === undefined) return '';
+  if (React.isValidElement(content)) {
+    const props = content.props as { children?: React.ReactNode };
+    const children = props.children;
+    if (Array.isArray(children)) {
+      return children.map(extractText).join(' ');
     }
-    
-  } catch (err) {
-    console.error('Failed to copy table: ', err);
-    alert('Fehler beim Kopieren. Bitte manuell markieren und kopieren.');
+    return extractText(children);
   }
+  if (Array.isArray(content)) {
+    return content.map(extractText).join(' ');
+  }
+  return '';
 };
+
+// ============================================
+// SINGLE SOURCE OF TRUTH: Column definitions
+// ============================================
+// Add/remove columns here - everything else adapts automatically
+const COLUMN_CONFIG = {
+  software: 'Software',
+  dsgvo: 'DSGVO',
+  zielgruppe: 'Zielgruppe',
+  socialAcademic: 'Geeignet für gesellschaftliche Institutionen (nicht-kommerziell)',
+  pmLevel: 'PM-Erfahrung',
+  templates: 'Prozess-Templates',
+  pmHilfe: 'Geführte Abläufe',
+  wissenstransfer: 'Wissenstransfer',
+  barrierefreiheit: 'Barrierefreiheit',
+  vendorLock: 'Anbieterabhängigkeit (Open-Core)',
+  anpassbar: 'Anpassbarkeit',
+  dateien: 'Dateimanagement',
+  ki: 'KI-Agenten (DSGVO?)',
+  kollaborativ: 'Kollaborative Bearbeitung von Dokumenten',
+} as const;
+
+// Column display order (derived from COLUMN_CONFIG)
+const COLUMN_ORDER = Object.keys(COLUMN_CONFIG) as (keyof typeof COLUMN_CONFIG)[];
 
 export default function Intern() {
   const [sortConfig, setSortConfig] = useState<{key: string, direction: 'asc' | 'desc'} | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
-  const [visibleColumns, setVisibleColumns] = useState({
-    software: true,
-    openSource: true,
-    dsgvo: true,
-    zielgruppe: true,
-    pmLevel: true,
-    templates: true,
-    socialAcademic: true,
-    pmHilfe: true,
-    wissenstransfer: true,
-    barrierefreiheit: true,
-    vendorLock: true,
-    anpassbar: true,
-    dateien: true,
-    ki: true,
-    alleinstellung: true
-  });
+  const [columnOrderMode, setColumnOrderMode] = useState<'default' | 'alphabetical'>('default');
 
-  const columnLabels = {
-    software: 'Software',
-    openSource: 'Open Source',
-    dsgvo: 'DSGVO',
-    zielgruppe: 'Zielgruppe',
-    pmLevel: 'PM-Erfahrung',
-    templates: 'Vorlagen',
-    socialAcademic: 'Fokus: Sozial / Öffentlich / Bildung',
-    pmHilfe: 'Geführte Abläufe',
-    wissenstransfer: 'Wissenstransfer',
-    barrierefreiheit: 'Barrierefreiheit',
-    vendorLock: 'Anbieterabhängigkeit',
-    anpassbar: 'Anpassbarkeit',
-    dateien: 'Dateiablage',
-    ki: 'KI-Agenten',
-    alleinstellung: 'Alleinstellung'
-  };
+  // Initialize visible columns from COLUMN_CONFIG
+  const [visibleColumns, setVisibleColumns] = useState<Record<keyof typeof COLUMN_CONFIG, boolean>>(
+    () => Object.fromEntries(COLUMN_ORDER.map(key => [key, true])) as Record<keyof typeof COLUMN_CONFIG, boolean>
+  );
+
+  // Column labels derived from COLUMN_CONFIG
+  const columnLabels = COLUMN_CONFIG;
+
+  // Display order based on mode
+  const DISPLAY_ORDER = React.useMemo(() => {
+    if (columnOrderMode === 'alphabetical') {
+      return [...COLUMN_ORDER].sort((a, b) => {
+        if (a === 'software') return -1;
+        if (b === 'software') return 1;
+        return columnLabels[a].localeCompare(columnLabels[b], 'de', { sensitivity: 'base' });
+      });
+    }
+    return COLUMN_ORDER;
+  }, [columnOrderMode]);
 
   const toggleColumn = (column: string) => {
     setVisibleColumns(prev => ({
@@ -217,18 +180,19 @@ export default function Intern() {
       finalClassName = `${className} text-white`;
     }
     
-    return visibleColumns[columnKey] ? <td className={finalClassName}>{processedContent}</td> : null;
+    return visibleColumns[columnKey] ? <td key={columnKey} className={finalClassName}>{processedContent}</td> : null;
   };
 
   // Render sortable header
   const renderSortableHeader = (columnKey: string, label: string) => {
     if (!visibleColumns[columnKey as keyof typeof visibleColumns]) return null;
-    
+
     const isSorted = sortConfig?.key === columnKey;
     const direction = sortConfig?.direction;
-    
+
     return (
-      <th 
+      <th
+        key={columnKey}
         className={`px-3 py-3 text-left text-sm font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-indigo-500 select-none transition-colors border-r border-gray-300 ${columnKey === 'software' ? 'sticky left-0 bg-indigo-600 z-10' : ''}`}
         onClick={() => handleSort(columnKey)}
       >
@@ -251,125 +215,147 @@ export default function Intern() {
   const tableData = [
     {
       software: { content: 'CitizenProject.App', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: 'Ja', dsgvo: 'Hoch', 
+      dsgvo: 'Hoch',
       zielgruppe: 'Bildung / Nonprofit',
       pmLevel: 'Anfänger',
       templates: 'Ja',
       socialAcademic: 'Ja',
-      pmHilfe: 'Ja', 
-      wissenstransfer: 'Ja', 
-      rechtlich: <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded">✅</span>, 
+      pmHilfe: 'Ja',
+      wissenstransfer: 'Ja',
       barrierefreiheit: 'Hoch',
       vendorLock: 'Kein / wenig',
-      anpassbar: 'Sehr Hoch', 
-      anfaenger: <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded">Sehr Hoch</span>, 
+      anpassbar: 'Sehr Hoch',
       dateien: 'Integriert',
-      ki: 'Geplant', 
-      alleinstellung: <>
-        <span className="inline-block bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">NonProfit</span>
-        <span className="inline-block bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">PM-Laien</span>
-      </>,
-      rowClass: 'hover:bg-gray-50'
+      ki: 'Geplant',
+      kollaborativ: 'Ja',
     },
     {
       software: { content: 'OpenProject', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: 'Ja', 
-      dsgvo: 'Hoch', 
+      dsgvo: 'Hoch',
       zielgruppe: 'Unternehmen / Organisationen',
       pmLevel: 'Fortgeschritten',
       templates: 'Teilweise',
-      socialAcademic: 'Nein', 
-      pmHilfe: 'Nein', 
-      wissenstransfer: 'Begrenzt', 
-      rechtlich: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Teilweise</span>,
+      socialAcademic: 'Nein',
+      pmHilfe: 'Nein',
+      wissenstransfer: 'Begrenzt',
       barrierefreiheit: 'Mittel',
       vendorLock: 'Mittel',
-      anpassbar: 'Hoch', 
-      anfaenger: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">Niedrig</span>, 
+      anpassbar: 'Hoch',
       dateien: 'Integriert',
-      ki: 'Nein', 
-      alleinstellung: <span className="inline-block bg-purple-100 text-purple-800 text-xs px-1.5 py-0.5 rounded">Enterprise</span>, 
-      rowClass: 'hover:bg-gray-50'
+      ki: 'Nein',
+      kollaborativ: 'Nein',
     },
     {
       software: { content: 'Redmine', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: 'Ja', 
-      dsgvo: 'Mittel', 
-      zielgruppe: 'Tech / Engineering-Teams', 
+      dsgvo: 'Mittel',
+      zielgruppe: 'Tech / Engineering-Teams',
       pmLevel: 'Experte',
       templates: 'Nein',
-      socialAcademic: 'Nein', 
-      pmHilfe: 'Nein', 
-      wissenstransfer: 'Nein', 
-      rechtlich: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>,
+      socialAcademic: 'Nein',
+      pmHilfe: 'Nein',
+      wissenstransfer: 'Nein',
       barrierefreiheit: 'Niedrig',
       vendorLock: 'Kein / wenig',
-      anpassbar: 'Hoch', 
-      anfaenger: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">Niedrig</span>, 
+      anpassbar: 'Hoch',
       dateien: 'Anhänge',
-      ki: 'Nein', 
-      alleinstellung: <span className="inline-block bg-purple-100 text-purple-800 text-xs px-1.5 py-0.5 rounded">Plugins</span>, 
-      rowClass: 'hover:bg-gray-50'
+      ki: 'Nein',
+      kollaborativ: 'Nein',
     },
     {
       software: { content: 'Taiga', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: 'Ja', 
-      dsgvo: 'Mittel', 
-      zielgruppe: 'Tech / Engineering-Teams', 
+      dsgvo: 'Mittel',
+      zielgruppe: 'Tech / Engineering-Teams',
       pmLevel: 'Fortgeschritten',
       templates: 'Agile/Scrum',
-      socialAcademic: 'Nein', 
-      pmHilfe: 'Nein', 
-      wissenstransfer: 'Begrenzt', 
-      rechtlich: <span className="inline-block bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded">❌</span>,
+      socialAcademic: 'Nein',
+      pmHilfe: 'Nein',
+      wissenstransfer: 'Begrenzt',
       barrierefreiheit: 'Mittel',
       vendorLock: 'Kein / wenig',
-      anpassbar: 'Mittel', 
-      anfaenger: <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded">Mittel</span>, 
+      anpassbar: 'Mittel',
       dateien: 'Anhänge',
-      ki: 'Nein', 
-      alleinstellung: <span className="inline-block bg-orange-100 text-orange-800 text-xs px-1.5 py-0.5 rounded">Agile Features</span>, 
-      rowClass: 'hover:bg-gray-50'
+      ki: 'Nein',
+      kollaborativ: 'Nein',
     },
     {
       software: { content: 'Tuleap', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: 'Ja', dsgvo: 'Hoch', zielgruppe: 'Tech / Engineering-Teams', pmLevel: 'Experte',
-      templates: 'Ja', socialAcademic: 'Nein', pmHilfe: 'Nein', wissenstransfer: 'Begrenzt', rechtlich: 'Teilweise',
-      barrierefreiheit: 'Mittel', vendorLock: 'Mittel', anpassbar: 'Sehr Hoch', anfaenger: 'Niedrig', dateien: 'Integriert',
-      ki: 'Nein', 
-      alleinstellung: <>
-        <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">ALM</span>
-        <span className="inline-block bg-gray-100 text-gray-800 text-xs px-1.5 py-0.5 rounded mr-1 mb-1">DevOps</span>
-      </>, 
-      rowClass: 'hover:bg-gray-50'
+      dsgvo: 'Hoch',
+      zielgruppe: 'Tech / Engineering-Teams',
+      pmLevel: 'Experte',
+      templates: 'Ja',
+      socialAcademic: 'Nein',
+      pmHilfe: 'Nein',
+      wissenstransfer: 'Begrenzt',
+      barrierefreiheit: 'Mittel',
+      vendorLock: 'Mittel',
+      anpassbar: 'Sehr Hoch',
+      dateien: 'Integriert',
+      ki: 'Nein',
+      kollaborativ: 'Nein',
     },
     {
       software: { content: 'Kanboard', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: 'Ja', dsgvo: 'Niedrig', zielgruppe: 'Kanban-Teams', pmLevel: 'Anfänger',
-      templates: 'Nein', socialAcademic: 'Nein', pmHilfe: 'Nein', wissenstransfer: 'Nein', rechtlich: '❌',
-      barrierefreiheit: 'Niedrig', vendorLock: 'Kein / wenig', anpassbar: 'Niedrig', anfaenger: 'Hoch', dateien: 'Anhänge',
-      ki: 'Nein', alleinstellung: 'Einfachheit', rowClass: 'hover:bg-gray-50'
+      dsgvo: 'Niedrig',
+      zielgruppe: 'Kanban-Teams',
+      pmLevel: 'Anfänger',
+      templates: 'Nein',
+      socialAcademic: 'Nein',
+      pmHilfe: 'Nein',
+      wissenstransfer: 'Nein',
+      barrierefreiheit: 'Niedrig',
+      vendorLock: 'Kein / wenig',
+      anpassbar: 'Niedrig',
+      dateien: 'Anhänge',
+      ki: 'Nein',
+      kollaborativ: 'Nein',
     },
     {
       software: { content: 'Wekan', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: 'Ja', dsgvo: 'Niedrig', zielgruppe: 'Kanban-Teams', pmLevel: 'Anfänger',
-      templates: 'Nein', socialAcademic: 'Nein', pmHilfe: 'Nein', wissenstransfer: 'Nein', rechtlich: '❌',
-      barrierefreiheit: 'Niedrig', vendorLock: 'Kein / wenig', anpassbar: 'Niedrig', anfaenger: 'Hoch', dateien: 'Anhänge',
-      ki: 'Nein', alleinstellung: 'Einfaches Kanban', rowClass: 'hover:bg-gray-50'
+      dsgvo: 'Niedrig',
+      zielgruppe: 'Kanban-Teams',
+      pmLevel: 'Anfänger',
+      templates: 'Nein',
+      socialAcademic: 'Nein',
+      pmHilfe: 'Nein',
+      wissenstransfer: 'Nein',
+      barrierefreiheit: 'Niedrig',
+      vendorLock: 'Kein / wenig',
+      anpassbar: 'Niedrig',
+      dateien: 'Anhänge',
+      ki: 'Nein',
+      kollaborativ: 'Nein',
     },
     {
       software: { content: 'Odoo Project', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: 'Ja', dsgvo: 'Mittel', zielgruppe: 'Unternehmen / Organisationen', pmLevel: 'Fortgeschritten',
-      templates: 'Teilweise', socialAcademic: 'Nein', pmHilfe: 'Nein', wissenstransfer: 'Begrenzt', rechtlich: 'Begrenzt',
-      barrierefreiheit: 'Niedrig', vendorLock: 'Hoch', anpassbar: 'Hoch', anfaenger: 'Mittel', dateien: 'Integriert',
-      ki: 'Nein', alleinstellung: 'ERP-Integration', rowClass: 'hover:bg-gray-50'
+      dsgvo: 'Mittel',
+      zielgruppe: 'Unternehmen / Organisationen',
+      pmLevel: 'Fortgeschritten',
+      templates: 'Teilweise',
+      socialAcademic: 'Nein',
+      pmHilfe: 'Nein',
+      wissenstransfer: 'Begrenzt',
+      barrierefreiheit: 'Niedrig',
+      vendorLock: 'Hoch',
+      anpassbar: 'Hoch',
+      dateien: 'Integriert',
+      ki: 'Nein',
+      kollaborativ: 'Nein',
     },
     {
       software: { content: 'ERPNext Projects', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      openSource: 'Ja', dsgvo: 'Mittel', zielgruppe: 'Unternehmen / Organisationen', pmLevel: 'Fortgeschritten',
-      templates: 'Teilweise', socialAcademic: 'Nein', pmHilfe: 'Nein', wissenstransfer: 'Begrenzt', rechtlich: 'Begrenzt',
-      barrierefreiheit: 'Mittel', vendorLock: 'Hoch', anpassbar: 'Hoch', anfaenger: 'Mittel', dateien: 'Integriert',
-      ki: 'Nein', alleinstellung: 'Vollständiges ERP', rowClass: 'hover:bg-gray-50'
+      dsgvo: 'Mittel',
+      zielgruppe: 'Unternehmen / Organisationen',
+      pmLevel: 'Fortgeschritten',
+      templates: 'Teilweise',
+      socialAcademic: 'Nein',
+      pmHilfe: 'Nein',
+      wissenstransfer: 'Begrenzt',
+      barrierefreiheit: 'Mittel',
+      vendorLock: 'Hoch',
+      anpassbar: 'Hoch',
+      dateien: 'Integriert',
+      ki: 'Nein',
+      kollaborativ: 'Nein',
     }
   ];
 
@@ -411,6 +397,88 @@ export default function Intern() {
   // Handle row selection
   const handleRowClick = (index: number) => {
     setSelectedRow(selectedRow === index ? null : index);
+  };
+
+  // Copy table to clipboard using the current column visibility and sort order
+  const copyTableToClipboard = async () => {
+    // Spalten, die aktuell aktiviert sind (Checkboxen), in Anzeige-Reihenfolge
+    const exportColumnKeys = DISPLAY_ORDER.filter(key => visibleColumns[key]);
+
+    if (exportColumnKeys.length === 0) {
+      alert('Bitte mindestens eine Spalte auswählen.');
+      return;
+    }
+
+    console.log('=== EXPORT DEBUG ===');
+    console.log('Export column keys:', exportColumnKeys);
+    console.log('First row data:', sortedTableData[0]);
+
+    // Kopfzeile
+    const headerRow = exportColumnKeys.map(key => columnLabels[key]);
+    console.log('Header row:', headerRow);
+
+    // Datenzeilen – verwenden die gleiche sortierte Reihenfolge wie die Tabelle
+    const dataRows = sortedTableData.map((row, rowIndex) =>
+      exportColumnKeys.map((key, colIndex) => {
+        const value = row[key as keyof typeof row];
+
+        if (rowIndex === 0) {
+          console.log(`Column ${colIndex} (${key}):`, value);
+        }
+
+        // Software-Spalte hat Objekt mit content/className
+        if (value && typeof value === 'object' && 'content' in value) {
+          return String((value as { content: React.ReactNode }).content ?? '');
+        }
+
+        if (value === null || value === undefined) return '';
+        return String(value);
+      })
+    );
+
+    console.log('First data row:', dataRows[0]);
+
+    const tsvContent = [headerRow, ...dataRows]
+      .map(row => row.join('\t'))
+      .join('\n');
+
+    console.log('TSV preview (first 500 chars):', tsvContent.substring(0, 500));
+    console.log('Total TSV length:', tsvContent.length);
+    console.log('Number of rows:', [headerRow, ...dataRows].length);
+    console.log('Number of columns:', headerRow.length);
+
+    // Create HTML table for better compatibility with Google Sheets
+    const htmlTable = `<table><thead><tr>${headerRow.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${dataRows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+
+    try {
+      // Write both HTML and plain text to clipboard for maximum compatibility
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': new Blob([htmlTable], { type: 'text/html' }),
+          'text/plain': new Blob([tsvContent], { type: 'text/plain' })
+        })
+      ]);
+
+      // Verify clipboard content
+      const clipboardContent = await navigator.clipboard.readText();
+      console.log('Clipboard verification (first 300 chars):', clipboardContent.substring(0, 300));
+      console.log('Clipboard matches TSV:', clipboardContent === tsvContent);
+
+      const button = document.querySelector('[title="Nur sichtbare Spalten für Google Sheets kopieren"]') as HTMLButtonElement | null;
+      if (button) {
+        const originalText = button.innerHTML;
+        button.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Kopiert!`;
+        button.className = button.className.replace('bg-indigo-600 hover:bg-indigo-700', 'bg-green-600');
+
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.className = button.className.replace('bg-green-600', 'bg-indigo-600 hover:bg-indigo-700');
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Failed to copy table: ', err);
+      alert('Fehler beim Kopieren. Bitte manuell markieren und kopieren.');
+    }
   };
 
   return (
@@ -461,7 +529,7 @@ export default function Intern() {
                 </p>
               </div>
               <button
-                onClick={() => copyTableToClipboard(visibleColumns)}
+                onClick={() => copyTableToClipboard()}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
                 title="Nur sichtbare Spalten für Google Sheets kopieren"
               >
@@ -474,20 +542,66 @@ export default function Intern() {
 
             {/* Column Selection */}
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">Spalten auswählen:</h3>
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+                <h3 className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs">
+                    ✓
+                  </span>
+                  Spalten auswählen
+                </h3>
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <button
+                    onClick={() => setVisibleColumns(Object.fromEntries(Object.keys(columnLabels).map(k => [k, true])) as any)}
+                    className="px-2 py-1 rounded-full bg-white text-indigo-700 border border-indigo-100 hover:border-indigo-300 hover:bg-indigo-50 transition-colors"
+                  >
+                    Alle auswählen
+                  </button>
+                  <button
+                    onClick={() => setVisibleColumns({...Object.fromEntries(Object.keys(columnLabels).map(k => [k, false])), software: true} as any)}
+                    className="px-2 py-1 rounded-full bg-white text-indigo-700 border border-indigo-100 hover:border-indigo-300 hover:bg-indigo-50 transition-colors"
+                  >
+                    Alle abwählen
+                  </button>
+                  <span className="hidden md:inline-block h-4 w-px bg-gray-300 mx-1" />
+                  <div className="inline-flex items-center gap-1">
+                    <span className="text-gray-600">Reihenfolge:</span>
+                    <div className="inline-flex rounded-full bg-white p-0.5 border border-gray-200">
+                      <button
+                        type="button"
+                        onClick={() => setColumnOrderMode('default')}
+                        className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${
+                          columnOrderMode === 'default'
+                            ? 'bg-indigo-600 text-white shadow-sm'
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                      >
+                        Standard
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setColumnOrderMode('alphabetical')}
+                        className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${
+                          columnOrderMode === 'alphabetical'
+                            ? 'bg-indigo-600 text-white shadow-sm'
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                      >
+                        A–Z
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
-                {Object.entries(columnLabels)
-                  .sort(([keyA, labelA], [keyB, labelB]) => {
-                    if (keyA === 'software') return -1;
-                    if (keyB === 'software') return 1;
-                    return labelA.localeCompare(labelB, 'de', { sensitivity: 'base' });
-                  })
-                  .map(([key, label]) => (
+                {DISPLAY_ORDER.map((key) => {
+                  const label = columnLabels[key];
+                  return (
                   <label key={key} className="flex items-center text-xs">
                     <input
                       type="checkbox"
                       checked={visibleColumns[key as keyof typeof visibleColumns]}
-                      onChange={() => toggleColumn(key)}
+                      onChange={() => toggleColumn(key as string)}
                       disabled={key === 'software'}
                       className={`mr-2 text-indigo-600 focus:ring-indigo-500 ${key === 'software' ? 'opacity-50 cursor-not-allowed' : ''}`}
                     />
@@ -495,21 +609,8 @@ export default function Intern() {
                       {label}
                     </span>
                   </label>
-                ))}
+                )})}
               </div>
-              <button 
-                onClick={() => setVisibleColumns(Object.fromEntries(Object.keys(columnLabels).map(k => [k, true])) as any)}
-                className="mt-3 text-xs text-indigo-600 hover:text-indigo-800"
-              >
-                Alle auswählen
-              </button>
-              <span className="mx-2 text-gray-300">|</span>
-              <button 
-                onClick={() => setVisibleColumns({...Object.fromEntries(Object.keys(columnLabels).map(k => [k, false])), software: true} as any)}
-                className="text-xs text-indigo-600 hover:text-indigo-800"
-              >
-                Alle abwählen
-              </button>
             </div>
           </div>
 
@@ -519,21 +620,7 @@ export default function Intern() {
               <table className="min-w-full divide-y divide-gray-200 border-collapse">
                 <thead className="bg-indigo-600 text-white">
                   <tr>
-                    {renderSortableHeader('software', 'Software')}
-                    {renderSortableHeader('alleinstellung', 'Alleinstellung')}
-                    {renderSortableHeader('anpassbar', 'Anpassbarkeit')}
-                    {renderSortableHeader('vendorLock', 'Anbieterabhängigkeit')}
-                    {renderSortableHeader('barrierefreiheit', 'Barrierefreiheit')}
-                    {renderSortableHeader('dateien', 'Dateiablage')}
-                    {renderSortableHeader('dsgvo', 'DSGVO')}
-                    {renderSortableHeader('ki', 'KI-Agenten')}
-                    {renderSortableHeader('openSource', 'Open Source')}
-                    {renderSortableHeader('pmLevel', 'PM-Erfahrung')}
-                    {renderSortableHeader('pmHilfe', 'Geführte Abläufe')}
-                    {renderSortableHeader('socialAcademic', 'Fokus: Sozial / Öffentlich / Bildung')}
-                    {renderSortableHeader('templates', 'Vorlagen')}
-                    {renderSortableHeader('wissenstransfer', 'Wissenstransfer')}
-                    {renderSortableHeader('zielgruppe', 'Zielgruppe')}
+                    {DISPLAY_ORDER.map(key => renderSortableHeader(key, columnLabels[key]))}
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -545,26 +632,18 @@ export default function Intern() {
                       baseRowClass;
                     
                     return (
-                    <tr 
-                      key={index} 
+                    <tr
+                      key={index}
                       className={`${rowClass} cursor-pointer transition-colors duration-150`}
                       onClick={() => handleRowClick(index)}
                     >
-                      {renderCell('software', row.software.content, row.software.className, isSelected)}
-                      {renderCell('alleinstellung', row.alleinstellung, undefined, isSelected)}
-                      {renderCell('anpassbar', row.anpassbar, undefined, isSelected)}
-                      {renderCell('vendorLock', row.vendorLock, undefined, isSelected)}
-                      {renderCell('barrierefreiheit', row.barrierefreiheit, undefined, isSelected)}
-                      {renderCell('dateien', row.dateien, undefined, isSelected)}
-                      {renderCell('dsgvo', row.dsgvo, undefined, isSelected)}
-                      {renderCell('ki', row.ki, undefined, isSelected)}
-                      {renderCell('openSource', row.openSource, undefined, isSelected)}
-                      {renderCell('pmLevel', row.pmLevel, undefined, isSelected)}
-                      {renderCell('pmHilfe', row.pmHilfe, undefined, isSelected)}
-                      {renderCell('socialAcademic', row.socialAcademic, undefined, isSelected)}
-                      {renderCell('templates', row.templates, undefined, isSelected)}
-                      {renderCell('wissenstransfer', row.wissenstransfer, undefined, isSelected)}
-                      {renderCell('zielgruppe', row.zielgruppe, undefined, isSelected)}
+                      {DISPLAY_ORDER.map(key => {
+                        const value = row[key as keyof typeof row];
+                        if (key === 'software' && typeof value === 'object' && value !== null && 'content' in value) {
+                          return renderCell(key, value.content, value.className, isSelected);
+                        }
+                        return renderCell(key, value as React.ReactNode, undefined, isSelected);
+                      })}
                     </tr>
                   )})}
                 
