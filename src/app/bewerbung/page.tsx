@@ -199,8 +199,8 @@ export default function Intern() {
   const totalTeamNetHours = phase1TeamNetHours + phase2TeamNetHours;
 
   // Timeline zoom state
-  const [visibleTimeStart, setVisibleTimeStart] = useState(moment('2025-02-01').valueOf());
-  const [visibleTimeEnd, setVisibleTimeEnd] = useState(moment('2025-12-31').valueOf());
+  const [visibleTimeStart, setVisibleTimeStart] = useState(moment('2026-05-01').valueOf());
+  const [visibleTimeEnd, setVisibleTimeEnd] = useState(moment('2027-04-30').valueOf());
 
   // Initialize visible columns from COLUMN_CONFIG
   const [visibleColumns, setVisibleColumns] = useState<Record<keyof typeof COLUMN_CONFIG, boolean>>(
@@ -637,51 +637,88 @@ export default function Intern() {
 
   const groups = [
     { id: 0, title: 'Förderphasen', stackItems: false, height: 40 },
-    { id: 3, title: 'Epics: Konzept/Orga', stackItems: true },
-    { id: 2, title: 'Epics: Dev', stackItems: true },
-    { id: 1, title: 'Sprints', stackItems: true, height: 50 },
+    { id: 5, title: 'Fördermonate', stackItems: false, height: 40 },
+    { id: 6, title: 'Kalenderwochen', stackItems: false, height: 40 },
+    { id: 1, title: 'Sprints', stackItems: false, height: 50 },
     { id: 4, title: 'Meilensteine', stackItems: false }
   ];
 
-  const items = [
+  // Helper to generate Funding Months (M1-M10)
+  const generateMonthItems = () => {
+    const months = [];
+    const startDate = moment('2026-06-01');
+    for (let i = 0; i < 10; i++) {
+      const start = startDate.clone().add(i, 'months');
+      const end = start.clone().endOf('month');
+      months.push({
+        id: 500 + i,
+        group: 5,
+        title: `${i + 1}`,
+        start_time: start,
+        end_time: end,
+        itemProps: { style: { background: i < 6 ? '#dbeafe' : '#fef3c7', color: i < 6 ? '#1e40af' : '#92400e', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', textAlign: 'center' as const, borderRadius: 0 } }
+      });
+    }
+    return months;
+  };
+
+  // Helper to generate Calendar Weeks
+  const generateWeekItems = () => {
+    const weeks = [];
+    const startDate = moment('2026-06-01').startOf('isoWeek');
+    const endDate = moment('2027-03-31').endOf('isoWeek');
+    let current = startDate.clone();
+    let idCounter = 600;
+
+    while (current.isBefore(endDate)) {
+      const end = current.clone().endOf('isoWeek');
+      weeks.push({
+        id: idCounter++,
+        group: 6,
+        title: `${current.isoWeek()}`,
+        start_time: current.clone(),
+        end_time: end,
+        itemProps: { style: { background: '#f3f4f6', color: '#6b7280', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', fontSize: '10px', textAlign: 'center' as const, borderRadius: 0 } }
+      });
+      current.add(1, 'weeks');
+    }
+    return weeks;
+  };
+
+  const staticItems = [
     // --- FÖRDERPHASEN ---
-    { id: 1, group: 0, title: '1. Förderphase (Prototype Fund)', start_time: moment('2025-03-01'), end_time: moment('2025-08-31'), itemProps: { style: { background: '#64748b', borderStyle: 'none' } } },
-    { id: 2, group: 0, title: '2. Förderphase (Second Stage)', start_time: moment('2025-09-01'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#f59e0b', borderStyle: 'none' } } },
+    { id: 1, group: 0, title: 'Förderphase 1', start_time: moment('2026-06-01'), end_time: moment('2026-11-30').endOf('day'), itemProps: { style: { background: '#64748b', borderStyle: 'none', borderRadius: 0 } } },
+    { id: 2, group: 0, title: 'Förderphase 2', start_time: moment('2026-12-01'), end_time: moment('2027-03-31').endOf('day'), itemProps: { style: { background: '#f59e0b', borderStyle: 'none', borderRadius: 0 } } },
 
-    // --- SPRINTS (2-week cycles, starting March 2025) ---
-    { id: 101, group: 1, title: 'Sprint 1', start_time: moment('2025-03-01'), end_time: moment('2025-03-14'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
-    { id: 102, group: 1, title: 'Sprint 2', start_time: moment('2025-03-15'), end_time: moment('2025-03-28'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
-    { id: 103, group: 1, title: 'Sprint 3', start_time: moment('2025-03-29'), end_time: moment('2025-04-11'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
-    { id: 104, group: 1, title: 'Sprint 4', start_time: moment('2025-04-12'), end_time: moment('2025-04-25'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
-    { id: 105, group: 1, title: 'Sprint 5', start_time: moment('2025-04-26'), end_time: moment('2025-05-09'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
-    { id: 106, group: 1, title: 'Sprint 6', start_time: moment('2025-05-10'), end_time: moment('2025-05-23'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
-    { id: 107, group: 1, title: 'Sprint 7', start_time: moment('2025-05-24'), end_time: moment('2025-06-06'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
-    { id: 108, group: 1, title: 'Sprint 8', start_time: moment('2025-06-07'), end_time: moment('2025-06-20'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
-    { id: 109, group: 1, title: 'Sprint 9', start_time: moment('2025-06-21'), end_time: moment('2025-07-04'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
-    { id: 110, group: 1, title: 'Sprint 10', start_time: moment('2025-07-05'), end_time: moment('2025-07-18'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
-    { id: 111, group: 1, title: 'Sprint 11', start_time: moment('2025-07-19'), end_time: moment('2025-08-01'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
-    { id: 112, group: 1, title: 'Sprint 12', start_time: moment('2025-08-02'), end_time: moment('2025-08-15'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
-    { id: 113, group: 1, title: 'Sprint 13', start_time: moment('2025-08-16'), end_time: moment('2025-08-29'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderStyle: 'none' } } },
+    // --- SPRINTS (2-week cycles) ---
+    // Phase 1 (June - Nov 2026)
+    { id: 101, group: 1, title: '1', start_time: moment('2026-06-01'), end_time: moment('2026-06-14').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 102, group: 1, title: '2', start_time: moment('2026-06-15'), end_time: moment('2026-06-28').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 103, group: 1, title: '3', start_time: moment('2026-06-29'), end_time: moment('2026-07-12').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 104, group: 1, title: '4', start_time: moment('2026-07-13'), end_time: moment('2026-07-26').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 105, group: 1, title: '5', start_time: moment('2026-07-27'), end_time: moment('2026-08-09').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 106, group: 1, title: '6', start_time: moment('2026-08-10'), end_time: moment('2026-08-23').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 107, group: 1, title: '7', start_time: moment('2026-08-24'), end_time: moment('2026-09-06').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 108, group: 1, title: '8', start_time: moment('2026-09-07'), end_time: moment('2026-09-20').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 109, group: 1, title: '9', start_time: moment('2026-09-21'), end_time: moment('2026-10-04').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 110, group: 1, title: '10', start_time: moment('2026-10-05'), end_time: moment('2026-10-18').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 111, group: 1, title: '11', start_time: moment('2026-10-19'), end_time: moment('2026-11-01').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 112, group: 1, title: '12', start_time: moment('2026-11-02'), end_time: moment('2026-11-15').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 113, group: 1, title: '13', start_time: moment('2026-11-16'), end_time: moment('2026-11-29').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
 
-    // --- EPICS: DEV ---
-    { id: 201, group: 2, title: 'Setup & Tech-Stack', start_time: moment('2025-03-01'), end_time: moment('2025-03-15'), itemProps: { style: { background: '#4f46e5', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
-    { id: 202, group: 2, title: 'Prototyp Core (Auth/DB)', start_time: moment('2025-03-15'), end_time: moment('2025-05-01'), itemProps: { style: { background: '#4f46e5', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
-    { id: 203, group: 2, title: 'Feature: Templates', start_time: moment('2025-05-01'), end_time: moment('2025-06-15'), itemProps: { style: { background: '#4f46e5', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
-    { id: 204, group: 2, title: 'Institutions-Spezifika (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-10-30'), itemProps: { style: { background: '#818cf8', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
-    { id: 205, group: 2, title: 'Wissensmanagement (Stage 2)', start_time: moment('2025-11-01'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#818cf8', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
-
-    // --- EPICS: KONZEPT/ORGA ---
-    { id: 301, group: 3, title: 'Analyse', start_time: moment('2025-03-01'), end_time: moment('2025-03-20'), itemProps: { style: { background: '#10b981', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
-    { id: 304, group: 3, title: 'Konzept', start_time: moment('2025-03-21'), end_time: moment('2025-04-15'), itemProps: { style: { background: '#10b981', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white' } } },
-    { id: 302, group: 3, title: 'Pilot-Phase 1', start_time: moment('2025-07-01'), end_time: moment('2025-08-30'), itemProps: { style: { background: '#10b981', borderStyle: 'none' } } },
-    { id: 303, group: 3, title: 'Pilot-Phase 2 (Stage 2)', start_time: moment('2025-09-01'), end_time: moment('2025-11-30'), itemProps: { style: { background: '#34d399', borderStyle: 'none' } } },
-
-    // --- MEILENSTEINE ---
-    { id: 401, group: 4, title: 'M1: Analyse', start_time: moment('2025-03-30'), end_time: moment('2025-03-31'), itemProps: { style: { background: '#ef4444', borderStyle: 'none', width: '20px', borderRadius: '50%' } } },
-    { id: 402, group: 4, title: 'M3: Prototyp', start_time: moment('2025-04-30'), end_time: moment('2025-05-01'), itemProps: { style: { background: '#ef4444', borderStyle: 'none', width: '20px', borderRadius: '50%' } } },
-    { id: 403, group: 4, title: 'M6: Abschluss Stage 1', start_time: moment('2025-08-30'), end_time: moment('2025-08-31'), itemProps: { style: { background: '#b91c1c', borderStyle: 'none', width: '20px', borderRadius: '50%' } } },
-    { id: 404, group: 4, title: 'Abschluss Stage 2', start_time: moment('2025-12-30'), end_time: moment('2025-12-31'), itemProps: { style: { background: '#b91c1c', borderStyle: 'none', width: '20px', borderRadius: '50%' } } },
+    // Phase 2 (Dec 2026 - Mar 2027)
+    { id: 114, group: 1, title: '14', start_time: moment('2026-12-01'), end_time: moment('2026-12-14').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 115, group: 1, title: '15', start_time: moment('2026-12-15'), end_time: moment('2026-12-28').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 116, group: 1, title: '16', start_time: moment('2026-12-29'), end_time: moment('2027-01-11').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 117, group: 1, title: '17', start_time: moment('2027-01-12'), end_time: moment('2027-01-25').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 118, group: 1, title: '18', start_time: moment('2027-01-26'), end_time: moment('2027-02-08').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 119, group: 1, title: '19', start_time: moment('2027-02-09'), end_time: moment('2027-02-22').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 120, group: 1, title: '20', start_time: moment('2027-02-23'), end_time: moment('2027-03-08').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 121, group: 1, title: '21', start_time: moment('2027-03-09'), end_time: moment('2027-03-22').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 122, group: 1, title: '22', start_time: moment('2027-03-23'), end_time: moment('2027-04-05').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
   ];
+
+  const items = [...staticItems, ...generateMonthItems(), ...generateWeekItems()];
 
   const handleItemSelect = (itemId: number, e: any, time: number) => {
     const item = items.find(i => i.id === itemId);
@@ -943,7 +980,7 @@ export default function Intern() {
               onTimeChange={handleTimeChange}
               sidebarWidth={150}
               lineHeight={50}
-              itemHeightRatio={0.75}
+              itemHeightRatio={0.8}
               canMove={false}
               canResize={false}
               onItemSelect={handleItemSelect}
@@ -1212,15 +1249,22 @@ export default function Intern() {
               8. Meilensteine im Förderzeitraum
             </summary>
             <div className="px-4 pb-4 pt-2 space-y-3">
-              <p className="text-sm text-gray-800">Platzhalter für M1–M7 (konkrete Meilensteine gemeinsam definieren):</p>
+              <p className="text-sm text-gray-800 font-semibold mb-2">First-Stage Förderung (Juni – November 2026):</p>
+              <ul className="list-disc list-inside text-sm text-gray-800 space-y-1 mb-4">
+                <li><strong>M1 (Juni 2026) Analyse & Konzept:</strong> Zielgruppen, Rahmenbedingungen, Bedürfnisse, Projektarten, typische Prozesse, Qualitätskriterien, Informationsarchitektur, Backlog</li>
+                <li><strong>M2 (Juli 2026) Setup & Tech:</strong> Repo, CI/CD, Hosting, DB, Auth, Rollenmodell, Sicherheits- und Datenschutzbasis</li>
+                <li><strong>M3 (August 2026) Core-Prototyp:</strong> Projektanlage, erste Projektarten, Basisprozesse, Projektrollen, Ansichten, geführte Schritte, Templates, Wissensstruktur</li>
+                <li><strong>M4 (September 2026) Feature-Ausbau:</strong> weitere Projektarten, Prozesspfade, Tipps, Hinweise, Kalenderlogik, Benachrichtigungen</li>
+                <li><strong>M5 (Oktober 2026) Pilotphase 1:</strong> reale Pilotprojekte, Interviews, Usability-Tests, Logging, Priorisierung für Verbesserungen</li>
+                <li><strong>M6 (November 2026) Stabilisierung:</strong> technische Optimierung, UX-Verbesserungen, Prototyp-Release, Nutzer- und Entwicklerdokumentation, OSS-Release</li>
+              </ul>
+
+              <p className="text-sm text-gray-800 font-semibold mb-2">Second-Stage Förderung (Dezember 2026 – März 2027):</p>
               <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
-                <li>M1 – Projektplanung, Architektur und Detailkonzept</li>
-                <li>M2 – Kernfunktionen der CitizenProject.App implementieren</li>
-                <li>M3 – Pilotierung mit ersten Institutionen</li>
-                <li>M4 – Evaluation und Anpassung</li>
-                <li>M5 – Ausbau von Templates und geführten Abläufen</li>
-                <li>M6 – Dokumentation und Handbuch</li>
-                <li>M7 – Vorbereitung der Second-Stage-Förderung</li>
+                <li><strong>M7 (Dezember 2026) Vertiefte Pilotphase:</strong> zusätzliche Institutionen, strukturierte Tests, Kontextinterviews, Nutzungsanalyse, priorisierte Maßnahmen</li>
+                <li><strong>M8 (Januar 2027) Wissensaufbau:</strong> Best-Practice-Guides, Projektartenkatalog, verbesserte Templates, Onboarding-Materialien, Dokumentstruktur</li>
+                <li><strong>M9 (Februar 2027) Community:</strong> Kommunikationskanäle, Governance-Modell, Ankerinstitutionen, Workshops für frühe Nutzergruppen</li>
+                <li><strong>M10 (März 2027) Verstetigung:</strong> Betriebsmodell, Finanzierungsszenarien, Roadmap, Implementierungsleitfaden, Abschlussbericht zur nachhaltigen Nutzung</li>
               </ul>
             </div>
           </details>
