@@ -731,6 +731,7 @@ export default function Intern() {
     { id: 405, group: 7, title: 'M5 (Feature-Ausbau)', start_time: moment('2026-06-01').isoWeek(34).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(37).endOf('isoWeek'), itemProps: { style: { background: '#8b5cf6', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Feature-Ausbau: weitere Projektarten, Prozesspfade, Tipps, Kalenderlogik, Benachrichtigungen' },
     { id: 406, group: 4, title: 'M6 (Pilotphase 1)', start_time: moment('2026-06-01').isoWeek(38).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(43).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Pilotphase 1: reale Pilotprojekte, Interviews, Usability-Tests, Logging, Priorisierung für Verbesserungen' },
     { id: 407, group: 7, title: 'M7 (Stabilisierung)', start_time: moment('2026-06-01').isoWeek(44).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(48).endOf('isoWeek'), itemProps: { style: { background: '#8b5cf6', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Stabilisierung: technische Optimierung, UX-Verbesserungen, Prototyp-Release, Nutzer- und Entwicklerdokumentation, OSS-Release' },
+    { id: 408, group: 4, title: 'M8 (Revision)', start_time: moment('2026-06-01').isoWeek(47).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(48).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Revision: Planung Second Stage' },
   ];
 
   const items = [...staticItems, ...generateMonthItems(), ...generateWeekItems()];
@@ -1268,6 +1269,7 @@ export default function Intern() {
                 <li><strong>M5 Feature-Ausbau (KW 34-37):</strong> weitere Projektarten, Prozesspfade, Tipps, Kalenderlogik, Benachrichtigungen</li>
                 <li><strong>M6 Pilotphase 1 (KW 38-43):</strong> reale Pilotprojekte, Interviews, Usability-Tests, Logging, Priorisierung für Verbesserungen</li>
                 <li><strong>M7 Stabilisierung (KW 44-48):</strong> technische Optimierung, UX-Verbesserungen, Prototyp-Release, Nutzer- und Entwicklerdokumentation, OSS-Release</li>
+                <li><strong>M8 Revision (KW 47-48):</strong> Planung Second Stage</li>
               </ul>
 
 
