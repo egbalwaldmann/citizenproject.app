@@ -108,6 +108,31 @@ export default function Layout({ children, currentPage = '' }: LayoutProps) {
       </nav>
 
       {children}
+      {/* Footer */}
+      <footer className="bg-white/50 backdrop-blur-sm border-t border-white/50 mt-auto">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-sm text-gray-500 flex items-center gap-4">
+              <span>&copy; {new Date().getFullYear()} CitizenProject.App - Proof of Concept</span>
+              <span className="text-gray-300">|</span>
+              <Link href="/team" className="hover:text-indigo-600 transition-colors">
+                Team
+              </Link>
+            </div>
+            <div className="flex space-x-6 text-sm text-gray-600">
+              <Link href="/impressum" className="hover:text-indigo-600 transition-colors">
+                Impressum
+              </Link>
+              <Link href="/datenschutz" className="hover:text-indigo-600 transition-colors">
+                Datenschutz
+              </Link>
+              <Link href="/barrierefreiheit" className="hover:text-indigo-600 transition-colors">
+                Barrierefreiheit
+              </Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
