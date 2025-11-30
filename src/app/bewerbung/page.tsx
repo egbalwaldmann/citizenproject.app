@@ -645,7 +645,8 @@ export default function Intern() {
     { id: 6, title: 'Kalenderwochen', stackItems: false, height: 50 },
     { id: 1, title: 'Sprints', stackItems: false, height: 50 },
     { id: 4, title: 'Meilensteine Konzept', stackItems: false, height: 50 },
-    { id: 7, title: 'Meilensteine Tech', stackItems: false, height: 50 }
+    { id: 7, title: 'Meilensteine Tech', stackItems: false, height: 50 },
+    { id: 8, title: 'Meilensteine Verstetigung', stackItems: false, height: 50 }
   ];
 
   // Helper to generate Funding Months (M1-M10)
@@ -732,6 +733,12 @@ export default function Intern() {
     { id: 406, group: 4, title: 'M6 (Pilotphase 1)', start_time: moment('2026-06-01').isoWeek(38).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(43).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Pilotphase 1: reale Pilotprojekte, Interviews, Usability-Tests, Logging, Priorisierung für Verbesserungen' },
     { id: 407, group: 7, title: 'M7 (Stabilisierung)', start_time: moment('2026-06-01').isoWeek(44).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(48).endOf('isoWeek'), itemProps: { style: { background: '#8b5cf6', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Stabilisierung: technische Optimierung, UX-Verbesserungen, Prototyp-Release, Nutzer- und Entwicklerdokumentation, OSS-Release' },
     { id: 408, group: 4, title: 'M8 (Revision)', start_time: moment('2026-06-01').isoWeek(47).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(48).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Revision: Planung Second Stage' },
+
+    // Second Stage
+    { id: 409, group: 4, title: 'M9 (Erweiterung)', start_time: moment('2026-06-01').isoWeek(49).startOf('isoWeek'), end_time: moment('2027-01-01').isoWeek(4).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Erweiterung des Prototypen: zusätzliche Institutionen, strukturierte Tests, Kontextinterviews, Nutzungsanalyse, priorisierte Maßnahmen' },
+    { id: 410, group: 4, title: 'M10 (Wissen)', start_time: moment('2027-01-01').isoWeek(5).startOf('isoWeek'), end_time: moment('2027-01-01').isoWeek(8).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Wissensaufbau: Best-Practice-Guides, Projektartenkatalog, verbesserte Templates, Onboarding-Materialien, Dokumentstruktur' },
+    { id: 411, group: 8, title: 'M11 (Community)', start_time: moment('2026-06-01').isoWeek(49).startOf('isoWeek'), end_time: moment('2027-01-01').isoWeek(12).endOf('isoWeek'), itemProps: { style: { background: '#10b981', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Communityaufbau: Kommunikationskanäle, Governance-Modell, Ankerinstitutionen, Workshops für frühe Nutzergruppen' },
+    { id: 412, group: 8, title: 'M12 (Verstetigung)', start_time: moment('2027-01-01').isoWeek(5).startOf('isoWeek'), end_time: moment('2027-01-01').isoWeek(12).endOf('isoWeek'), itemProps: { style: { background: '#10b981', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Verstetigung: Betriebsmodell, Finanzierungsszenarien, Roadmap, Implementierungsleitfaden, Abschlussbericht zur nachhaltigen Nutzung' },
   ];
 
   const items = [...staticItems, ...generateMonthItems(), ...generateWeekItems()];
@@ -1270,6 +1277,14 @@ export default function Intern() {
                 <li><strong>M6 Pilotphase 1 (KW 38-43):</strong> reale Pilotprojekte, Interviews, Usability-Tests, Logging, Priorisierung für Verbesserungen</li>
                 <li><strong>M7 Stabilisierung (KW 44-48):</strong> technische Optimierung, UX-Verbesserungen, Prototyp-Release, Nutzer- und Entwicklerdokumentation, OSS-Release</li>
                 <li><strong>M8 Revision (KW 47-48):</strong> Planung Second Stage</li>
+              </ul>
+
+              <p className="text-sm text-gray-800 font-semibold mb-2">Second-Stage Förderung (Dezember 2026 – März 2027):</p>
+              <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
+                <li><strong>M9 Erweiterung des Prototypen (KW 49/2026-KW 4/2027):</strong> zusätzliche Institutionen, strukturierte Tests, Kontextinterviews, Nutzungsanalyse, priorisierte Maßnahmen</li>
+                <li><strong>M10 Wissensaufbau (KW 5-8/2027):</strong> Best-Practice-Guides, Projektartenkatalog, verbesserte Templates, Onboarding-Materialien, Dokumentstruktur</li>
+                <li><strong>M11 Communityaufbau (KW 49/2026-KW 12/2027):</strong> Kommunikationskanäle, Governance-Modell, Ankerinstitutionen, Workshops für frühe Nutzergruppen</li>
+                <li><strong>M12 Verstetigung (KW 5-12/2027):</strong> Betriebsmodell, Finanzierungsszenarien, Roadmap, Implementierungsleitfaden, Abschlussbericht zur nachhaltigen Nutzung</li>
               </ul>
 
 
