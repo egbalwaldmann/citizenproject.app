@@ -1297,10 +1297,13 @@ export default function Intern() {
         {/* Assuming a Timeline component would be rendered here or nearby */}
         {/* <Timeline items={timelineData} onItemSelect={handleItemSelect} /> */}
         {/* Kalkulation Section */}
-        <div className="mt-16 pt-12 border-t border-gray-200">
-          <div className="mb-12 text-center">
-            <SectionHeading id="kalkulation" title="Kalkulation" className="text-3xl font-bold text-gray-900 mb-4" />
-
+        {/* Kalkulation Section */}
+        <div className="mb-12">
+          <div className="mb-6">
+            <SectionHeading id="kalkulation" title="Kalkulation" className="text-2xl font-bold text-gray-900" />
+            <p className="text-gray-800 mt-2">
+              Interne Budget- und Ressourcenplanung für die Förderphasen (Vertraulich)
+            </p>
           </div>
 
           {/* Settings Section */}
@@ -1589,7 +1592,29 @@ export default function Intern() {
               {/* Row: Hours (Net/Productive) */}
               <div className="p-4 font-medium text-gray-900 border-t border-gray-100 bg-yellow-50/50">
                 Produktiv-Stunden (Netto)
-                <div className="text-xs text-gray-500 font-normal mt-1">Abz. Urlaub (20 Tage/Jahr) & Feiertage</div>
+                <div className="text-xs text-gray-500 font-normal mt-1 flex items-center gap-1">
+                  Abz. Urlaub (20 Tage/Jahr) & Feiertage
+                  <div className="group relative inline-block">
+                    <svg className="w-4 h-4 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-xl pointer-events-none">
+                      <div className="font-bold mb-2 text-green-300">Phase 1 (01.06.26 – 01.12.26)</div>
+                      <ul className="mb-3 space-y-1">
+                        <li className="flex justify-between"><span>03.10.26</span> <span>Tag d. Dt. Einheit</span></li>
+                        <li className="flex justify-between"><span>31.10.26</span> <span>Reformationstag</span></li>
+                      </ul>
+                      <div className="font-bold mb-2 text-purple-300">Phase 2 (01.12.26 – 31.03.27)</div>
+                      <ul className="space-y-1">
+                        <li className="flex justify-between"><span>25./26.12.26</span> <span>Weihnachten</span></li>
+                        <li className="flex justify-between"><span>01.01.27</span> <span>Neujahr</span></li>
+                        <li className="flex justify-between"><span>26.03.27</span> <span>Karfreitag</span></li>
+                        <li className="flex justify-between"><span>29.03.27</span> <span>Ostermontag</span></li>
+                      </ul>
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="p-4 font-mono text-gray-700 border-t border-gray-100 bg-yellow-50/30">
                 {phase1TeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
@@ -1742,55 +1767,7 @@ export default function Intern() {
           </div>
 
           {/* Holidays Section */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h3 className="text-lg font-bold text-gray-900 mb-6">Feiertage & Relevante Termine</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Phase 1 Holidays */}
-              <div className="bg-green-50 rounded-xl p-6 border border-green-100">
-                <div className="text-xs text-green-800 uppercase font-bold mb-3">Reguläre Förderphase (01.06.2026 – 01.12.2026)</div>
-                <ul className="space-y-3 text-sm text-gray-700">
-                  <li className="flex justify-between border-b border-green-100 pb-2 last:border-0">
-                    <span className="font-mono font-bold">03.10.2026</span>
-                    <span>Tag der Deutschen Einheit</span>
-                  </li>
-                  <li className="flex justify-between border-b border-green-100 pb-2 last:border-0">
-                    <span className="font-mono font-bold">31.10.2026</span>
-                    <span>Reformationstag</span>
-                  </li>
-                </ul>
-                <p className="text-xs text-green-600 mt-4 italic">
-                  Hinweis: Weihnachten (25./26.12.2026) liegt nach dem 01.12. und fällt somit nicht in diese Phase.
-                </p>
-              </div>
 
-              {/* Phase 2 Holidays */}
-              <div className="bg-purple-50 rounded-xl p-6 border border-purple-100">
-                <div className="text-xs text-purple-800 uppercase font-bold mb-3">Second-Stage-Förderphase (01.12.2026 – 31.03.2027)</div>
-                <ul className="space-y-3 text-sm text-gray-700">
-                  <li className="flex justify-between border-b border-purple-100 pb-2 last:border-0">
-                    <span className="font-mono font-bold">25.12.2026</span>
-                    <span>1. Weihnachtstag</span>
-                  </li>
-                  <li className="flex justify-between border-b border-purple-100 pb-2 last:border-0">
-                    <span className="font-mono font-bold">26.12.2026</span>
-                    <span>2. Weihnachtstag</span>
-                  </li>
-                  <li className="flex justify-between border-b border-purple-100 pb-2 last:border-0">
-                    <span className="font-mono font-bold">01.01.2027</span>
-                    <span>Neujahr</span>
-                  </li>
-                  <li className="flex justify-between border-b border-purple-100 pb-2 last:border-0">
-                    <span className="font-mono font-bold">26.03.2027</span>
-                    <span>Karfreitag</span>
-                  </li>
-                  <li className="flex justify-between border-b border-purple-100 pb-2 last:border-0">
-                    <span className="font-mono font-bold">29.03.2027</span>
-                    <span>Ostermontag</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
