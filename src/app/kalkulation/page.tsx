@@ -27,11 +27,11 @@ export default function KalkulationPage() {
     const formatDaysRelative = (dateString: string) => {
         const days = getDaysUntil(dateString);
         if (days < 0) {
-            return `vor ${Math.abs(days)} Tagen`;
+            return days === -1 ? 'vor 1 Tag' : `vor ${Math.abs(days)} Tagen`;
         } else if (days === 0) {
             return 'heute';
         } else {
-            return `in ${days} Tagen`;
+            return days === 1 ? 'in 1 Tag' : `in ${days} Tagen`;
         }
     };
 
