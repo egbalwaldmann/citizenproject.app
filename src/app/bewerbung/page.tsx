@@ -622,7 +622,7 @@ export default function Intern() {
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
               <Link href="/" className="text-2xl font-bold text-indigo-600">CitizenProject.App</Link>
-              <span className="ml-4 text-sm bg-red-100 text-red-800 px-2 py-1 rounded">ANTRAG</span>
+              <span className="ml-4 text-sm bg-red-100 text-red-800 px-2 py-1 rounded">BEWERBUNG</span>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/dashboard" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
