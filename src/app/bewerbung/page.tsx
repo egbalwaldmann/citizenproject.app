@@ -640,7 +640,8 @@ export default function Intern() {
     { id: 5, title: 'Fördermonate', stackItems: false, height: 50 },
     { id: 6, title: 'Kalenderwochen', stackItems: false, height: 50 },
     { id: 1, title: 'Sprints', stackItems: false, height: 50 },
-    { id: 4, title: 'Meilensteine', stackItems: false, height: 50 }
+    { id: 4, title: 'Meilensteine Allgemein', stackItems: false, height: 50 },
+    { id: 7, title: 'Meilensteine Tech', stackItems: false, height: 50 }
   ];
 
   // Helper to generate Funding Months (M1-M10)
@@ -716,6 +717,15 @@ export default function Intern() {
     { id: 120, group: 1, title: '20', start_time: moment('2027-02-23'), end_time: moment('2027-03-08').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
     { id: 121, group: 1, title: '21', start_time: moment('2027-03-09'), end_time: moment('2027-03-22').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
     { id: 122, group: 1, title: '22', start_time: moment('2027-03-23'), end_time: moment('2027-04-05').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+
+    // --- MEILENSTEINE ---
+    // First Stage
+    { id: 401, group: 4, title: 'M1', start_time: moment('2026-06-01').isoWeek(23).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(31).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Analyse & Konzept: Zielgruppenanalyse, Projektarten, typische Prozesse & Templates, Qualitätskriterien, Informationsarchitektur, Backlog' },
+    { id: 402, group: 7, title: 'M2', start_time: moment('2026-06-01').isoWeek(23).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(24).endOf('isoWeek'), itemProps: { style: { background: '#8b5cf6', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Setup & Tech: Analyse bestehender PM-Software, Repo, CI/CD, Hosting, DB, Auth, Rollenmodell, Sicherheits- und Datenschutzbasis' },
+    { id: 404, group: 7, title: 'M4', start_time: moment('2026-06-01').isoWeek(25).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(33).endOf('isoWeek'), itemProps: { style: { background: '#8b5cf6', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Core-Prototyp: Projektanlage, erste Projektarten, Basisprozesse, Projektrollen, Ansichten, geführte Schritte, Templates, Wissensstruktur' },
+    { id: 405, group: 7, title: 'M5', start_time: moment('2026-06-01').isoWeek(34).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(37).endOf('isoWeek'), itemProps: { style: { background: '#8b5cf6', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Feature-Ausbau: weitere Projektarten, Prozesspfade, Tipps, Kalenderlogik, Benachrichtigungen' },
+    { id: 406, group: 4, title: 'M6', start_time: moment('2026-06-01').isoWeek(38).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(43).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Pilotphase 1: reale Pilotprojekte, Interviews, Usability-Tests, Logging, Priorisierung für Verbesserungen' },
+    { id: 407, group: 7, title: 'M7', start_time: moment('2026-06-01').isoWeek(44).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(48).endOf('isoWeek'), itemProps: { style: { background: '#8b5cf6', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Stabilisierung: technische Optimierung, UX-Verbesserungen, Prototyp-Release, Nutzer- und Entwicklerdokumentation, OSS-Release' },
   ];
 
   const items = [...staticItems, ...generateMonthItems(), ...generateWeekItems()];
@@ -978,7 +988,7 @@ export default function Intern() {
               visibleTimeStart={visibleTimeStart}
               visibleTimeEnd={visibleTimeEnd}
               onTimeChange={handleTimeChange}
-              sidebarWidth={150}
+              sidebarWidth={200}
               lineHeight={50}
               itemHeightRatio={0.8}
               canMove={false}
@@ -1246,21 +1256,15 @@ export default function Intern() {
             <div className="px-4 pb-4 pt-2 space-y-3">
               <p className="text-sm text-gray-800 font-semibold mb-2">First-Stage Förderung (Juni – November 2026):</p>
               <ul className="list-disc list-inside text-sm text-gray-800 space-y-1 mb-4">
-                <li><strong>M1 (Juni 2026) Analyse & Konzept:</strong> Zielgruppen, Rahmenbedingungen, Bedürfnisse, Projektarten, typische Prozesse, Qualitätskriterien, Informationsarchitektur, Backlog</li>
-                <li><strong>M2 (Juli 2026) Setup & Tech:</strong> Repo, CI/CD, Hosting, DB, Auth, Rollenmodell, Sicherheits- und Datenschutzbasis</li>
-                <li><strong>M3 (August 2026) Core-Prototyp:</strong> Projektanlage, erste Projektarten, Basisprozesse, Projektrollen, Ansichten, geführte Schritte, Templates, Wissensstruktur</li>
-                <li><strong>M4 (September 2026) Feature-Ausbau:</strong> weitere Projektarten, Prozesspfade, Tipps, Hinweise, Kalenderlogik, Benachrichtigungen</li>
-                <li><strong>M5 (Oktober 2026) Pilotphase 1:</strong> reale Pilotprojekte, Interviews, Usability-Tests, Logging, Priorisierung für Verbesserungen</li>
-                <li><strong>M6 (November 2026) Stabilisierung:</strong> technische Optimierung, UX-Verbesserungen, Prototyp-Release, Nutzer- und Entwicklerdokumentation, OSS-Release</li>
+                <li><strong>M1 Analyse & Konzept (KW 23-31):</strong> Zielgruppenanalyse, Projektarten, typische Prozesse & Templates, Qualitätskriterien, Informationsarchitektur, Backlog</li>
+                <li><strong>M2 Setup & Tech (KW 23-24):</strong> Analyse bestehender PM-Software, Repo, CI/CD, Hosting, DB, Auth, Rollenmodell, Sicherheits- und Datenschutzbasis</li>
+                <li><strong>M4 Core-Prototyp (KW 25-33):</strong> Projektanlage, erste Projektarten, Basisprozesse, Projektrollen, Ansichten, geführte Schritte, Templates, Wissensstruktur</li>
+                <li><strong>M5 Feature-Ausbau (KW 34-37):</strong> weitere Projektarten, Prozesspfade, Tipps, Kalenderlogik, Benachrichtigungen</li>
+                <li><strong>M6 Pilotphase 1 (KW 38-43):</strong> reale Pilotprojekte, Interviews, Usability-Tests, Logging, Priorisierung für Verbesserungen</li>
+                <li><strong>M7 Stabilisierung (KW 44-48):</strong> technische Optimierung, UX-Verbesserungen, Prototyp-Release, Nutzer- und Entwicklerdokumentation, OSS-Release</li>
               </ul>
 
-              <p className="text-sm text-gray-800 font-semibold mb-2">Second-Stage Förderung (Dezember 2026 – März 2027):</p>
-              <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
-                <li><strong>M7 (Dezember 2026) Vertiefte Pilotphase:</strong> zusätzliche Institutionen, strukturierte Tests, Kontextinterviews, Nutzungsanalyse, priorisierte Maßnahmen</li>
-                <li><strong>M8 (Januar 2027) Wissensaufbau:</strong> Best-Practice-Guides, Projektartenkatalog, verbesserte Templates, Onboarding-Materialien, Dokumentstruktur</li>
-                <li><strong>M9 (Februar 2027) Community:</strong> Kommunikationskanäle, Governance-Modell, Ankerinstitutionen, Workshops für frühe Nutzergruppen</li>
-                <li><strong>M10 (März 2027) Verstetigung:</strong> Betriebsmodell, Finanzierungsszenarien, Roadmap, Implementierungsleitfaden, Abschlussbericht zur nachhaltigen Nutzung</li>
-              </ul>
+
             </div>
           </details>
 
@@ -1808,8 +1812,8 @@ export default function Intern() {
           {/* Holidays Section */}
 
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 
