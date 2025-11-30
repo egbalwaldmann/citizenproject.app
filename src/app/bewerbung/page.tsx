@@ -99,6 +99,10 @@ export default function Intern() {
   const [columnOrderMode, setColumnOrderMode] = useState<'default' | 'alphabetical'>('default');
   const [selectedTimelineItem, setSelectedTimelineItem] = useState<any>(null);
 
+  React.useEffect(() => {
+    moment.locale('de');
+  }, []);
+
   // ============================================
   // KALKULATION LOGIC & STATE
   // ============================================
@@ -1004,11 +1008,11 @@ export default function Intern() {
               <TimelineHeaders className="bg-gray-100 text-gray-700">
                 <SidebarHeader>
                   {({ getRootProps }) => {
-                    return <div {...getRootProps()} className="p-2 font-bold text-gray-700">Tracks</div>;
+                    return <div {...getRootProps()} className="p-2 font-bold text-gray-700">CitizenProject.App</div>;
                   }}
                 </SidebarHeader>
                 <DateHeader unit="primaryHeader" />
-                <DateHeader />
+                <DateHeader labelFormat={([startTime]) => moment(startTime.valueOf()).format('MMMM')} />
               </TimelineHeaders>
               <CustomMarker date={moment('2025-09-01').valueOf()}>
                 {({ styles }) => (
