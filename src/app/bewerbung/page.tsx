@@ -199,8 +199,8 @@ export default function Intern() {
   const totalTeamNetHours = phase1TeamNetHours + phase2TeamNetHours;
 
   // Timeline zoom state
-  const [visibleTimeStart, setVisibleTimeStart] = useState(moment('2026-05-01').valueOf());
-  const [visibleTimeEnd, setVisibleTimeEnd] = useState(moment('2027-04-30').valueOf());
+  const [visibleTimeStart, setVisibleTimeStart] = useState(moment('2026-05-25').valueOf());
+  const [visibleTimeEnd, setVisibleTimeEnd] = useState(moment('2026-09-25').valueOf());
 
   // Initialize visible columns from COLUMN_CONFIG
   const [visibleColumns, setVisibleColumns] = useState<Record<keyof typeof COLUMN_CONFIG, boolean>>(
@@ -636,11 +636,11 @@ export default function Intern() {
   // ============================================
 
   const groups = [
-    { id: 0, title: 'Förderphasen', stackItems: false, height: 40 },
-    { id: 5, title: 'Fördermonate', stackItems: false, height: 40 },
-    { id: 6, title: 'Kalenderwochen', stackItems: false, height: 40 },
+    { id: 0, title: 'Förderphasen', stackItems: false, height: 50 },
+    { id: 5, title: 'Fördermonate', stackItems: false, height: 50 },
+    { id: 6, title: 'Kalenderwochen', stackItems: false, height: 50 },
     { id: 1, title: 'Sprints', stackItems: false, height: 50 },
-    { id: 4, title: 'Meilensteine', stackItems: false }
+    { id: 4, title: 'Meilensteine', stackItems: false, height: 50 }
   ];
 
   // Helper to generate Funding Months (M1-M10)
@@ -687,35 +687,35 @@ export default function Intern() {
 
   const staticItems = [
     // --- FÖRDERPHASEN ---
-    { id: 1, group: 0, title: 'Förderphase 1', start_time: moment('2026-06-01'), end_time: moment('2026-11-30').endOf('day'), itemProps: { style: { background: '#64748b', borderStyle: 'none', borderRadius: 0 } } },
-    { id: 2, group: 0, title: 'Förderphase 2', start_time: moment('2026-12-01'), end_time: moment('2027-03-31').endOf('day'), itemProps: { style: { background: '#f59e0b', borderStyle: 'none', borderRadius: 0 } } },
+    { id: 1, group: 0, title: 'Förderphase 1', start_time: moment('2026-06-01'), end_time: moment('2026-11-30').endOf('day'), itemProps: { style: { background: '#64748b', borderStyle: 'none', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 2, group: 0, title: 'Förderphase 2', start_time: moment('2026-12-01'), end_time: moment('2027-03-31').endOf('day'), itemProps: { style: { background: '#f59e0b', borderStyle: 'none', borderRadius: 0, textAlign: 'center' as const } } },
 
     // --- SPRINTS (2-week cycles) ---
     // Phase 1 (June - Nov 2026)
-    { id: 101, group: 1, title: '1', start_time: moment('2026-06-01'), end_time: moment('2026-06-14').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 102, group: 1, title: '2', start_time: moment('2026-06-15'), end_time: moment('2026-06-28').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 103, group: 1, title: '3', start_time: moment('2026-06-29'), end_time: moment('2026-07-12').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 104, group: 1, title: '4', start_time: moment('2026-07-13'), end_time: moment('2026-07-26').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 105, group: 1, title: '5', start_time: moment('2026-07-27'), end_time: moment('2026-08-09').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 106, group: 1, title: '6', start_time: moment('2026-08-10'), end_time: moment('2026-08-23').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 107, group: 1, title: '7', start_time: moment('2026-08-24'), end_time: moment('2026-09-06').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 108, group: 1, title: '8', start_time: moment('2026-09-07'), end_time: moment('2026-09-20').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 109, group: 1, title: '9', start_time: moment('2026-09-21'), end_time: moment('2026-10-04').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 110, group: 1, title: '10', start_time: moment('2026-10-05'), end_time: moment('2026-10-18').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 111, group: 1, title: '11', start_time: moment('2026-10-19'), end_time: moment('2026-11-01').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 112, group: 1, title: '12', start_time: moment('2026-11-02'), end_time: moment('2026-11-15').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 113, group: 1, title: '13', start_time: moment('2026-11-16'), end_time: moment('2026-11-29').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 101, group: 1, title: '1', start_time: moment('2026-06-01'), end_time: moment('2026-06-14').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 102, group: 1, title: '2', start_time: moment('2026-06-15'), end_time: moment('2026-06-28').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 103, group: 1, title: '3', start_time: moment('2026-06-29'), end_time: moment('2026-07-12').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 104, group: 1, title: '4', start_time: moment('2026-07-13'), end_time: moment('2026-07-26').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 105, group: 1, title: '5', start_time: moment('2026-07-27'), end_time: moment('2026-08-09').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 106, group: 1, title: '6', start_time: moment('2026-08-10'), end_time: moment('2026-08-23').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 107, group: 1, title: '7', start_time: moment('2026-08-24'), end_time: moment('2026-09-06').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 108, group: 1, title: '8', start_time: moment('2026-09-07'), end_time: moment('2026-09-20').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 109, group: 1, title: '9', start_time: moment('2026-09-21'), end_time: moment('2026-10-04').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 110, group: 1, title: '10', start_time: moment('2026-10-05'), end_time: moment('2026-10-18').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 111, group: 1, title: '11', start_time: moment('2026-10-19'), end_time: moment('2026-11-01').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 112, group: 1, title: '12', start_time: moment('2026-11-02'), end_time: moment('2026-11-15').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 113, group: 1, title: '13', start_time: moment('2026-11-16'), end_time: moment('2026-11-29').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
 
     // Phase 2 (Dec 2026 - Mar 2027)
-    { id: 114, group: 1, title: '14', start_time: moment('2026-12-01'), end_time: moment('2026-12-14').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 115, group: 1, title: '15', start_time: moment('2026-12-15'), end_time: moment('2026-12-28').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 116, group: 1, title: '16', start_time: moment('2026-12-29'), end_time: moment('2027-01-11').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 117, group: 1, title: '17', start_time: moment('2027-01-12'), end_time: moment('2027-01-25').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 118, group: 1, title: '18', start_time: moment('2027-01-26'), end_time: moment('2027-02-08').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 119, group: 1, title: '19', start_time: moment('2027-02-09'), end_time: moment('2027-02-22').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 120, group: 1, title: '20', start_time: moment('2027-02-23'), end_time: moment('2027-03-08').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 121, group: 1, title: '21', start_time: moment('2027-03-09'), end_time: moment('2027-03-22').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
-    { id: 122, group: 1, title: '22', start_time: moment('2027-03-23'), end_time: moment('2027-04-05').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0 } } },
+    { id: 114, group: 1, title: '14', start_time: moment('2026-12-01'), end_time: moment('2026-12-14').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 115, group: 1, title: '15', start_time: moment('2026-12-15'), end_time: moment('2026-12-28').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 116, group: 1, title: '16', start_time: moment('2026-12-29'), end_time: moment('2027-01-11').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 117, group: 1, title: '17', start_time: moment('2027-01-12'), end_time: moment('2027-01-25').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 118, group: 1, title: '18', start_time: moment('2027-01-26'), end_time: moment('2027-02-08').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 119, group: 1, title: '19', start_time: moment('2027-02-09'), end_time: moment('2027-02-22').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 120, group: 1, title: '20', start_time: moment('2027-02-23'), end_time: moment('2027-03-08').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 121, group: 1, title: '21', start_time: moment('2027-03-09'), end_time: moment('2027-03-22').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 122, group: 1, title: '22', start_time: moment('2027-03-23'), end_time: moment('2027-04-05').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
   ];
 
   const items = [...staticItems, ...generateMonthItems(), ...generateWeekItems()];
@@ -1005,12 +1005,7 @@ export default function Intern() {
                 )}
               </CustomMarker>
             </Timeline>
-            <div className="mt-4 flex gap-4 text-xs text-gray-500 justify-end">
-              <div className="flex items-center gap-1"><span className="w-3 h-3 bg-indigo-100 border border-indigo-300 rounded"></span> Sprints</div>
-              <div className="flex items-center gap-1"><span className="w-3 h-3 bg-indigo-600 rounded"></span> Dev Epics</div>
-              <div className="flex items-center gap-1"><span className="w-3 h-3 bg-emerald-500 rounded"></span> Konzept Epics</div>
-              <div className="flex items-center gap-1"><span className="w-3 h-3 bg-red-500 rounded-full"></span> Meilensteine</div>
-            </div>
+
 
             {/* Inline Item Details */}
             {selectedTimelineItem && (
@@ -1029,7 +1024,7 @@ export default function Intern() {
                   <div className="flex flex-wrap gap-4 text-sm text-indigo-800">
                     <div>
                       <span className="font-semibold opacity-75 block text-xs uppercase tracking-wider">Zeitraum</span>
-                      {moment(selectedTimelineItem.start_time).format('DD.MM.YYYY')} - {moment(selectedTimelineItem.end_time).format('DD.MM.YYYY')}
+                      {moment(selectedTimelineItem.start_time).format('dddd, DD.MM.YYYY')} - {moment(selectedTimelineItem.end_time).format('dddd, DD.MM.YYYY')}
                     </div>
                     <div>
                       <span className="font-semibold opacity-75 block text-xs uppercase tracking-wider">Kategorie</span>
