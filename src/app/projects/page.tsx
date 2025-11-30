@@ -1,7 +1,8 @@
 'use client';
 
 import Layout from '../../components/Layout';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function Projects() {
   const [projects, setProjects] = useState([
@@ -51,7 +52,18 @@ export default function Projects() {
     }
   ]);
 
+  useEffect(() => {
+    const savedProjects = localStorage.getItem('projects');
+    if (savedProjects) {
+      setProjects(JSON.parse(savedProjects));
+    } else {
+      // Initialize localStorage with default projects
+      localStorage.setItem('projects', JSON.stringify(projects));
+    }
+  }, []);
+
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [editingProject, setEditingProject] = useState<any>(null);
   const [newProject, setNewProject] = useState({
     name: '',
     description: '',
@@ -59,22 +71,50 @@ export default function Projects() {
     budget: ''
   });
 
+  const handleEditClick = (project: any) => {
+    setEditingProject(project);
+    setNewProject({
+      name: project.name,
+      description: project.description,
+      deadline: project.deadline,
+      budget: project.budget
+    });
+    setShowNewProjectModal(true);
+  };
+
   const handleCreateProject = (e: React.FormEvent) => {
     e.preventDefault();
     if (newProject.name && newProject.description) {
-      const project = {
-        id: projects.length + 1,
-        name: newProject.name,
-        description: newProject.description,
-        progress: 0,
-        status: 'planning' as const,
-        team: [],
-        startDate: new Date().toISOString().split('T')[0],
-        deadline: newProject.deadline,
-        budget: newProject.budget
-      };
-      setProjects([...projects, project]);
+      let updatedProjects;
+
+      if (editingProject) {
+        // Update existing project
+        updatedProjects = projects.map(p =>
+          p.id === editingProject.id
+            ? { ...p, ...newProject }
+            : p
+        );
+      } else {
+        // Create new project
+        const project = {
+          id: projects.length + 1,
+          name: newProject.name,
+          description: newProject.description,
+          progress: 0,
+          status: 'planning' as const,
+          team: [],
+          startDate: new Date().toISOString().split('T')[0],
+          deadline: newProject.deadline,
+          budget: newProject.budget
+        };
+        updatedProjects = [...projects, project];
+      }
+
+      setProjects(updatedProjects);
+      localStorage.setItem('projects', JSON.stringify(updatedProjects));
+
       setNewProject({ name: '', description: '', deadline: '', budget: '' });
+      setEditingProject(null);
       setShowNewProjectModal(false);
     }
   };
@@ -89,12 +129,12 @@ export default function Projects() {
             <h1 className="text-3xl font-bold text-gray-900">Projects</h1>
             <p className="text-gray-800 mt-2">Manage all your projects in one place</p>
           </div>
-          <button
-            onClick={() => setShowNewProjectModal(true)}
+          <Link
+            href="/setup"
             className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
           >
             + New Project
-          </button>
+          </Link>
         </div>
 
         {/* Projects Grid */}
@@ -104,25 +144,24 @@ export default function Projects() {
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <h3 className="text-xl font-semibold text-gray-900">{project.name}</h3>
-                  <span className={`px-3 py-1 text-xs rounded-full font-medium ${
-                    project.status === 'active' ? 'bg-green-100 text-green-800' :
-                    project.status === 'review' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-blue-100 text-blue-800'
-                  }`}>
+                  <span className={`px-3 py-1 text-xs rounded-full font-medium ${project.status === 'active' ? 'bg-green-100 text-green-900' :
+                    project.status === 'review' ? 'bg-yellow-100 text-yellow-900' :
+                      'bg-blue-100 text-blue-900'
+                    }`}>
                     {project.status}
                   </span>
                 </div>
-                
-                <p className="text-gray-800 mb-4 text-sm">{project.description}</p>
-                
+
+                <p className="text-gray-900 mb-4 text-sm">{project.description}</p>
+
                 <div className="mb-4">
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-800">Progress</span>
-                    <span className="font-medium">{project.progress}%</span>
+                    <span className="text-gray-900">Progress</span>
+                    <span className="font-medium text-gray-900">{project.progress}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-indigo-600 h-2 rounded-full transition-all duration-300" 
+                    <div
+                      className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${project.progress}%` }}
                     ></div>
                   </div>
@@ -130,25 +169,31 @@ export default function Projects() {
 
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-800">Team</span>
-                    <span className="font-medium">{project.team.length} members</span>
+                    <span className="text-gray-900">Team</span>
+                    <span className="font-medium text-gray-900">{project.team.length} members</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-800">Deadline</span>
-                    <span className="font-medium">{project.deadline}</span>
+                    <span className="text-gray-900">Deadline</span>
+                    <span className="font-medium text-gray-900">{project.deadline}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-800">Budget</span>
-                    <span className="font-medium">{project.budget}</span>
+                    <span className="text-gray-900">Budget</span>
+                    <span className="font-medium text-gray-900">{project.budget}</span>
                   </div>
                 </div>
 
                 <div className="mt-4 pt-4 border-t">
                   <div className="flex space-x-2">
-                    <button className="flex-1 bg-indigo-600 text-white py-2 px-3 rounded text-sm font-medium hover:bg-indigo-700 transition-colors">
+                    <Link
+                      href={`/projects/${project.id}`}
+                      className="flex-1 bg-indigo-600 text-white py-2 px-3 rounded text-sm font-medium hover:bg-indigo-700 transition-colors text-center"
+                    >
                       View Details
-                    </button>
-                    <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded text-sm font-medium hover:bg-gray-200 transition-colors">
+                    </Link>
+                    <button
+                      onClick={() => handleEditClick(project)}
+                      className="flex-1 bg-gray-100 text-gray-900 py-2 px-3 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
+                    >
                       Edit
                     </button>
                   </div>
@@ -162,7 +207,9 @@ export default function Projects() {
         {showNewProjectModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Create New Project</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                {editingProject ? 'Edit Project' : 'Create New Project'}
+              </h2>
               <form onSubmit={handleCreateProject}>
                 <div className="space-y-4">
                   <div>
@@ -171,7 +218,7 @@ export default function Projects() {
                       type="text"
                       value={newProject.name}
                       onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                       placeholder="Enter project name"
                       required
                     />
@@ -181,7 +228,7 @@ export default function Projects() {
                     <textarea
                       value={newProject.description}
                       onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                       rows={3}
                       placeholder="Enter project description"
                       required
@@ -193,7 +240,7 @@ export default function Projects() {
                       type="date"
                       value={newProject.deadline}
                       onChange={(e) => setNewProject({ ...newProject, deadline: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                     />
                   </div>
                   <div>
@@ -202,7 +249,7 @@ export default function Projects() {
                       type="text"
                       value={newProject.budget}
                       onChange={(e) => setNewProject({ ...newProject, budget: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                       placeholder="e.g., $10,000"
                     />
                   </div>
@@ -212,11 +259,15 @@ export default function Projects() {
                     type="submit"
                     className="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
                   >
-                    Create Project
+                    {editingProject ? 'Save Changes' : 'Create Project'}
                   </button>
                   <button
                     type="button"
-                    onClick={() => setShowNewProjectModal(false)}
+                    onClick={() => {
+                      setShowNewProjectModal(false);
+                      setEditingProject(null);
+                      setNewProject({ name: '', description: '', deadline: '', budget: '' });
+                    }}
                     className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors"
                   >
                     Cancel

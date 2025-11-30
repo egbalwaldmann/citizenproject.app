@@ -89,7 +89,7 @@ export default function StakeholderAnalyse() {
   const handleExport = () => {
     // Export as TSV
     const headers = [
-      'Stakeholder / Zielgruppe',
+      'Stakeholder',
       'Einfluss',
       'Chance / Risiko',
       'quant. Interesse',
@@ -139,6 +139,63 @@ export default function StakeholderAnalyse() {
     }
   };
 
+  const loadExampleData = () => {
+    if (confirm('Möchten Sie die aktuellen Daten mit Beispieldaten überschreiben?')) {
+      setStakeholders([
+        {
+          id: '1',
+          name: 'Geschäftsführung / Auftraggeber',
+          einfluss: 'hoch',
+          chanceRisiko: 'Chance',
+          quantInteresse: 'hoch',
+          qualInteresse: 'Strategische Weiterentwicklung, Effizienzsteigerung',
+          rolle: ['Sponsor'],
+          einbeziehung: ['Information/Bericht', 'Dialog']
+        },
+        {
+          id: '2',
+          name: 'Projektteam (Kernteam)',
+          einfluss: 'mittel',
+          chanceRisiko: 'Chance',
+          quantInteresse: 'hoch',
+          qualInteresse: 'Fachliche Umsetzung, Kompetenzerweiterung',
+          rolle: ['Partner', 'Input/Info'],
+          einbeziehung: ['Kollaboration (punktuell)', 'Dialog']
+        },
+        {
+          id: '3',
+          name: 'Betriebsrat',
+          einfluss: 'hoch',
+          chanceRisiko: 'Risiko',
+          quantInteresse: 'mittel',
+          qualInteresse: 'Einhaltung von Mitarbeiterrechten, Datenschutz',
+          rolle: ['Input/Info'],
+          einbeziehung: ['Dialog', 'Information/Bericht']
+        },
+        {
+          id: '4',
+          name: 'Endanwender / User',
+          einfluss: 'niedrig',
+          chanceRisiko: 'Chance',
+          quantInteresse: 'hoch',
+          qualInteresse: 'Einfache Bedienbarkeit, Arbeitserleichterung',
+          rolle: ['Input/Info'],
+          einbeziehung: ['Dialog', 'Kollaboration (punktuell)']
+        },
+        {
+          id: '5',
+          name: 'Externe IT-Dienstleister',
+          einfluss: 'mittel',
+          chanceRisiko: 'offen',
+          quantInteresse: 'mittel',
+          qualInteresse: 'Folgeaufträge, Referenzprojekt',
+          rolle: ['Partner'],
+          einbeziehung: ['Partnerschaft (längerfristig)']
+        }
+      ]);
+    }
+  };
+
   return (
     <Layout currentPage="">
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -151,6 +208,12 @@ export default function StakeholderAnalyse() {
             </p>
           </div>
           <div className="flex gap-3">
+            <button
+              onClick={loadExampleData}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors"
+            >
+              📋 Beispiel laden
+            </button>
             <button
               onClick={() => setShowHelp(!showHelp)}
               className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors"
@@ -233,13 +296,13 @@ export default function StakeholderAnalyse() {
                 {/* Name */}
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Stakeholder / Zielgruppe *
+                    Stakeholder *
                   </label>
                   <input
                     type="text"
                     value={stakeholder.name}
                     onChange={(e) => updateStakeholder(stakeholder.id, 'name', e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                     placeholder="Name oder Bezeichnung des Stakeholders"
                   />
                 </div>
@@ -254,11 +317,10 @@ export default function StakeholderAnalyse() {
                       <button
                         key={stufe}
                         onClick={() => updateStakeholder(stakeholder.id, 'einfluss', stufe)}
-                        className={`flex-1 px-4 py-2 rounded-lg border-2 font-medium transition-colors ${
-                          stakeholder.einfluss === stufe
-                            ? getEinflussColor(stufe) + ' border-current'
-                            : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
+                        className={`flex-1 px-4 py-2 rounded-lg border-2 font-medium transition-colors ${stakeholder.einfluss === stufe
+                          ? getEinflussColor(stufe) + ' border-current'
+                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                          }`}
                       >
                         {stufe.charAt(0).toUpperCase() + stufe.slice(1)}
                       </button>
@@ -275,7 +337,7 @@ export default function StakeholderAnalyse() {
                     type="text"
                     value={stakeholder.chanceRisiko}
                     onChange={(e) => updateStakeholder(stakeholder.id, 'chanceRisiko', e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                     placeholder="z.B. Chance, Risiko, offen"
                   />
                 </div>
@@ -285,13 +347,20 @@ export default function StakeholderAnalyse() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Quantitatives Interesse
                   </label>
-                  <input
-                    type="text"
-                    value={stakeholder.quantInteresse}
-                    onChange={(e) => updateStakeholder(stakeholder.id, 'quantInteresse', e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="z.B. hoch, mittel, niedrig"
-                  />
+                  <div className="flex gap-2">
+                    {['hoch', 'mittel', 'niedrig'].map(stufe => (
+                      <button
+                        key={stufe}
+                        onClick={() => updateStakeholder(stakeholder.id, 'quantInteresse', stufe)}
+                        className={`flex-1 px-4 py-2 rounded-lg border-2 font-medium transition-colors ${stakeholder.quantInteresse === stufe
+                          ? getEinflussColor(stufe) + ' border-current'
+                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                          }`}
+                      >
+                        {stufe.charAt(0).toUpperCase() + stufe.slice(1)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Qualitatives Interesse */}
@@ -303,8 +372,8 @@ export default function StakeholderAnalyse() {
                     value={stakeholder.qualInteresse}
                     onChange={(e) => updateStakeholder(stakeholder.id, 'qualInteresse', e.target.value)}
                     rows={2}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="Beschreibung des Interesses..."
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
+                    placeholder="Welches Interesse hat der Stakeholder am Projekt?"
                   />
                 </div>
 
@@ -318,11 +387,10 @@ export default function StakeholderAnalyse() {
                       <button
                         key={rolle}
                         onClick={() => toggleMultiSelect(stakeholder.id, 'rolle', rolle)}
-                        className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-colors ${
-                          stakeholder.rolle.includes(rolle)
-                            ? 'bg-indigo-100 text-indigo-800 border-indigo-500'
-                            : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
+                        className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-colors ${stakeholder.rolle.includes(rolle)
+                          ? 'bg-indigo-100 text-indigo-800 border-indigo-500'
+                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                          }`}
                       >
                         {stakeholder.rolle.includes(rolle) ? '✓ ' : ''}{rolle}
                       </button>
@@ -340,11 +408,10 @@ export default function StakeholderAnalyse() {
                       <button
                         key={art}
                         onClick={() => toggleMultiSelect(stakeholder.id, 'einbeziehung', art)}
-                        className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-colors ${
-                          stakeholder.einbeziehung.includes(art)
-                            ? 'bg-green-100 text-green-800 border-green-500'
-                            : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
+                        className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-colors ${stakeholder.einbeziehung.includes(art)
+                          ? 'bg-green-100 text-green-800 border-green-500'
+                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                          }`}
                       >
                         {stakeholder.einbeziehung.includes(art) ? '✓ ' : ''}{art}
                       </button>

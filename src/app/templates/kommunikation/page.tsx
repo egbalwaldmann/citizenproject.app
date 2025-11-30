@@ -150,6 +150,53 @@ export default function KommunikationsplanungTemplate() {
     URL.revokeObjectURL(url);
   };
 
+  const loadExampleData = () => {
+    if (confirm('Möchten Sie die aktuellen Daten mit Beispieldaten überschreiben?')) {
+      setEintraege([
+        {
+          id: '1',
+          zielgruppe: 'Lokale Presse / Medien',
+          kommunikationsziele: 'Bekanntheit steigern, positives Image aufbauen',
+          inhalteThemen: 'Projektstart, Meilensteine, Erfolgsgeschichten',
+          anlaesseHaeufigkeit: 'Quartalsweise und ad-hoc bei Events',
+          kanaele: ['Pressemitteilung', 'E-Mail', 'Persönliche Gespräche'],
+          medialeFormate: ['Textbeitrag', 'Bildmaterial', 'Pressemappe'],
+          verantwortlich: 'PR-Manager'
+        },
+        {
+          id: '2',
+          zielgruppe: 'Breite Öffentlichkeit / Bürger',
+          kommunikationsziele: 'Transparenz schaffen, Akzeptanz fördern, Mitmachen anregen',
+          inhalteThemen: 'Projektfortschritt, Veranstaltungen, Beteiligungsmöglichkeiten',
+          anlaesseHaeufigkeit: 'Wöchentlich (Social Media), Monatlich (Newsletter)',
+          kanaele: ['Social Media (Instagram)', 'Social Media (Facebook)', 'Website', 'Newsletter'],
+          medialeFormate: ['Bildmaterial', 'Video', 'Textbeitrag', 'Flyer'],
+          verantwortlich: 'Social Media Manager'
+        },
+        {
+          id: '3',
+          zielgruppe: 'Fördergeber / Sponsoren',
+          kommunikationsziele: 'Rechenschaft ablegen, Vertrauen sichern, Folgefinanzierung',
+          inhalteThemen: 'Statusberichte, Finanzkennzahlen, Wirkungsmessung',
+          anlaesseHaeufigkeit: 'Monatlich (Bericht), Halbjährlich (Treffen)',
+          kanaele: ['E-Mail', 'Persönliche Gespräche', 'Print-Medien'],
+          medialeFormate: ['Bericht', 'Präsentation', 'Factsheet'],
+          verantwortlich: 'Projektleitung'
+        },
+        {
+          id: '4',
+          zielgruppe: 'Fachcommunity / Experten',
+          kommunikationsziele: 'Wissensaustausch, Qualitätssicherung, Networking',
+          inhalteThemen: 'Methodik, Ergebnisse, Best Practices',
+          anlaesseHaeufigkeit: 'Bei Konferenzen, Jährlich',
+          kanaele: ['Konferenzen', 'Workshops', 'Blog'],
+          medialeFormate: ['Präsentation', 'Whitepaper', 'Case Study'],
+          verantwortlich: 'Fachlicher Lead'
+        }
+      ]);
+    }
+  };
+
   return (
     <Layout currentPage="">
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -162,6 +209,12 @@ export default function KommunikationsplanungTemplate() {
             </p>
           </div>
           <div className="flex gap-3">
+            <button
+              onClick={loadExampleData}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors"
+            >
+              📋 Beispiel laden
+            </button>
             <button
               onClick={() => setShowHelp(!showHelp)}
               className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors"
@@ -251,7 +304,7 @@ export default function KommunikationsplanungTemplate() {
                     type="text"
                     value={eintrag.zielgruppe}
                     onChange={(e) => updateEintrag(eintrag.id, 'zielgruppe', e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                     placeholder="z.B. Förderer, Partner, Fachpublikum, Medien..."
                   />
                 </div>
@@ -265,7 +318,7 @@ export default function KommunikationsplanungTemplate() {
                     value={eintrag.kommunikationsziele}
                     onChange={(e) => updateEintrag(eintrag.id, 'kommunikationsziele', e.target.value)}
                     rows={3}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                     placeholder="Was möchten Sie bei dieser Zielgruppe erreichen?"
                   />
                 </div>
@@ -279,7 +332,7 @@ export default function KommunikationsplanungTemplate() {
                     value={eintrag.inhalteThemen}
                     onChange={(e) => updateEintrag(eintrag.id, 'inhalteThemen', e.target.value)}
                     rows={3}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                     placeholder="Welche Botschaften und Themen sind relevant?"
                   />
                 </div>
@@ -293,7 +346,7 @@ export default function KommunikationsplanungTemplate() {
                     type="text"
                     value={eintrag.anlaesseHaeufigkeit}
                     onChange={(e) => updateEintrag(eintrag.id, 'anlaesseHaeufigkeit', e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                     placeholder="z.B. monatlich, quartalsweise, bei Projektmeilensteinen..."
                   />
                 </div>
@@ -308,11 +361,10 @@ export default function KommunikationsplanungTemplate() {
                       <button
                         key={kanal}
                         onClick={() => toggleMultiSelect(eintrag.id, 'kanaele', kanal)}
-                        className={`px-3 py-1.5 rounded-lg border-2 text-sm font-medium transition-colors ${
-                          eintrag.kanaele.includes(kanal)
-                            ? 'bg-blue-100 text-blue-800 border-blue-500'
-                            : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
+                        className={`px-3 py-1.5 rounded-lg border-2 text-sm font-medium transition-colors ${eintrag.kanaele.includes(kanal)
+                          ? 'bg-blue-100 text-blue-800 border-blue-500'
+                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                          }`}
                       >
                         {eintrag.kanaele.includes(kanal) ? '✓ ' : ''}{kanal}
                       </button>
@@ -330,11 +382,10 @@ export default function KommunikationsplanungTemplate() {
                       <button
                         key={format}
                         onClick={() => toggleMultiSelect(eintrag.id, 'medialeFormate', format)}
-                        className={`px-3 py-1.5 rounded-lg border-2 text-sm font-medium transition-colors ${
-                          eintrag.medialeFormate.includes(format)
-                            ? 'bg-purple-100 text-purple-800 border-purple-500'
-                            : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
+                        className={`px-3 py-1.5 rounded-lg border-2 text-sm font-medium transition-colors ${eintrag.medialeFormate.includes(format)
+                          ? 'bg-purple-100 text-purple-800 border-purple-500'
+                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                          }`}
                       >
                         {eintrag.medialeFormate.includes(format) ? '✓ ' : ''}{format}
                       </button>
@@ -351,7 +402,7 @@ export default function KommunikationsplanungTemplate() {
                     type="text"
                     value={eintrag.verantwortlich}
                     onChange={(e) => updateEintrag(eintrag.id, 'verantwortlich', e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                     placeholder="Name der verantwortlichen Person oder Stelle"
                   />
                 </div>

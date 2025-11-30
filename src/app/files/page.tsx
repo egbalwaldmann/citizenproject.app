@@ -142,14 +142,14 @@ export default function Files() {
                 placeholder="Search files..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
               />
             </div>
             <div className="sm:w-48">
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
               >
                 {categories.map(category => (
                   <option key={category.value} value={category.value}>
@@ -178,9 +178,9 @@ export default function Files() {
                   </button>
                 </div>
               </div>
-              
+
               <h3 className="font-medium text-gray-900 mb-2 text-sm leading-tight">{file.name}</h3>
-              
+
               <div className="space-y-2 text-sm text-gray-800 mb-4">
                 <div className="flex justify-between">
                   <span>Size</span>

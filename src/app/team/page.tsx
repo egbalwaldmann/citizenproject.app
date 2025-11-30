@@ -10,6 +10,7 @@ export default function Team() {
       name: 'Alice Johnson',
       role: 'Project Manager',
       email: 'alice.johnson@citizenproject.app',
+      phone: '+49 123 4567890',
       avatar: '👩‍💼',
       status: 'active',
       projects: ['Website Redesign', 'Mobile App Development'],
@@ -21,6 +22,7 @@ export default function Team() {
       name: 'Bob Smith',
       role: 'Full Stack Developer',
       email: 'bob.smith@citizenproject.app',
+      phone: '+49 123 4567891',
       avatar: '👨‍💻',
       status: 'active',
       projects: ['Website Redesign', 'Database Migration'],
@@ -32,6 +34,7 @@ export default function Team() {
       name: 'Carol Davis',
       role: 'UX Designer',
       email: 'carol.davis@citizenproject.app',
+      phone: '+49 123 4567892',
       avatar: '👩‍🎨',
       status: 'active',
       projects: ['Website Redesign', 'User Research Study'],
@@ -43,6 +46,7 @@ export default function Team() {
       name: 'David Wilson',
       role: 'Data Analyst',
       email: 'david.wilson@citizenproject.app',
+      phone: '+49 123 4567893',
       avatar: '👨‍📊',
       status: 'active',
       projects: ['User Research Study', 'Database Migration'],
@@ -54,6 +58,7 @@ export default function Team() {
       name: 'Eva Brown',
       role: 'DevOps Engineer',
       email: 'eva.brown@citizenproject.app',
+      phone: '+49 123 4567894',
       avatar: '👩‍🔧',
       status: 'active',
       projects: ['Website Redesign', 'Mobile App Development'],
@@ -65,6 +70,7 @@ export default function Team() {
       name: 'Frank Miller',
       role: 'Mobile Developer',
       email: 'frank.miller@citizenproject.app',
+      phone: '+49 123 4567895',
       avatar: '👨‍📱',
       status: 'vacation',
       projects: ['Mobile App Development'],
@@ -116,7 +122,7 @@ export default function Team() {
             <div className="flex items-center">
               <div className="text-3xl text-blue-500 mr-4">👥</div>
               <div>
-                <p className="text-sm font-medium text-gray-800">Total Members</p>
+                <p className="text-sm font-medium text-gray-900">Total Members</p>
                 <p className="text-2xl font-bold text-gray-900">{teamMembers.length}</p>
               </div>
             </div>
@@ -125,7 +131,7 @@ export default function Team() {
             <div className="flex items-center">
               <div className="text-3xl text-green-500 mr-4">✅</div>
               <div>
-                <p className="text-sm font-medium text-gray-800">Active Members</p>
+                <p className="text-sm font-medium text-gray-900">Active Members</p>
                 <p className="text-2xl font-bold text-gray-900">{teamMembers.filter(m => m.status === 'active').length}</p>
               </div>
             </div>
@@ -134,7 +140,7 @@ export default function Team() {
             <div className="flex items-center">
               <div className="text-3xl text-yellow-500 mr-4">🏖️</div>
               <div>
-                <p className="text-sm font-medium text-gray-800">On Vacation</p>
+                <p className="text-sm font-medium text-gray-900">On Vacation</p>
                 <p className="text-2xl font-bold text-gray-900">{teamMembers.filter(m => m.status === 'vacation').length}</p>
               </div>
             </div>
@@ -143,7 +149,7 @@ export default function Team() {
             <div className="flex items-center">
               <div className="text-3xl text-purple-500 mr-4">💼</div>
               <div>
-                <p className="text-sm font-medium text-gray-800">Roles</p>
+                <p className="text-sm font-medium text-gray-900">Roles</p>
                 <p className="text-2xl font-bold text-gray-900">{new Set(teamMembers.map(m => m.role)).size}</p>
               </div>
             </div>
@@ -159,13 +165,12 @@ export default function Team() {
                   <div className="text-4xl mr-4">{member.avatar}</div>
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-900">{member.name}</h3>
-                    <p className="text-sm text-gray-800">{member.role}</p>
+                    <p className="text-sm text-gray-900">{member.role}</p>
                     <div className="flex items-center mt-1">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        member.status === 'active' ? 'bg-green-100 text-green-800' :
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${member.status === 'active' ? 'bg-green-100 text-green-800' :
                         member.status === 'vacation' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
+                          'bg-gray-100 text-gray-900'
+                        }`}>
                         {member.status}
                       </span>
                     </div>
@@ -174,7 +179,8 @@ export default function Team() {
 
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm text-gray-800 mb-1">📧 {member.email}</p>
+                    <p className="text-sm text-gray-900 mb-1">📧 {member.email}</p>
+                    <p className="text-sm text-gray-900 mb-1">📞 {member.phone}</p>
                   </div>
 
                   <div>
@@ -189,7 +195,7 @@ export default function Team() {
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium text-gray-700 mb-1">Skills</p>
+                    <p className="text-sm font-medium text-gray-900 mb-1">Skills</p>
                     <div className="flex flex-wrap gap-1">
                       {member.skills.slice(0, 3).map((skill, index) => (
                         <span key={index} className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
@@ -203,7 +209,7 @@ export default function Team() {
                   </div>
 
                   <div className="pt-3 border-t">
-                    <p className="text-xs text-gray-500">Joined {member.joinDate}</p>
+                    <p className="text-xs text-gray-700">Joined {member.joinDate}</p>
                   </div>
                 </div>
 
@@ -233,7 +239,7 @@ export default function Team() {
                       type="email"
                       value={newInvite.email}
                       onChange={(e) => setNewInvite({ ...newInvite, email: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                       placeholder="colleague@example.com"
                       required
                     />
@@ -243,7 +249,7 @@ export default function Team() {
                     <select
                       value={newInvite.role}
                       onChange={(e) => setNewInvite({ ...newInvite, role: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                       required
                     >
                       <option value="">Select Role</option>
@@ -260,7 +266,7 @@ export default function Team() {
                     <textarea
                       value={newInvite.message}
                       onChange={(e) => setNewInvite({ ...newInvite, message: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                       rows={3}
                       placeholder="Welcome to our team..."
                     />

@@ -112,7 +112,7 @@ export default function Tasks() {
   };
 
   const updateTaskStatus = (taskId: number, newStatus: string) => {
-    setTasks(tasks.map(task => 
+    setTasks(tasks.map(task =>
       task.id === taskId ? { ...task, status: newStatus as any } : task
     ));
   };
@@ -149,11 +149,10 @@ export default function Tasks() {
                 <button
                   key={tab.key}
                   onClick={() => setFilter(tab.key)}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                    filter === tab.key
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${filter === tab.key
                       ? 'border-indigo-500 text-indigo-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                    }`}
                 >
                   {tab.label} ({tab.count})
                 </button>
@@ -171,31 +170,29 @@ export default function Tasks() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-lg font-semibold text-gray-900">{task.title}</h3>
-                      <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                        task.priority === 'high' ? 'bg-red-100 text-red-800' :
-                        task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-green-100 text-green-800'
-                      }`}>
+                      <span className={`px-2 py-1 text-xs rounded-full font-medium ${task.priority === 'high' ? 'bg-red-100 text-red-800' :
+                          task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-green-100 text-green-800'
+                        }`}>
                         {task.priority}
                       </span>
-                      <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                        task.status === 'completed' ? 'bg-green-100 text-green-800' :
-                        task.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
-                        task.status === 'review' ? 'bg-purple-100 text-purple-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span className={`px-2 py-1 text-xs rounded-full font-medium ${task.status === 'completed' ? 'bg-green-100 text-green-800' :
+                          task.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
+                            task.status === 'review' ? 'bg-purple-100 text-purple-800' :
+                              'bg-gray-100 text-gray-800'
+                        }`}>
                         {task.status.replace('-', ' ')}
                       </span>
                     </div>
-                    
+
                     <p className="text-gray-800 mb-3">{task.description}</p>
-                    
+
                     <div className="flex flex-wrap items-center gap-4 text-sm text-gray-800">
                       <span>📊 {task.project}</span>
                       <span>👤 {task.assignee}</span>
                       <span>📅 Due: {task.dueDate}</span>
                     </div>
-                    
+
                     <div className="flex flex-wrap gap-2 mt-3">
                       {task.tags.map((tag, index) => (
                         <span key={index} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
@@ -204,7 +201,7 @@ export default function Tasks() {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div className="flex flex-col gap-2 ml-4">
                     <select
                       value={task.status}
@@ -249,7 +246,7 @@ export default function Tasks() {
                       type="text"
                       value={newTask.title}
                       onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                       placeholder="Enter task title"
                       required
                     />
@@ -259,7 +256,7 @@ export default function Tasks() {
                     <textarea
                       value={newTask.description}
                       onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                       rows={3}
                       placeholder="Enter task description"
                     />
@@ -270,7 +267,7 @@ export default function Tasks() {
                       <select
                         value={newTask.project}
                         onChange={(e) => setNewTask({ ...newTask, project: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                         required
                       >
                         <option value="">Select Project</option>
@@ -286,7 +283,7 @@ export default function Tasks() {
                         type="text"
                         value={newTask.assignee}
                         onChange={(e) => setNewTask({ ...newTask, assignee: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                         placeholder="Assign to team member"
                       />
                     </div>
@@ -297,7 +294,7 @@ export default function Tasks() {
                       <select
                         value={newTask.priority}
                         onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                       >
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
@@ -310,7 +307,7 @@ export default function Tasks() {
                         type="date"
                         value={newTask.dueDate}
                         onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                       />
                     </div>
                   </div>

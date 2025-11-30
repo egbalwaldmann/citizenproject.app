@@ -116,7 +116,7 @@ export default function Arbeitspaket() {
                 type="text"
                 value={formData.nummer}
                 onChange={(e) => setFormData({ ...formData, nummer: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                 placeholder="z.B. AP-001"
               />
             </div>
@@ -126,7 +126,7 @@ export default function Arbeitspaket() {
                 type="text"
                 value={formData.bezeichnung}
                 onChange={(e) => setFormData({ ...formData, bezeichnung: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                 placeholder="Name des Arbeitspakets"
               />
             </div>
@@ -136,7 +136,7 @@ export default function Arbeitspaket() {
                 type="text"
                 value={formData.verantwortlich}
                 onChange={(e) => setFormData({ ...formData, verantwortlich: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                 placeholder="Name der verantwortlichen Person"
               />
             </div>
@@ -149,7 +149,7 @@ export default function Arbeitspaket() {
               value={formData.ziele}
               onChange={(e) => setFormData({ ...formData, ziele: e.target.value })}
               rows={4}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
               placeholder="Beschreiben Sie die Ziele dieses Arbeitspakets..."
             />
           </div>
@@ -165,7 +165,7 @@ export default function Arbeitspaket() {
                     type="text"
                     value={massnahme}
                     onChange={(e) => updateMassnahme(index, e.target.value)}
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                     placeholder={`Maßnahme ${index + 1}`}
                   />
                 </div>
@@ -184,7 +184,7 @@ export default function Arbeitspaket() {
                     type="text"
                     value={ergebnis}
                     onChange={(e) => updateErgebnis(index, e.target.value)}
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                     placeholder={`Ergebnis ${index + 1}`}
                   />
                 </div>
@@ -202,7 +202,7 @@ export default function Arbeitspaket() {
                   type="date"
                   value={formData.startDatum}
                   onChange={(e) => setFormData({ ...formData, startDatum: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                 />
               </div>
               <div>
@@ -211,7 +211,7 @@ export default function Arbeitspaket() {
                   type="date"
                   value={formData.endeDatum}
                   onChange={(e) => setFormData({ ...formData, endeDatum: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                 />
               </div>
             </div>
@@ -257,7 +257,7 @@ export default function Arbeitspaket() {
                           type="text"
                           value={item.was}
                           onChange={(e) => updateUnterstuetzung(index, 'was', e.target.value)}
-                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                           placeholder="Benötigte Unterstützung"
                         />
                       </td>
@@ -266,7 +266,7 @@ export default function Arbeitspaket() {
                           type="text"
                           value={item.durchWen}
                           onChange={(e) => updateUnterstuetzung(index, 'durchWen', e.target.value)}
-                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                           placeholder="Person/Team"
                         />
                       </td>
@@ -275,7 +275,7 @@ export default function Arbeitspaket() {
                           type="text"
                           value={item.zeitraum}
                           onChange={(e) => updateUnterstuetzung(index, 'zeitraum', e.target.value)}
-                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                           placeholder="z.B. KW 10-12"
                         />
                       </td>
@@ -306,7 +306,7 @@ export default function Arbeitspaket() {
                           type="text"
                           value={item.was}
                           onChange={(e) => updateRessource(index, 'was', e.target.value)}
-                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                           placeholder="z.B. Laptop, Budget, Raum"
                         />
                       </td>
@@ -315,7 +315,7 @@ export default function Arbeitspaket() {
                           type="text"
                           value={item.stueck}
                           onChange={(e) => updateRessource(index, 'stueck', e.target.value)}
-                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                           placeholder="Anzahl"
                         />
                       </td>
@@ -324,7 +324,7 @@ export default function Arbeitspaket() {
                           type="text"
                           value={item.zeitraum}
                           onChange={(e) => updateRessource(index, 'zeitraum', e.target.value)}
-                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                           placeholder="z.B. Jan-Mrz"
                         />
                       </td>
@@ -346,7 +346,7 @@ export default function Arbeitspaket() {
                     type="text"
                     value={schritt}
                     onChange={(e) => updateErsterSchritt(index, e.target.value)}
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
                     placeholder={`Erster Schritt ${index + 1}`}
                   />
                 </div>
