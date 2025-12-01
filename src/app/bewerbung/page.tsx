@@ -34,9 +34,24 @@ import {
   COLUMN_CONFIG,
   COLUMN_ORDER,
   TABLE_DATA,
-  TIMELINE_GROUPS,
-  ALL_TIMELINE_ITEMS
+  // TIMELINE_GROUPS removed - defined locally to force update
+  ALL_TIMELINE_ITEMS,
+  GROUP_IDS
 } from './data';
+
+// Define groups locally to ensure updates are applied immediately
+const TIMELINE_GROUPS = [
+  { id: GROUP_IDS.YEARS, title: 'Jahre', stackItems: false, height: 35 },
+  { id: GROUP_IDS.QUARTERS, title: 'Quartale', stackItems: false, height: 35 },
+  { id: GROUP_IDS.CALENDAR_MONTHS, title: 'Monate', stackItems: false, height: 35 },
+  { id: GROUP_IDS.WEEKS, title: 'Kalenderwochen', stackItems: false, height: 35 },
+  { id: GROUP_IDS.PHASES, title: 'Förderphasen', stackItems: false, height: 35 },
+  { id: GROUP_IDS.MONTHS, title: 'Fördermonate', stackItems: false, height: 35 },
+  { id: GROUP_IDS.MILESTONES_CONCEPT, title: 'Meilensteine Konzept', stackItems: false, height: 35 },
+  { id: GROUP_IDS.MILESTONES_TECH, title: 'Meilensteine Tech', stackItems: false, height: 35 },
+  { id: GROUP_IDS.MILESTONES_STABILIZATION, title: 'Meilensteine Verstetigung', stackItems: true, height: 70 },
+  { id: GROUP_IDS.SPRINTS, title: 'Sprints', stackItems: false, height: 35 }
+];
 
 // Helper component for section headings with copy link
 const SectionHeading = ({ id, title, level = 'h2', className = '' }: { id: string, title: React.ReactNode, level?: 'h1' | 'h2', className?: string }) => {
@@ -74,6 +89,226 @@ const SectionHeading = ({ id, title, level = 'h2', className = '' }: { id: strin
       <Tag id={id} className={className}>
         {title}
       </Tag>
+    </div>
+  );
+};
+
+// ============================================
+// CUSTOM GANTT CHART IMPLEMENTATION
+// ============================================
+
+const CustomGantt = ({ onItemClick }: { onItemClick: (item: any) => void }) => {
+  // 1. Configuration & Timeframe
+  const startDate = moment('2026-01-01');
+  const endDate = moment('2027-12-31').endOf('day');
+  const totalDurationMs = endDate.valueOf() - startDate.valueOf();
+
+  // 2. Define Groups (Order & Title)
+  const GROUPS = [
+    { id: GROUP_IDS.YEARS, title: 'Jahre', bgColor: 'bg-white' },
+    { id: GROUP_IDS.QUARTERS, title: 'Quartale', bgColor: 'bg-white' },
+    { id: GROUP_IDS.CALENDAR_MONTHS, title: 'Monate', bgColor: 'bg-white' },
+    { id: GROUP_IDS.WEEKS, title: 'Kalenderwochen', bgColor: 'bg-white' },
+    { id: GROUP_IDS.PHASES, title: 'Förderphasen', bgColor: 'bg-white' },
+    { id: GROUP_IDS.MONTHS, title: 'Fördermonate', bgColor: 'bg-white' },
+    { id: GROUP_IDS.MILESTONES_CONCEPT, title: 'Meilensteine Konzept', bgColor: 'bg-white' },
+    { id: GROUP_IDS.MILESTONES_TECH, title: 'Meilensteine Tech', bgColor: 'bg-white' },
+    { id: GROUP_IDS.MILESTONES_STABILIZATION, title: 'Meilensteine Verstetigung', bgColor: 'bg-white' },
+    { id: GROUP_IDS.SPRINTS, title: 'Sprints', bgColor: 'bg-white' }
+  ];
+
+  // 3. Helper: Calculate Position & Width (%)
+  const getPosition = (start: number, end: number) => {
+    const startOffset = start - startDate.valueOf();
+    const duration = end - start;
+    const left = (startOffset / totalDurationMs) * 100;
+    const width = (duration / totalDurationMs) * 100;
+    return { left: `${left}%`, width: `${width}%` };
+  };
+
+  // 4. Helper: Process Items for a Group (Overlap Detection)
+  const processGroupItems = (groupId: number) => {
+    // Filter items for this group
+    const items = ALL_TIMELINE_ITEMS.filter(item => item.group === groupId);
+
+    // Sort by start time
+    const sorted = [...items].sort((a, b) => a.start_time - b.start_time);
+
+    // Assign rows
+    const rows: any[][] = []; // Array of rows, each row is an array of items
+
+    sorted.forEach(item => {
+      let placed = false;
+
+      // Try to fit in existing rows
+      for (let i = 0; i < rows.length; i++) {
+        const lastItemInRow = rows[i][rows[i].length - 1];
+        // Check if this item starts AFTER the last item ends (plus a small buffer)
+        if (item.start_time >= lastItemInRow.end_time) {
+          rows[i].push(item);
+          placed = true;
+          break;
+        }
+      }
+
+      // If not placed, create a new row
+      if (!placed) {
+        rows.push([item]);
+      }
+    });
+
+    return rows;
+  };
+
+  // 6. Helper: Generate Month Grid Lines
+  const getMonthGridLines = () => {
+    const lines = [];
+    let current = startDate.clone().startOf('month');
+    while (current.isBefore(endDate)) {
+      if (current.isAfter(startDate)) {
+        const pos = getPosition(current.valueOf(), current.valueOf()); // Width 0
+        lines.push(
+          <div
+            key={current.format('YYYY-MM')}
+            className="absolute top-0 bottom-0 border-l border-gray-200 pointer-events-none z-0"
+            style={{ left: pos.left }}
+          />
+        );
+      }
+      current.add(1, 'month');
+    }
+    return lines;
+  };
+
+  // 7. Drag to Scroll Logic
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const isDown = React.useRef(false);
+  const startX = React.useRef(0);
+  const scrollLeft = React.useRef(0);
+
+  // 8. Mouse Wheel Horizontal Scroll Logic
+  React.useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      // If we are scrolling vertically (deltaY), translate it to horizontal scroll
+      if (e.deltaY !== 0) {
+        e.preventDefault(); // Prevent page vertical scroll
+        container.scrollLeft += e.deltaY;
+      }
+    };
+
+    // Add non-passive listener to allow preventDefault
+    container.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!scrollContainerRef.current) return;
+    isDown.current = true;
+    scrollContainerRef.current.classList.add('cursor-grabbing');
+    scrollContainerRef.current.classList.remove('cursor-grab');
+    startX.current = e.pageX - scrollContainerRef.current.offsetLeft;
+    scrollLeft.current = scrollContainerRef.current.scrollLeft;
+  };
+
+  const handleMouseLeave = () => {
+    if (!scrollContainerRef.current) return;
+    isDown.current = false;
+    scrollContainerRef.current.classList.remove('cursor-grabbing');
+    scrollContainerRef.current.classList.add('cursor-grab');
+  };
+
+  const handleMouseUp = () => {
+    if (!scrollContainerRef.current) return;
+    isDown.current = false;
+    scrollContainerRef.current.classList.remove('cursor-grabbing');
+    scrollContainerRef.current.classList.add('cursor-grab');
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDown.current || !scrollContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX.current) * 2; // Scroll-fast multiplier
+    scrollContainerRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+
+  // 5. Render
+  return (
+    <div className="w-full border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm mt-8">
+      <div
+        ref={scrollContainerRef}
+        className="relative w-full overflow-x-auto cursor-grab active:cursor-grabbing select-none"
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+      >
+        <div className="min-w-[4000px] relative transition-all duration-75 ease-out"> {/* Dynamic width for zoom */}
+
+          {/* Header Grid Lines (Background) */}
+          <div className="absolute inset-0 z-0">
+            {getMonthGridLines()}
+          </div>
+
+          {GROUPS.map(group => {
+            const rows = processGroupItems(group.id);
+            const rowHeight = 30;
+            const gap = 4;
+            const groupHeight = Math.max(40, rows.length * (rowHeight + gap) + 16);
+
+            return (
+              <div key={group.id} className={`flex border-b border-gray-200 ${group.bgColor} relative z-10`}>
+                {/* Left Column: Title */}
+                <div className="w-[200px] flex-shrink-0 p-3 border-r border-gray-200 font-medium text-sm text-gray-700 flex items-center sticky left-0 bg-inherit z-50 shadow-sm">
+                  {group.title}
+                </div>
+
+                {/* Right Column: Timeline Area */}
+                <div className="flex-grow relative" style={{ height: `${groupHeight}px` }}>
+                  {rows.map((rowItems, rowIndex) => (
+                    rowItems.map(item => {
+                      const pos = getPosition(item.start_time, item.end_time);
+                      return (
+                        <div
+                          key={item.id}
+                          onClick={() => onItemClick(item)} // Trigger click handler
+                          className="absolute h-[24px] top-[5px] text-xs flex items-center justify-center px-1 shadow-sm hover:shadow-md hover:brightness-95 transition-all cursor-pointer border border-white/20 text-white hover:scale-[1.01] hover:shadow-md cursor-pointer group/item z-10"
+                          style={{
+                            left: pos.left,
+                            width: pos.width,
+                            top: `${8 + rowIndex * (rowHeight + gap)}px`,
+                            height: `${rowHeight}px`,
+                            ...item.itemProps?.style,
+                            borderWidth: '1px',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            zIndex: 20
+                          }}
+                        >
+                          <span className="truncate px-1 relative z-20 text-white">{item.title}</span>
+
+                          {/* Tooltip */}
+                          <div className="hidden group-hover/item:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-gray-900 text-white text-xs p-2 rounded z-50 pointer-events-none shadow-lg">
+                            <div className="font-bold mb-1">{item.title}</div>
+                            <div className="mb-1 opacity-75">{moment(item.start_time).format('DD.MM.YYYY')} - {moment(item.end_time).format('DD.MM.YYYY')}</div>
+                            {item.description && <div className="italic">{item.description}</div>}
+                          </div>
+                        </div>
+                      );
+                    })
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };
@@ -513,7 +748,13 @@ export default function Intern() {
 
   const handleZoomIn = () => {
     const duration = visibleTimeEnd - visibleTimeStart;
-    const newDuration = duration * 0.75; // Zoom in
+    const minDuration = 30 * 24 * 60 * 60 * 1000; // 30 days limit
+    let newDuration = duration * 0.75; // Zoom in
+
+    if (newDuration < minDuration) {
+      newDuration = minDuration;
+    }
+
     const center = visibleTimeStart + duration / 2;
     setVisibleTimeStart(center - newDuration / 2);
     setVisibleTimeEnd(center + newDuration / 2);
@@ -713,7 +954,6 @@ export default function Intern() {
                   <li><strong>Maximal anpassbar</strong> - Für alle Projekttypen und Prozesse</li>
                   <li><strong>Wissensmanagement</strong> - Erfahrungen für zukünftige Projekte nutzbar</li>
                   <li><strong>EU-Datenresidenz</strong> - Ihre Daten bleiben in Europa</li>
-                  <li><strong>DSGVO-konform</strong> - Datenschutz von Grund auf mitgedacht</li>
                 </ol>
               </div>
             </div>
@@ -722,91 +962,46 @@ export default function Intern() {
 
         {/* Timeline Section */}
         <div className="mb-12">
-          <div className="flex justify-between items-end mb-6">
-            <div>
-              <SectionHeading id="meilensteinplanung" title="Meilensteinplanung" className="text-2xl font-bold text-gray-900" />
-              <p className="text-gray-600 mt-1">Übersicht der parallelen Entwicklungsstränge und Meilensteine</p>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={handleZoomIn}
-                className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-md text-sm font-medium shadow-sm transition-colors flex items-center gap-1"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                </svg>
-                Zoom In
-              </button>
-              <button
-                onClick={handleZoomOut}
-                className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-md text-sm font-medium shadow-sm transition-colors flex items-center gap-1"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
-                </svg>
-                Zoom Out
-              </button>
-            </div>
+          <div className="mb-6">
+            <SectionHeading id="meilensteinplanung" title="Meilensteinplanung" className="text-2xl font-bold text-gray-900" />
+            <p className="text-gray-800 mt-2">
+              Übersicht der parallelen Entwicklungsstränge und Meilensteine
+            </p>
           </div>
 
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            <Timeline
-              groups={groups}
-              items={items}
-              visibleTimeStart={visibleTimeStart}
-              visibleTimeEnd={visibleTimeEnd}
-              onTimeChange={handleTimeChange}
-              sidebarWidth={200}
-              lineHeight={50}
-              itemHeightRatio={0.8}
-              canMove={false}
-              canResize={false}
-              onItemSelect={handleItemSelect}
-              groupRenderer={({ group }) => (
-                <div className="px-2 text-gray-900 font-medium" style={{ color: '#111827' }}>
-                  {group.title}
-                </div>
-              )}
-            >
-              <TimelineHeaders className="bg-gray-100 text-gray-700">
-                <SidebarHeader>
-                  {({ getRootProps }) => {
-                    return <div {...getRootProps()} className="p-2 font-bold text-gray-700">CitizenProject.App</div>;
-                  }}
-                </SidebarHeader>
-                <DateHeader unit="primaryHeader" />
-                <DateHeader labelFormat={([startTime]) => moment(startTime.valueOf()).format('MMMM')} />
-              </TimelineHeaders>
-              <CustomMarker date={moment('2025-09-01').valueOf()}>
-                {({ styles }) => (
-                  <div style={{ ...styles, backgroundColor: '#ef4444', width: '2px', zIndex: 100 }} />
-                )}
-              </CustomMarker>
-            </Timeline>
+          {/* NEW Custom Gantt Chart */}
+          <CustomGantt onItemClick={setSelectedTimelineItem} />
 
-
-            {/* Inline Item Details */}
-            {selectedTimelineItem && (
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <div className="bg-indigo-50 rounded-md p-4 relative">
+          {/* Item Details - Responsive: Inline on Mobile, Modal on Desktop */}
+          {selectedTimelineItem && (
+            <>
+              {/* Mobile View: Inline below chart */}
+              <div className="md:hidden mt-4 pt-4 border-t border-gray-200">
+                <div className="bg-gray-50 rounded-md p-4 relative">
                   <button
                     onClick={() => setSelectedTimelineItem(null)}
-                    className="absolute top-2 right-2 text-indigo-400 hover:text-indigo-600"
+                    className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
                     title="Schließen"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
-                  <h4 className="font-bold text-indigo-900 text-lg mb-1">{selectedTimelineItem.title}</h4>
-                  <div className="flex flex-wrap gap-4 text-sm text-indigo-800">
+                  <h4 className="font-bold text-gray-900 text-lg mb-1">{selectedTimelineItem.title}</h4>
+                  <div className="flex flex-col gap-2 text-sm text-gray-800">
                     <div>
                       <span className="font-semibold opacity-75 block text-xs uppercase tracking-wider">Zeitraum</span>
-                      {moment(selectedTimelineItem.start_time).format('dddd, DD.MM.YYYY')} - {moment(selectedTimelineItem.end_time).format('dddd, DD.MM.YYYY')}
+                      <div className="flex flex-col">
+                        <span>{moment(selectedTimelineItem.start_time).format('dddd, DD. MMMM YYYY')} - {moment(selectedTimelineItem.end_time).format('dddd, DD. MMMM YYYY')}</span>
+                        <span className="text-xs text-gray-600 font-medium mt-1">
+                          Dauer: {Math.round(moment.duration(moment(selectedTimelineItem.end_time).diff(moment(selectedTimelineItem.start_time))).asDays()) + 1} Tage
+                          (ca. {Math.round(moment.duration(moment(selectedTimelineItem.end_time).diff(moment(selectedTimelineItem.start_time))).asWeeks())} Wochen)
+                        </span>
+                      </div>
                     </div>
                     <div>
                       <span className="font-semibold opacity-75 block text-xs uppercase tracking-wider">Kategorie</span>
-                      {groups.find(g => g.id === selectedTimelineItem.group)?.title || 'Unbekannt'}
+                      {TIMELINE_GROUPS.find(g => g.id === selectedTimelineItem.group)?.title || 'Unbekannt'}
                     </div>
                     {selectedTimelineItem.description && (
                       <div className="w-full mt-2">
@@ -817,8 +1012,92 @@ export default function Intern() {
                   </div>
                 </div>
               </div>
-            )}
-          </div>
+
+              {/* Desktop View: Modal Overlay */}
+              <div
+                className="hidden md:flex fixed inset-0 z-[100] items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-all"
+                onClick={() => setSelectedTimelineItem(null)}
+              >
+                <div
+                  className="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-8 relative transform transition-all scale-100 border border-gray-100"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <button
+                    onClick={() => setSelectedTimelineItem(null)}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    title="Schließen"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+
+                  <div className="mb-6">
+                    <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 mb-3">
+                      {TIMELINE_GROUPS.find(g => g.id === selectedTimelineItem.group)?.title || 'Meilenstein'}
+                    </span>
+                    <h3 className="text-2xl font-bold text-gray-900 leading-tight">
+                      {selectedTimelineItem.title}
+                    </h3>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                      <div className="text-gray-500 mt-1">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-1">Zeitraum & Dauer</h4>
+                        <p className="text-gray-700 font-medium">
+                          {moment(selectedTimelineItem.start_time).format('dddd, DD. MMMM YYYY')}
+                          <br />
+                          <span className="text-gray-400 text-sm">bis</span>
+                          <br />
+                          {moment(selectedTimelineItem.end_time).format('dddd, DD. MMMM YYYY')}
+                        </p>
+                        <div className="flex items-center gap-3 mt-3">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            {Math.round(moment.duration(moment(selectedTimelineItem.end_time).diff(moment(selectedTimelineItem.start_time))).asDays()) + 1} Tage
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            (ca. {Math.round(moment.duration(moment(selectedTimelineItem.end_time).diff(moment(selectedTimelineItem.start_time))).asWeeks())} Wochen)
+                          </span>
+                          <span className="text-xs text-gray-500 border-l border-gray-300 pl-3">
+                            KW {moment(selectedTimelineItem.start_time).isoWeek()} - KW {moment(selectedTimelineItem.end_time).isoWeek()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {selectedTimelineItem.description && (
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-2 flex items-center gap-2">
+                          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+                          </svg>
+                          Beschreibung
+                        </h4>
+                        <div className="text-gray-600 leading-relaxed bg-white p-1">
+                          {selectedTimelineItem.description}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end">
+                    <button
+                      onClick={() => setSelectedTimelineItem(null)}
+                      className="px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg transition-colors shadow-sm"
+                    >
+                      Schließen
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Divider for application questions */}

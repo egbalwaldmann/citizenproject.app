@@ -196,7 +196,10 @@ export const TABLE_DATA = [
 // ============================================
 
 export const GROUP_IDS = {
+    YEARS: 9,
+    CALENDAR_MONTHS: 10,
     PHASES: 1,
+    QUARTERS: 8,
     MONTHS: 2,
     WEEKS: 3,
     SPRINTS: 4,
@@ -205,20 +208,12 @@ export const GROUP_IDS = {
     MILESTONES_STABILIZATION: 7
 } as const;
 
-export const TIMELINE_GROUPS = [
-    { id: GROUP_IDS.PHASES, title: 'Förderphasen', stackItems: false, height: 50 },
-    { id: GROUP_IDS.MONTHS, title: 'Fördermonate', stackItems: false, height: 50 },
-    { id: GROUP_IDS.WEEKS, title: 'Kalenderwochen', stackItems: false, height: 50 },
-    { id: GROUP_IDS.SPRINTS, title: 'Sprints', stackItems: false, height: 50 },
-    { id: GROUP_IDS.MILESTONES_CONCEPT, title: 'Meilensteine Konzept', stackItems: true, height: 100 },
-    { id: GROUP_IDS.MILESTONES_TECH, title: 'Meilensteine Tech', stackItems: true, height: 100 },
-    { id: GROUP_IDS.MILESTONES_STABILIZATION, title: 'Meilensteine Verstetigung', stackItems: true, height: 100 }
-];
+
 
 // Helper to generate Sprints automatically
 const generateSprints = () => {
     const sprints = [];
-    const sprintStyle = { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const };
+    const sprintStyle = { background: '#000000', color: 'white', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const };
 
     // Phase 1 Sprints (1-13)
     let startDate = moment('2026-06-01');
@@ -257,13 +252,13 @@ const generateSprints = () => {
     return sprints;
 };
 
-const MILESTONE_STYLE_CONCEPT = { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const };
-const MILESTONE_STYLE_TECH = { background: '#8b5cf6', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const };
+const MILESTONE_STYLE_CONCEPT = { background: '#000000', color: 'white', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const, fontWeight: 'bold' };
+const MILESTONE_STYLE_TECH = { background: '#000000', color: 'white', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const, fontWeight: 'bold' };
 
 export const STATIC_TIMELINE_ITEMS = [
     // --- FÖRDERPHASEN ---
-    { id: 1, group: GROUP_IDS.PHASES, title: 'Förderphase 1', start_time: moment('2026-06-01').valueOf(), end_time: moment('2026-11-30').endOf('day').valueOf(), itemProps: { style: { background: '#64748b', borderStyle: 'none', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 2, group: GROUP_IDS.PHASES, title: 'Förderphase 2', start_time: moment('2026-12-01').valueOf(), end_time: moment('2027-03-31').endOf('day').valueOf(), itemProps: { style: { background: '#f59e0b', borderStyle: 'none', borderRadius: 0, textAlign: 'center' as const } } },
+    { id: 1, group: GROUP_IDS.PHASES, title: 'Förderphase 1', start_time: moment('2026-06-01').valueOf(), end_time: moment('2026-11-30').endOf('day').valueOf(), itemProps: { style: { background: '#000000', color: 'white', borderStyle: 'none', borderRadius: 0, textAlign: 'center' as const, fontWeight: 'bold' } } },
+    { id: 2, group: GROUP_IDS.PHASES, title: 'Förderphase 2', start_time: moment('2026-12-01').valueOf(), end_time: moment('2027-03-31').endOf('day').valueOf(), itemProps: { style: { background: '#000000', color: 'white', borderStyle: 'none', borderRadius: 0, textAlign: 'center' as const, fontWeight: 'bold' } } },
 
     // --- SPRINTS ---
     ...generateSprints(),
@@ -280,14 +275,63 @@ export const STATIC_TIMELINE_ITEMS = [
     { id: 408, group: GROUP_IDS.MILESTONES_CONCEPT, title: 'M8 (Revision)', start_time: moment('2026-06-01').isoWeek(47).startOf('isoWeek').valueOf(), end_time: moment('2026-06-01').isoWeek(48).endOf('isoWeek').valueOf(), itemProps: { style: MILESTONE_STYLE_CONCEPT }, description: 'Revision: Planung Second Stage' },
 
     // Second Stage
-    // FIX: Use explicit year to avoid ISO week year issues at year boundaries
-    { id: 409, group: GROUP_IDS.MILESTONES_CONCEPT, title: 'M9 (Erweiterung)', start_time: moment('2026-06-01').isoWeek(49).startOf('isoWeek').valueOf(), end_time: moment().year(2027).isoWeek(4).endOf('isoWeek').valueOf(), itemProps: { style: MILESTONE_STYLE_CONCEPT }, description: 'Erweiterung des Prototypen: zusätzliche Institutionen, strukturierte Tests, Kontextinterviews, Nutzungsanalyse, priorisierte Maßnahmen' },
-    { id: 410, group: GROUP_IDS.MILESTONES_CONCEPT, title: 'M10 (Wissensaufbau)', start_time: moment().year(2027).isoWeek(5).startOf('isoWeek').valueOf(), end_time: moment().year(2027).isoWeek(8).endOf('isoWeek').valueOf(), itemProps: { style: MILESTONE_STYLE_CONCEPT }, description: 'Wissensaufbau: Best-Practice-Guides, Projektartenkatalog, verbesserte Templates, Onboarding-Materialien, Dokumentstruktur' },
+    // FIX: Use explicit year (mid-year anchor) to avoid ISO week year issues at year boundaries
+    { id: 409, group: GROUP_IDS.MILESTONES_CONCEPT, title: 'M9 (Erweiterung)', start_time: moment('2026-06-01').isoWeek(49).startOf('isoWeek').valueOf(), end_time: moment('2027-06-01').isoWeek(4).endOf('isoWeek').valueOf(), itemProps: { style: MILESTONE_STYLE_CONCEPT }, description: 'Erweiterung des Prototypen: zusätzliche Institutionen, strukturierte Tests, Kontextinterviews, Nutzungsanalyse, priorisierte Maßnahmen' },
+    { id: 410, group: GROUP_IDS.MILESTONES_CONCEPT, title: 'M10 (Wissensaufbau)', start_time: moment('2027-06-01').isoWeek(5).startOf('isoWeek').valueOf(), end_time: moment('2027-06-01').isoWeek(8).endOf('isoWeek').valueOf(), itemProps: { style: MILESTONE_STYLE_CONCEPT }, description: 'Wissensaufbau: Best-Practice-Guides, Projektartenkatalog, verbesserte Templates, Onboarding-Materialien, Dokumentstruktur' },
 
     // Verstetigung
-    { id: 411, group: GROUP_IDS.MILESTONES_STABILIZATION, title: 'M11 (Communityaufbau)', start_time: moment('2026-06-01').isoWeek(49).startOf('isoWeek').valueOf(), end_time: moment().year(2027).isoWeek(12).endOf('isoWeek').valueOf(), itemProps: { style: MILESTONE_STYLE_TECH }, description: 'Communityaufbau: Kommunikationskanäle, Governance-Modell, Ankerinstitutionen, Workshops für frühe Nutzergruppen' },
-    { id: 412, group: GROUP_IDS.MILESTONES_STABILIZATION, title: 'M12 (Verstetigung)', start_time: moment().year(2027).isoWeek(5).startOf('isoWeek').valueOf(), end_time: moment().year(2027).isoWeek(12).endOf('isoWeek').valueOf(), itemProps: { style: MILESTONE_STYLE_TECH }, description: 'Verstetigung: Betriebsmodell, Finanzierungsszenarien, Roadmap, Implementierungsleitfaden, Abschlussbericht zur nachhaltigen Nutzung' },
+    { id: 411, group: GROUP_IDS.MILESTONES_STABILIZATION, title: 'M11 (Communityaufbau)', start_time: moment('2026-06-01').isoWeek(49).startOf('isoWeek').valueOf(), end_time: moment('2027-06-01').isoWeek(12).endOf('isoWeek').valueOf(), itemProps: { style: MILESTONE_STYLE_TECH }, description: 'Communityaufbau: Kommunikationskanäle, Governance-Modell, Ankerinstitutionen, Workshops für frühe Nutzergruppen' },
+    { id: 412, group: GROUP_IDS.MILESTONES_STABILIZATION, title: 'M12 (Verstetigung)', start_time: moment('2027-06-01').isoWeek(5).startOf('isoWeek').valueOf(), end_time: moment('2027-06-01').isoWeek(12).endOf('isoWeek').valueOf(), itemProps: { style: MILESTONE_STYLE_TECH }, description: 'Verstetigung: Betriebsmodell, Finanzierungsszenarien, Roadmap, Implementierungsleitfaden, Abschlussbericht zur nachhaltigen Nutzung' },
 ];
+
+// Helper to generate Years
+// Helper to generate Years
+const generateYearItems = () => {
+    const years = [];
+    const startDate = moment('2026-01-01');
+    const endDate = moment('2027-12-31');
+
+    let current = startDate.clone().startOf('year');
+    let idCounter = 900;
+
+    while (current.isBefore(endDate) || current.isSame(endDate, 'year')) {
+        const end = current.clone().endOf('year');
+        years.push({
+            id: idCounter++,
+            group: GROUP_IDS.YEARS,
+            title: `${current.year()}`,
+            start_time: current.valueOf(),
+            end_time: end.valueOf(),
+            itemProps: { style: { background: '#000000', color: 'white', borderWidth: '0 2px 0 0', borderStyle: 'solid', borderColor: 'white', textAlign: 'center' as const, borderRadius: 0, fontWeight: 'bold', fontSize: '14px' } }
+        });
+        current.add(1, 'year');
+    }
+    return years;
+};
+
+// Helper to generate Calendar Months (Jan, Feb...)
+const generateCalendarMonthItems = () => {
+    const months = [];
+    const startDate = moment('2026-01-01').startOf('month');
+    const endDate = moment('2027-12-31').endOf('month');
+
+    let current = startDate.clone();
+    let idCounter = 1000;
+
+    while (current.isBefore(endDate)) {
+        const end = current.clone().endOf('month');
+        months.push({
+            id: idCounter++,
+            group: GROUP_IDS.CALENDAR_MONTHS,
+            title: current.format('MMMM'), // Full month name (e.g. "Juni")
+            start_time: current.valueOf(),
+            end_time: end.valueOf(),
+            itemProps: { style: { background: '#000000', color: 'white', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', textAlign: 'center' as const, borderRadius: 0, fontSize: '12px', fontWeight: '500' } }
+        });
+        current.add(1, 'month');
+    }
+    return months;
+};
 
 // Helper to generate Funding Months (M1-M10)
 const generateMonthItems = () => {
@@ -302,17 +346,41 @@ const generateMonthItems = () => {
             title: `${i + 1}`,
             start_time: start.valueOf(),
             end_time: end.valueOf(),
-            itemProps: { style: { background: i < 6 ? '#dbeafe' : '#fef3c7', color: i < 6 ? '#1e40af' : '#92400e', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', textAlign: 'center' as const, borderRadius: 0 } }
+            itemProps: { style: { background: '#000000', color: 'white', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', textAlign: 'center' as const, borderRadius: 0, fontWeight: 'bold' } }
         });
     }
     return months;
 };
 
+// Helper to generate Quarters
+const generateQuarterItems = () => {
+    const quarters = [];
+    const startDate = moment('2026-01-01'); // Start of full year
+    const endDate = moment('2027-12-31');   // End of full year
+
+    let current = startDate.clone().startOf('quarter');
+    let idCounter = 800;
+
+    while (current.isBefore(endDate)) {
+        const end = current.clone().endOf('quarter');
+        quarters.push({
+            id: idCounter++,
+            group: GROUP_IDS.QUARTERS,
+            title: `Q${current.quarter()} ${current.year()}`,
+            start_time: current.valueOf(),
+            end_time: end.valueOf(),
+            itemProps: { style: { background: '#000000', color: 'white', borderWidth: '0 2px 0 0', borderStyle: 'solid', borderColor: 'white', textAlign: 'center' as const, borderRadius: 0, fontWeight: 'bold' } }
+        });
+        current.add(1, 'quarter');
+    }
+    return quarters;
+};
+
 // Helper to generate Calendar Weeks
 const generateWeekItems = () => {
     const weeks = [];
-    const startDate = moment('2026-06-01').startOf('isoWeek');
-    const endDate = moment('2027-03-31').endOf('isoWeek');
+    const startDate = moment('2026-01-01').startOf('isoWeek');
+    const endDate = moment('2027-12-31').endOf('isoWeek');
     let current = startDate.clone();
     let idCounter = 600;
 
@@ -324,7 +392,7 @@ const generateWeekItems = () => {
             title: `${current.isoWeek()}`,
             start_time: current.valueOf(),
             end_time: end.valueOf(),
-            itemProps: { style: { background: '#f3f4f6', color: '#6b7280', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', fontSize: '10px', textAlign: 'center' as const, borderRadius: 0 } }
+            itemProps: { style: { background: '#000000', color: 'white', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', fontSize: '11px', textAlign: 'center' as const, borderRadius: 0, fontWeight: '500' } }
         });
         current.add(1, 'weeks');
     }
@@ -333,6 +401,51 @@ const generateWeekItems = () => {
 
 export const ALL_TIMELINE_ITEMS = [
     ...STATIC_TIMELINE_ITEMS,
+    ...generateYearItems(),
+    ...generateQuarterItems(),
+    ...generateCalendarMonthItems(),
     ...generateMonthItems(),
     ...generateWeekItems()
+];
+
+// Helper to calculate dynamic group height based on overlaps
+const calculateGroupHeight = (groupId: number, defaultHeight = 50) => {
+    const itemsInGroup = ALL_TIMELINE_ITEMS.filter(item => item.group === groupId);
+    if (itemsInGroup.length === 0) return defaultHeight;
+
+    // Simple overlap detection
+    // We sort items by start time
+    const sortedItems = [...itemsInGroup].sort((a, b) => a.start_time - b.start_time);
+
+    let maxOverlapDepth = 1;
+
+    // Check for overlaps
+    for (let i = 0; i < sortedItems.length; i++) {
+        let currentOverlap = 1;
+        for (let j = i + 1; j < sortedItems.length; j++) {
+            // If the next item starts before the current item ends, we have an overlap
+            if (sortedItems[j].start_time < sortedItems[i].end_time) {
+                currentOverlap++;
+            }
+        }
+        if (currentOverlap > maxOverlapDepth) {
+            maxOverlapDepth = currentOverlap;
+        }
+    }
+
+    // If we have overlaps, increase height (50px per row roughly)
+    return maxOverlapDepth > 1 ? maxOverlapDepth * 50 : defaultHeight;
+};
+
+export const TIMELINE_GROUPS = [
+    { id: GROUP_IDS.YEARS, title: 'Jahre', stackItems: false, height: 50 },
+    { id: GROUP_IDS.QUARTERS, title: 'Quartale', stackItems: false, height: 50 },
+    { id: GROUP_IDS.CALENDAR_MONTHS, title: 'Monate', stackItems: false, height: 50 },
+    { id: GROUP_IDS.WEEKS, title: 'Kalenderwochen', stackItems: false, height: 50 },
+    { id: GROUP_IDS.PHASES, title: 'Förderphasen', stackItems: false, height: 50 },
+    { id: GROUP_IDS.MONTHS, title: 'Fördermonate', stackItems: false, height: 50 },
+    { id: GROUP_IDS.MILESTONES_CONCEPT, title: 'Meilensteine Konzept', stackItems: false, height: 50 },
+    { id: GROUP_IDS.MILESTONES_TECH, title: 'Meilensteine Tech', stackItems: false, height: 50 },
+    { id: GROUP_IDS.MILESTONES_STABILIZATION, title: 'Meilensteine Verstetigung', stackItems: true, height: 100 },
+    { id: GROUP_IDS.SPRINTS, title: 'Sprints', stackItems: false, height: 50 }
 ];
