@@ -449,3 +449,108 @@ export const TIMELINE_GROUPS = [
     { id: GROUP_IDS.MILESTONES_STABILIZATION, title: 'Meilensteine Verstetigung', stackItems: true, height: 100 },
     { id: GROUP_IDS.SPRINTS, title: 'Sprints', stackItems: false, height: 50 }
 ];
+
+export const APPLICATION_DATA = [
+    {
+        category: "1) Allgemeine Informationen",
+        items: [
+            { q: "Projekttitel *", a: "CitizenProject.App (CPA)" },
+            { q: "Name für den Account *", a: "egbalwaldmann" },
+            { q: "Vorname", a: "Egbal" },
+            { q: "Nachname", a: "Waldmann" },
+            { q: "E-Mail-Adresse", a: "egbal@waldmann.dev" },
+            { q: "Hast du einen Account bei GitHub, BitBucket oder einer ähnlichen Plattform? Wenn ja, gib bitte den entsprechenden Link an. (optional)", a: "https://github.com/egbalwaldmann" }
+        ]
+    },
+    {
+        category: "2) Projektbeschreibung",
+        items: [
+            { q: "Beschreibe dein Projekt kurz. (max. 100 Wörter)", a: "Projektarbeit ist nicht nur für Wirtschaftsunternehmen, sondern auch für nicht-kommerzielle Institutionen essentiell. Letzteren fehlen oft die finanziellen Ressourcen für eine professionelle Projektmanagement-Software; Open-Source-Software erweist sich als mangelhaft oder ungeeignet. Zudem sind die Projektverantwortlichen zwar inhaltliche Expert:innen, aber oft keine Projektmanagement-Profis. Dies kostet Ressourcen und erhöht das Projektrisiko. Die CitizenProject.App bietet eine kostenlose, vollumfänglich ausgestattete OpenSource-Projektmanagement-Software und führt User:innen ohne Vorkenntnisse durch alle Projektprozesse hindurch, unterstützt durch Templates und Tipps. Die Auswahl verschiedener Projektgrößen und typischer Projektarten ermöglichen ein bedürfnisorientiertes Projektmanagement. Die Vision: Gesellschaftlich und umweltpolitisch engagierte Institutionen erzielen mit Unterstützung einer freien, für sie optimierten Software den größtmöglichen Impact." }
+        ]
+    },
+    {
+        category: "3) Gesellschaftliche Herausforderung",
+        items: [
+            { q: "Welche gesellschaftliche Herausforderung willst du mit dem Projekt angehen? (max. 175 Wörter)", a: "Wir befinden uns in einer globalen, multiplen Krise, deren Folgen wir in sämtlichen Lebensbereichen spüren: Erderwärmung, Umweltkatastrophen, der Verlust von Lebensräumen und Artenvielfalt, Wasserknappheit, Armut und Hunger stehen in engem Zusammenhang. Soziale Ungleichheiten, fehlende Bildungs- und Zukunftschancen, politisch rechte Tendenzen, Fremdenfeindlichkeit, Rassismus und Gewalt gefährden zunehmend demokratische Strukturen. Umso wichtiger ist die Arbeit gesellschaftlich engagierter Institutionen in Umwelt, Kultur, Bildung, Sozialem, Forschung, Medien und Politik. Sie stehen für einen Wertekanon, der sich in den UN-Nachhaltigkeitszielen spiegelt; sie übernehmen Verantwortung für essentielle Umwelt- und Sozialthemen der Gegenwart und Zukunft - jenseits gewinnorientierten Denkens. Diese Institutionen möchten wir unterstützen. Ein wesentlicher und zugleich herausfordernder Teil ihres Alltagsgeschäfts ist Projektarbeit. Prekäre Ressourcen, personelle Diskontinuitäten und Wissensverlust durch Befristungen oder Ehrenamt, fehlende Expertise im Projektmanagement und zugehörigen erfolgskritischen Bereichen wie Fundraising, Öffentlichkeitsarbeit/Marketing oder spezifischer Software gefährden den Projekterfolg und langfristig den angestrebten Impact. Die CitizenProject.App bietet eine technische Lösung für das Projektmanagement, die auf die Rahmenbedingungen, Spezifika und Bedürfnisse dieser Institutionen eingeht, User:innen an die Hand nimmt und so zum Erfolg ihrer Projekte beiträgt." }
+        ]
+    },
+    {
+        category: "4) Technische Umsetzung",
+        items: [
+            { q: "Wie willst du dein Projekt technisch umsetzen? (max. 175 Wörter)", a: "Frontend: Das Frontend wird mit Next.js auf Basis von React und TypeScript entwickelt. Geplant ist ein serverloser Betrieb über Vercel in einer europäischen Region. Die Benutzeroberfläche wird barrierearm nach WCAG gestaltet und unterstützt Mehrsprachigkeit über ein integriertes i18n-System. Backend: Die Backend-Logik wird über Supabase Edge Functions in TypeScript umgesetzt. Diese Funktionen übernehmen Validierungen, projektbezogene Abläufe und Benachrichtigungen, sodass kein eigener Server betrieben werden muss. Authentifizierung und Sicherheit: Für die Authentifizierung wird Supabase Auth vorgesehen. Zugriffskontrollen werden durch Row-Level-Security realisiert, um eine präzise, rollenbasierte Steuerung aller Projektdaten zu ermöglichen. Die gesamte Datenverarbeitung findet in der EU statt. Datenbank: Die geplante Datenhaltung basiert auf Supabase PostgreSQL. Das relationale Schema bildet Projekte, Aufgaben, Rollen und versionierbare Templates ab. Die Struktur wird so konzipiert, dass sie später institutionsspezifisch erweiterbar bleibt. Dateiverwaltung: Nutzerdateien werden im Supabase Object Storage gespeichert. Metadaten wie Zugehörigkeit, Versionen oder Ersteller werden relational geführt und über Policies geschützt. CI/CD und Offenheit: Automatisierte Builds, Tests und Deployments werden über GitHub Actions umgesetzt. Der Quellcode wird offen dokumentiert bereitgestellt, um Transparenz und langfristige Erweiterbarkeit zu gewährleisten." }
+        ]
+    },
+    {
+        category: "5) Aktueller Stand",
+        items: [
+            { q: "Hast du schon an der Idee gearbeitet? Wenn ja, beschreibe kurz den aktuellen Stand und erkläre die geplanten Neuerungen. (max. 100 Wörter)", a: "Wir haben zuvor nicht am Projekt gearbeitet, aber in unserer eigenen Praxis das Problem im Kopf gewälzt, weil es keine passende, bezahlbare Projektmanagementsoftware für gesellschaftlich engagierte Institutionen gibt. Besonders kleine Player wie gemeinnützige Kulturvereine stehen trotz ohnehin knapper Budgets ohne geeignete Tools da. Gleichzeitig fehlt auch größeren Akteur:innen wie staatlichen Hochschulen eine passende Lösung. In unserer Arbeit behelfen wir uns mit vorhandenen Tools und eigenen, mühsam erstellten Strukturen, Templates etc. – etwas, das Erfahrung erfordert, die nicht jede:r mitbringt. Die Ausschreibung des Prototype Fund kam daher genau richtig und motivierte uns, eine Software zu entwickeln, die genau diesen Bedarf aufgreift." }
+        ]
+    },
+    {
+        category: "6) Link zum Projekt",
+        items: [
+            { q: "Link zum bestehenden Projekt (falls vorhanden) (optional)", a: "Link Projektseite: https://www.citizenproject.app Link Folien: https://www.citizenproject.app/bewerbung Link Github-Repository: https://github.com/egbalwaldmann/citizenproject.app" }
+        ]
+    },
+    {
+        category: "7) Innovation",
+        items: [
+            { q: "Welche ähnlichen Ansätze gibt es schon und was wird dein Projekt anders bzw. besser machen? (max. 100 Wörter)", a: "Existierende Projektmanagement-Software ist kommerziell oder - da problematisch hinsichtlich Datenschutz, Produktumfang und -eignung für die Zielgruppe - nur eingeschränkt nutzbar (siehe https://www.citizenproject.app/bewerbung#marktanalyse). Die CitizenProject.App vereint Vorteile, die sie zur idealen Software für die Zielgruppe machen: - Als kostenlose Open-Source-Lösung ohne Vendor-Lock-In bildet sie dennoch das volle Repertoire einer Projektmanagementsoftware ab: komplexe Projekte und beliebig viele User:innen. - Verschiedene Projektarten sind auswählbar. - Nicht-Profis im Projektmanagement werden durch sämtliche Prozesse hindurchgeführt sowie mit Templates und Tipps versorgt. Dies sorgt für Effizienz, Professionalität und Fehlerfreiheit. - Das integrierte Wissensmanagement dient Institutionen für zukünftige Projekte. - DSGVO-Konformität, europäische Datenresidenz und Barrierefreiheit gewährleisten Rechtssicherheit." }
+        ]
+    },
+    {
+        category: "8) Zielgruppe",
+        items: [
+            { q: "Wer ist die Zielgruppe und wie soll dein Projekt sie erreichen? (max. 100 Wörter)", a: "Die CitizenProject.App ist für nichtkommerzielle Institutionen mit (zivil-)gesellschaftlichen Zwecken konzipiert, z.B.: - gemeinnützige Vereine - Hochschulen, Forschungseinrichtungen und ihre Partner - Stiftungen - NGOs - soziale Einrichtungen - Bildungseinrichtungen - Kirchen - Bürgerinitiativen Wir erreichen die Zielgruppen durch: - eine zielgerichtete Öffentlichkeitsarbeit auf Basis einer Zielgruppenanalyse und eines anschließenden Plans für die externe Kommunikation (digitale Netzwerke, Multiplikator:innen, Entscheidungsträger:innen, persönliche Kontakte / Treffen) - gemeinsames Testen des Prototypen mit ausgewählten Institutionen aus den Zielgruppen und bedürfnisorientierte Anpassung / Erweiterung - Vertrauensaufbau in der Community: Präsentation von Zweck, Funktionsweise, Zielgruppenanpassung und Sicherheitskonzept in Verbindung mit niedrigschwelligem Onboarding und strategischen Partnerschaften / Leuchtturmbeispielen" }
+        ]
+    },
+    {
+        category: "9) Meilensteine",
+        items: [
+            { q: "Skizziere kurz die wichtigsten Meilensteine, die im Förderzeitraum umgesetzt werden sollen. (max. 100 Wörter)", a: "- M1 Analyse & Konzept 1: Zielgruppenanalyse, Projektarten, Grundprozesse, Qualitätskriterien, Informationsarchitektur, Backlog (KW 23-29) - M2 Setup & Tech: Analyse bestehender PM-Software, Repo, CI/CD, Hosting, DB, Auth, Rollenmodell, Sicherheits- und Datenschutzbasis (KW 23-24) - M3 Konzept 2: Templates (KW 30-31) - M4 Core-Prototyp: Projektanlage, erste Projektarten, Basisprozesse, Projektrollen, Ansichten, geführte Schritte, Templates, Wissensstruktur (KW 25-33) - M5 Feature-Ausbau: weitere Projektarten, Prozesspfade, Tipps, Kalenderlogik, Benachrichtigungen (KW 34-37) - M6 Pilotphase 1: reale Pilotprojekte, Interviews, Usability-Tests, Logging, Priorisierung für Verbesserungen (KW 38-43) - M7 Stabilisierung: technische Optimierung, UX-Verbesserungen, Prototyp-Release, Nutzer-/Entwicklerdokumentation, OSS-Release (KW 44-48) - M8 Revision: Planung Second Stage (KW 47-48) https://www.citizenproject.app/bewerbung#meilensteinplanung" }
+        ]
+    },
+    {
+        category: "10) Team",
+        items: [
+            { q: "Bewerbt ihr euch als Team um die Förderung?", a: "ja" },
+            { q: "Für Teams: Namen der Teammitglieder (verbindliche Nennung) Hinweis: Die Teams können aus bis zu 4 Personen bestehen. (optional – bitte nur leer lassen, wenn du dich allein bewerben möchtest | max. 30 Wörter)", a: "- Egbal Waldmann (Softwareentwickler) https://www.linkedin.com/in/egbalwaldmann - Dr. Manuela Hackel (Projektmanagerin) https://www.linkedin.com/in/dr-manuela-hackel" }
+        ]
+    },
+    {
+        category: "11) Erfahrung",
+        items: [
+            { q: "An welchen Software-Projekten hast du / habt ihr bisher gearbeitet? Bei Open-Source-Projekten bitte einen Link zum Repository angeben. Hinweis: Max. 3 Projektbeispiele angeben (mit Namen und/oder Link zum Repository) (optional | max. 100 Wörter)", a: "Seit 2017 habe ich (Egbal Waldmann) mehrere Webanwendungen als Einzelentwickler umgesetzt. Beispiel 1: Plattform zur Visualisierung internationaler Hochschulkooperationen (Angular-Frontend, Node.js-Backend, MongoDB, Konzeption, Implementierung, Wartung). Demo: https://youtu.be/JZqV9nqknp0?si=FPZmqHGfi_SmP8Dm&t=275 Beispiel 2: browserbasierte Zeiterfassung für kleine Teams (Next.js, PostgreSQL, Auth, Rollen, Auswertungen). Zusätzlich habe ich kleinere Tools für Termin- und Projektverwaltung (u. a. mit Vue, REST-APIs) entwickelt. Bisher konnten diese Projekte aus Gründen der Auftraggeber nicht als Open Source veröffentlicht werden, ich arbeite jedoch seit Jahren mit FOSS-Stacks und -Lizenzen. Beispiel 3: verschiedene Websites, Webshops und kleinere Webprojekte, u.a für den Fachverband des brandenburgischen Schulfachs LER https://www.fachverband-ler.de/ (Vue.js, Custom-Blogsystem)" }
+        ]
+    },
+    {
+        category: "12) Arbeitsstunden",
+        items: [
+            { q: "Wie viele Stunden willst du (bzw. will das Team) in den 6 Monaten Förderzeitraum insgesamt an der Umsetzung arbeiten? Hinweis: Bitte nur eine Zahl eintragen - max. 950 h für eine Person oder max. 1.900 h für Teams. Die Maximalförderung für die reguläre Förderphase beträgt 47.500€ für eine Person oder 95.000€ für Teams. Wie die Fördersummen berechnet werden, kann auf https://www.prototypefund.de/faq nachgelesen werden.", a: "1416" }
+        ]
+    },
+    {
+        category: "13) Motivation",
+        items: [
+            { q: "Erfahrung, Hintergrund, Motivation, Perspektive: Was sollen wir über dich (bzw. euch) wissen und bei der Auswahl berücksichtigen? (optional | 100 Wörter)", a: "Egbal Waldmann bringt seinen technischen Hintergrund als Webentwickler und 8 Jahre Erfahrung mit agilen Projekten und digitalen Tools an Universitäten, Unternehmen und NGOs ein. Er möchte für Institutionen aus Bildung und Zivilgesellschaft eine faire, allgemein zugängliche Software schaffen, die zugleich komplexe akademische Projekte an Hochschulen und Forschungseinrichtungen unterstützt. Dr. Manuela Hackel ist Philosophin, Literaturwissenschaftlerin und PMP-zertifizierte Projektmanagerin. Aus über 20 Jahren Erfahrung mit Projekten an Hochschulen, literarischen Vereinen und Stiftungen kennt sie traditionelle und hybride Methoden und die Arbeitsweisen, Rahmenbedingungen und Bedürfnisse nicht-kommerzieller Institutionen. Ihr Anliegen ist, diese strukturell zu stärken und einen Beitrag zu den UN-Nachhaltigkeitszielen zu leisten." }
+        ]
+    },
+    {
+        category: "14) Second-Stage-Förderung",
+        items: [
+            { q: "Beantragst du die viermonatige Second-Stage-Förderung nach Ablauf der sechsmonatigen regulären Förderung?", a: "ja" }
+        ]
+    },
+    {
+        category: "15) Second-Stage: Schwerpunkt",
+        items: [
+            { q: "Wenn du eine Verlängerung beantragen möchtest: Erzähle uns kurz, was dein Projekt braucht, um aus dem Prototypen-Stadium herauszukommen und wie du dein Projekt in den vier Monaten nachhaltig aufbauen willst. (optional - verpflichtend wenn du/ihr euch für die Second-Stage-Förderung bewirbst bzw. bewerbt | 175 Wörter)", a: "In der Second Stage wollen wir CitizenProject.App aus dem Prototypen-Stadium in einen belastbaren Einsatz bringen. Dazu testen wir den Prototypen in weiteren Institutionen mit unterschiedlichen Projektarten und evaluieren systematisch, ob die geführten Prozesse und Templates wirklich helfen. Auf Basis dieser Erkenntnisse schärfen wir Inhalte, Texte und Strukturen, entwickeln Schulungs- und Onboarding-Material und dokumentieren Best Practices. Parallel bauen wir eine kleine Community aus frühen Nutzerinstitutionen auf, etablieren Kommunikationskanäle und ein leichtgewichtiges Governance-Modell (siehe 8. Zielgruppe). Abschließend erarbeiten wir Betriebs- und Finanzierungsszenarien sowie eine Roadmap, damit das Projekt nach der Förderung weitergeführt werden kann." }
+        ]
+    },
+    {
+        category: "16) Second-Stage: Meilensteine",
+        items: [
+            { q: "Skizziere kurz die wichtigsten Meilensteine, die in der viermonatigen Verlängerung deines Förderzeitraum umgesetzt werden sollen. (optional - verpflichtend wenn du/ihr euch für die Second-Stage-Förderung bewirbst bzw. bewerbt | 100 Wörter)", a: "- M9 Erweiterung des Prototypen: zusätzliche Institutionen, strukturierte Tests, Kontextinterviews, Nutzungsanalyse, priorisierte Maßnahmen (KW 49/2026-KW 4/2027) - M10 Wissensaufbau: Best-Practice-Guides, Projektartenkatalog, verbesserte Templates, Onboarding-Materialien, Dokumentstruktur (KW 5-8/2027) - M11 Communityaufbau: Kommunikationskanäle, Governance-Modell, Ankerinstitutionen, Workshops für frühe Nutzergruppen (KW 49/2026-KW 12/2027) - M12 Verstetigung: Betriebsmodell, Finanzierungsszenarien, Roadmap, Implementierungsleitfaden, Abschlussbericht zur nachhaltigen Nutzung (KW 5-12/2027) Für eine visuelle Darstellung: siehe Gantt-Chart: https://www.citizenproject.app/bewerbung#meilensteinplanung" }
+        ]
+    }
+];

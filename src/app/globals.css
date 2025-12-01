@@ -14,12 +14,18 @@
 
 @theme {
   /* Global Contrast Fix: Shifting gray scale darker */
-  --color-gray-400: #6b7280; /* was 500 */
-  --color-gray-500: #4b5563; /* was 600 - better for placeholders/secondary text */
-  --color-gray-600: #374151; /* was 700 */
-  --color-gray-700: #1f2937; /* was 800 */
-  --color-gray-800: #111827; /* was 900 */
-  --color-gray-900: #030712; /* was 950 */
+  --color-gray-400: #6b7280;
+  /* was 500 */
+  --color-gray-500: #4b5563;
+  /* was 600 - better for placeholders/secondary text */
+  --color-gray-600: #374151;
+  /* was 700 */
+  --color-gray-700: #1f2937;
+  /* was 800 */
+  --color-gray-800: #111827;
+  /* was 900 */
+  --color-gray-900: #030712;
+  /* was 950 */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -33,4 +39,24 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Gantt Chart Hover Mask - Very Dark Pink */
+.rct-cursor-line {
+  background-color: #831843 !important;
+  /* Very dark pink */
+}
+
+.rct-vertical-lines .rct-vl:hover {
+  background-color: rgba(131, 24, 67, 0.1) !important;
+  /* Very dark pink with transparency */
+}
+
+/* Custom Gantt Chart Hover Overlay */
+.gantt-hover-overlay {
+  opacity: 0;
+}
+
+.group\/item:hover .gantt-hover-overlay {
+  opacity: 0.4 !important;
 }

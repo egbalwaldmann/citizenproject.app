@@ -8,6 +8,7 @@ import 'react-calendar-timeline/dist/style.css';
 import moment from 'moment';
 import 'moment/locale/de';
 
+
 moment.locale('de');
 
 // Helper to extract text from React elements
@@ -36,7 +37,8 @@ import {
   TABLE_DATA,
   // TIMELINE_GROUPS removed - defined locally to force update
   ALL_TIMELINE_ITEMS,
-  GROUP_IDS
+  GROUP_IDS,
+  APPLICATION_DATA
 } from './data';
 
 // Define groups locally to ensure updates are applied immediately
@@ -278,7 +280,7 @@ const CustomGantt = ({ onItemClick }: { onItemClick: (item: any) => void }) => {
                         <div
                           key={item.id}
                           onClick={() => onItemClick(item)} // Trigger click handler
-                          className="absolute h-[24px] top-[5px] text-xs flex items-center justify-center px-1 shadow-sm hover:shadow-md hover:brightness-95 transition-all cursor-pointer border border-white/20 text-white hover:scale-[1.01] hover:shadow-md cursor-pointer group/item z-10"
+                          className="absolute h-[24px] top-[5px] text-xs flex items-center justify-center px-1 shadow-sm hover:shadow-md transition-all cursor-pointer border border-white/20 text-white hover:scale-[1.01] hover:shadow-md cursor-pointer group/item z-10"
                           style={{
                             left: pos.left,
                             width: pos.width,
@@ -291,10 +293,18 @@ const CustomGantt = ({ onItemClick }: { onItemClick: (item: any) => void }) => {
                             zIndex: 20
                           }}
                         >
+                          {/* Dark Pink Hover Overlay */}
+                          <div
+                            className="gantt-hover-overlay absolute inset-0 transition-opacity pointer-events-none z-10 rounded-sm"
+                            style={{
+                              backgroundColor: '#831843',
+                            }}
+                          />
+
                           <span className="truncate px-1 relative z-20 text-white">{item.title}</span>
 
                           {/* Tooltip */}
-                          <div className="hidden group-hover/item:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-gray-900 text-white text-xs p-2 rounded z-50 pointer-events-none shadow-lg">
+                          <div className="hidden group-hover/item:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-gray-700 text-white text-xs p-2 rounded z-50 pointer-events-none shadow-lg">
                             <div className="font-bold mb-1">{item.title}</div>
                             <div className="mb-1 opacity-75">{moment(item.start_time).format('DD.MM.YYYY')} - {moment(item.end_time).format('DD.MM.YYYY')}</div>
                             {item.description && <div className="italic">{item.description}</div>}
@@ -314,11 +324,13 @@ const CustomGantt = ({ onItemClick }: { onItemClick: (item: any) => void }) => {
 };
 
 export default function Intern() {
+  const [showDetails, setShowDetails] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const [columnOrderMode, setColumnOrderMode] = useState<'default' | 'alphabetical'>('default');
   const [selectedTimelineItem, setSelectedTimelineItem] = useState<any>(null);
   const [isTotalCollapsed, setIsTotalCollapsed] = useState(true);
+  const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null);
 
   React.useEffect(() => {
     moment.locale('de');
@@ -472,9 +484,7 @@ export default function Intern() {
   // Convert string values to chips - same string always gets same color
   const createChip = (value: string, isSelected = false, columnKey?: keyof typeof visibleColumns) => {
     // Bei ausgewählten Zeilen: transparenter/weißer Chip-Hintergrund
-    if (isSelected) {
-      return <span className="inline-block bg-white bg-opacity-20 text-white text-xs px-1.5 py-0.5 rounded border border-white border-opacity-30">{value}</span>;
-    }
+
     // Einfache Hash-Funktion für konsistente Farbzuweisung
     const hashCode = (str: string) => {
       let hash = 0;
@@ -771,39 +781,23 @@ export default function Intern() {
 
   return (
     <div className="min-h-screen bg-gray-50" >
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
-              <Link href="/" className="text-2xl font-bold text-indigo-600">CitizenProject.App</Link>
-              <span className="ml-4 text-sm bg-red-100 text-red-800 px-2 py-1 rounded">BEWERBUNG</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
-                Dashboard
-              </Link>
-              <a
-                href="https://github.com/egbalwaldmann/citizenproject.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center text-gray-700 hover:text-indigo-600 px-2 py-2 rounded-md transition-colors"
-                aria-label="GitHub Repository"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </nav>
+
 
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <SectionHeading id="interne-ressourcen" level="h1" title="Interne Ressourcen" className="text-3xl font-bold text-gray-900" />
-          <p className="text-gray-800 mt-2">Vergleiche, Analysen und interne Dokumentation für das CitizenProject.App Team</p>
+          <h1 className="text-3xl font-bold text-gray-900">Bewerbung Prototype Fund</h1>
+          <p className="text-gray-800 mt-2">Projektplanung, Kalkulation und Details zur Förderung der CitizenProject.App</p>
+          <div className="mt-4 flex flex-col sm:flex-row gap-4 text-sm">
+            <a href="https://citizenproject.app" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium bg-indigo-50 px-3 py-1.5 rounded-md border border-indigo-100 transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+              https://citizenproject.app
+            </a>
+            <a href="https://github.com/egbalwaldmann/citizenproject.app" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium bg-indigo-50 px-3 py-1.5 rounded-md border border-indigo-100 transition-colors">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" /></svg>
+              https://github.com/egbalwaldmann/citizenproject.app
+            </a>
+          </div>
         </div>
 
         {/* Software Comparison Section */}
@@ -1401,36 +1395,7 @@ export default function Intern() {
 
           {/* Settings Section */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-12">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Einstellungen</h2>
-              <div className="bg-gray-100 px-4 py-2 rounded-lg border border-gray-200">
-                <span className="text-gray-700 font-medium mr-2">Gesamtbudget:</span>
-                <span className="text-xl font-bold text-gray-900">{totalBudget.toLocaleString('de-DE')} €</span>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {/* Material Costs */}
-              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Sachkosten-Anteil (%)
-                </label>
-                <div className="flex items-center gap-4">
-                  <div className="relative rounded-md shadow-sm w-full">
-                    <input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={materialCostPercentage}
-                      onChange={(e) => setMaterialCostPercentage(Number(e.target.value))}
-                      className="block w-full rounded-md border-gray-300 pr-8 focus:border-indigo-500 focus:ring-indigo-500 py-2 text-gray-900"
-                    />
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                      <span className="text-gray-500 sm:text-sm">%</span>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-xs text-gray-600 mt-2">Vom Gesamtbudget abgezogen.</p>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
               {/* Egbal Hours */}
               <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
@@ -1481,429 +1446,512 @@ export default function Intern() {
             </div>
           </div>
 
-          {/* Visual Timeline of Phases */}
-          <div className="mb-8">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Projektlaufzeit im Kontext (2025 – 2027)</h3>
-            <div className="relative h-24 w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
-              {/* Year Markers */}
-              <div className="absolute inset-0 flex divide-x divide-gray-300/50">
-                {/* 2025 */}
-                <div className="flex-1 relative bg-gray-50/30">
-                  <div className="absolute top-1 left-2 text-xs font-bold text-gray-400 uppercase">2025</div>
-                  <div className="absolute inset-0 flex divide-x divide-gray-200/50">
-                    <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q1</span></div>
-                    <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q2</span></div>
-                    <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q3</span></div>
-                    <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q4</span></div>
-                  </div>
-                </div>
-                {/* 2026 */}
-                <div className="flex-1 relative bg-gray-50/30">
-                  <div className="absolute top-1 left-2 text-xs font-bold text-gray-400 uppercase">2026</div>
-                  <div className="absolute inset-0 flex divide-x divide-gray-200/50">
-                    <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q1</span></div>
-                    <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q2</span></div>
-                    <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q3</span></div>
-                    <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q4</span></div>
-                  </div>
-                </div>
-                {/* 2027 */}
-                <div className="flex-1 relative bg-gray-50/30">
-                  <div className="absolute top-1 left-2 text-xs font-bold text-gray-400 uppercase">2027</div>
-                  <div className="absolute inset-0 flex divide-x divide-gray-200/50">
-                    <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q1</span></div>
-                    <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q2</span></div>
-                    <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q3</span></div>
-                    <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q4</span></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Application Phase Bar */}
-              <div
-                className="absolute top-8 h-10 bg-blue-50 border border-blue-200 border-dashed rounded-md flex items-center justify-center shadow-sm group hover:bg-blue-100 transition-colors cursor-help z-10"
-                style={{ left: '25%', width: '5.5%' }}
-                title="Bewerbungszeitraum: 01.10.2025 – 30.11.2025"
-              >
-                <div className="text-[10px] font-bold text-blue-800 leading-tight text-center px-1 truncate w-full">Bewerbung</div>
-              </div>
-
-              {/* Selection Phase Bar */}
-              <div
-                className="absolute top-8 h-10 bg-yellow-50 border border-yellow-200 border-dashed rounded-md flex items-center justify-center shadow-sm group hover:bg-yellow-100 transition-colors cursor-help z-10"
-                style={{ left: '30.5%', width: '8.3%' }}
-                title="Auswahlphase: 01.12.2025 – 01.03.2026"
-              >
-                <div className="text-[10px] font-bold text-yellow-800 leading-tight text-center px-1 truncate w-full">Auswahl</div>
-              </div>
-
-              {/* Formal Application Phase Bar (Gap Filler) */}
-              <div
-                className="absolute top-8 h-10 bg-gray-50 border border-gray-200 border-dashed rounded-md flex items-center justify-center shadow-sm group hover:bg-gray-100 transition-colors cursor-help z-10"
-                style={{ left: '38.8%', width: '8.3%' }}
-                title="Formale Antragstellung: 01.03.2026 – 31.05.2026"
-              >
-                <div className="text-[10px] font-bold text-gray-600 leading-tight text-center px-1 truncate w-full">Antrag</div>
-              </div>
-
-              {/* Phase 1 Bar */}
-              <div
-                className="absolute top-8 h-10 bg-green-100 border border-green-300 rounded-md flex items-center justify-center shadow-sm group hover:bg-green-200 transition-colors cursor-help z-10"
-                style={{ left: '47.2%', width: '16.7%' }}
-                title="Phase 1: 01.06.2026 – 01.12.2026"
-              >
-                <div className="flex flex-col items-center leading-none">
-                  <div className="text-[10px] font-bold text-green-800 truncate w-full text-center">Phase 1</div>
-                  <div className="text-[9px] text-green-700 font-medium mt-0.5">Start {formatDaysRelative('2026-06-01')}</div>
-                </div>
-              </div>
-
-              {/* Phase 2 Bar */}
-              <div
-                className="absolute top-8 h-10 bg-purple-100 border border-purple-300 rounded-md flex items-center justify-center shadow-sm group hover:bg-purple-200 transition-colors cursor-help z-10"
-                style={{ left: '63.9%', width: '11.1%' }}
-                title="Phase 2: 01.12.2026 – 31.03.2027"
-              >
-                <div className="flex flex-col items-center leading-none">
-                  <div className="text-[10px] font-bold text-purple-800 truncate w-full text-center">Phase 2</div>
-                  <div className="text-[9px] text-purple-700 font-medium mt-0.5">Start {formatDaysRelative('2026-12-01')}</div>
-                </div>
-              </div>
-            </div>
-            {/* Date Labels below */}
-            <div className="relative w-full h-12 mt-0 text-[10px] text-gray-400 font-mono">
-              {/* Marker: Application Start */}
-              <div className="absolute left-[25%] top-0 h-3 border-l border-dashed border-gray-300 transform -translate-x-1/2"></div>
-              <div className="absolute left-[25%] top-3 transform -translate-x-1/2 text-center whitespace-nowrap">
-                01. Okt. 2025
-                <span className="block text-[9px] text-gray-300">{formatDaysRelative('2025-10-01')}</span>
-              </div>
-
-              {/* Marker: Selection Start */}
-              <div className="absolute left-[30.5%] top-0 h-3 border-l border-dashed border-gray-300 transform -translate-x-1/2"></div>
-              <div className="absolute left-[30.5%] top-10 transform -translate-x-1/2 text-center whitespace-nowrap">
-                01. Dez. 2025
-                <span className="block text-[9px] text-gray-300">{formatDaysRelative('2025-12-01')}</span>
-              </div>
-
-              {/* Marker: Formal Application Start */}
-              <div className="absolute left-[38.8%] top-0 h-3 border-l border-dashed border-gray-300 transform -translate-x-1/2"></div>
-              <div className="absolute left-[38.8%] top-3 transform -translate-x-1/2 text-center whitespace-nowrap">
-                01. März 2026
-                <span className="block text-[9px] text-gray-300">{formatDaysRelative('2026-03-01')}</span>
-              </div>
-
-              {/* Marker: Phase 1 Start */}
-              <div className="absolute left-[47.2%] top-0 h-3 border-l border-dashed border-gray-300 transform -translate-x-1/2"></div>
-              <div className="absolute left-[47.2%] top-10 transform -translate-x-1/2 text-center whitespace-nowrap">
-                01. Juni 2026
-                <span className="block text-[9px] text-gray-300">{formatDaysRelative('2026-06-01')}</span>
-              </div>
-
-              {/* Marker: Phase 2 Start */}
-              <div className="absolute left-[63.9%] top-0 h-3 border-l border-dashed border-gray-300 transform -translate-x-1/2"></div>
-              <div className="absolute left-[63.9%] top-3 transform -translate-x-1/2 text-center whitespace-nowrap">
-                01. Dez. 2026
-                <span className="block text-[9px] text-gray-300">{formatDaysRelative('2026-12-01')}</span>
-              </div>
-
-              {/* Marker: End */}
-              <div className="absolute left-[75%] top-0 h-3 border-l border-dashed border-gray-300 transform -translate-x-1/2"></div>
-              <div className="absolute left-[75%] top-10 transform -translate-x-1/2 text-center whitespace-nowrap">
-                31. März 2027
-                <span className="block text-[9px] text-gray-300">{formatDaysRelative('2027-03-31')}</span>
-              </div>
-            </div>
+          {/* Toggle Button */}
+          <div className="flex justify-center mb-8">
+            <button
+              onClick={() => setShowDetails(!showDetails)}
+              className="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-full transition-colors flex items-center gap-2"
+            >
+              <span>{showDetails ? 'Details verbergen' : 'Details anzeigen'}</span>
+              <svg className={`w-4 h-4 transform transition-transform ${showDetails ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
           </div>
 
-          {/* Detailed Breakdown Table */}
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-            <div className={`grid ${isTotalCollapsed ? 'grid-cols-3' : 'grid-cols-4'} divide-x divide-gray-200`}>
-              {/* Headers */}
-              <div className="p-6 bg-gray-50 font-bold text-gray-500 uppercase tracking-wider text-sm flex items-center">
-                Bereich
-              </div>
-              <div className="p-6 bg-green-50">
-                <div className="font-bold text-green-900 uppercase tracking-wider text-sm mb-1">Phase 1</div>
-                <div className="text-xs text-green-700">Reguläre Förderung (6 Mon.)</div>
-              </div>
-              <div className="p-6 bg-purple-50 relative group">
-                <div className="font-bold text-purple-900 uppercase tracking-wider text-sm mb-1">Phase 2</div>
-                <div className="text-xs text-purple-700">Second-Stage (4 Mon.)</div>
-                {isTotalCollapsed && (
-                  <button
-                    onClick={() => setIsTotalCollapsed(false)}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/50 hover:bg-white text-purple-900 p-1 rounded shadow-sm transition-all"
-                    title="Gesamt anzeigen"
+          {showDetails && (
+            <>
+
+
+              {/* Visual Timeline of Phases */}
+              <div className="mb-8">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Projektlaufzeit im Kontext (2025 – 2027)</h3>
+                <div className="relative h-24 w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+                  {/* Year Markers */}
+                  <div className="absolute inset-0 flex divide-x divide-gray-300/50">
+                    {/* 2025 */}
+                    <div className="flex-1 relative bg-gray-50/30">
+                      <div className="absolute top-1 left-2 text-xs font-bold text-gray-400 uppercase">2025</div>
+                      <div className="absolute inset-0 flex divide-x divide-gray-200/50">
+                        <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q1</span></div>
+                        <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q2</span></div>
+                        <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q3</span></div>
+                        <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q4</span></div>
+                      </div>
+                    </div>
+                    {/* 2026 */}
+                    <div className="flex-1 relative bg-gray-50/30">
+                      <div className="absolute top-1 left-2 text-xs font-bold text-gray-400 uppercase">2026</div>
+                      <div className="absolute inset-0 flex divide-x divide-gray-200/50">
+                        <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q1</span></div>
+                        <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q2</span></div>
+                        <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q3</span></div>
+                        <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q4</span></div>
+                      </div>
+                    </div>
+                    {/* 2027 */}
+                    <div className="flex-1 relative bg-gray-50/30">
+                      <div className="absolute top-1 left-2 text-xs font-bold text-gray-400 uppercase">2027</div>
+                      <div className="absolute inset-0 flex divide-x divide-gray-200/50">
+                        <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q1</span></div>
+                        <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q2</span></div>
+                        <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q3</span></div>
+                        <div className="flex-1 flex items-end justify-center pb-1"><span className="text-[8px] text-gray-300">Q4</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Application Phase Bar */}
+                  <div
+                    className="absolute top-8 h-10 bg-blue-50 border border-blue-200 border-dashed rounded-md flex items-center justify-center shadow-sm group hover:bg-blue-100 transition-colors cursor-help z-10"
+                    style={{ left: '25%', width: '5.5%' }}
+                    title="Bewerbungszeitraum: 01.10.2025 – 30.11.2025"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-              {!isTotalCollapsed && (
-                <div className="p-6 bg-gray-800 text-white relative">
-                  <div className="font-bold uppercase tracking-wider text-sm mb-1">Gesamt</div>
-                  <div className="text-xs text-gray-400">Projektlaufzeit (10 Mon.)</div>
-                  <button
-                    onClick={() => setIsTotalCollapsed(true)}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-700 hover:bg-gray-600 text-white p-1 rounded shadow-sm transition-all"
-                    title="Gesamt ausblenden"
+                    <div className="text-[10px] font-bold text-blue-800 leading-tight text-center px-1 truncate w-full">Bewerbung</div>
+                  </div>
+
+                  {/* Selection Phase Bar */}
+                  <div
+                    className="absolute top-8 h-10 bg-yellow-50 border border-yellow-200 border-dashed rounded-md flex items-center justify-center shadow-sm group hover:bg-yellow-100 transition-colors cursor-help z-10"
+                    style={{ left: '30.5%', width: '8.3%' }}
+                    title="Auswahlphase: 01.12.2025 – 01.03.2026"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-                </div>
-              )}
+                    <div className="text-[10px] font-bold text-yellow-800 leading-tight text-center px-1 truncate w-full">Auswahl</div>
+                  </div>
 
-              {/* Row: Budget */}
-              <div className="p-4 font-medium text-gray-900 border-t border-gray-100">Budget</div>
-              <div className="p-4 font-mono text-gray-800 border-t border-gray-100">{PHASE_1_BUDGET.toLocaleString('de-DE')} €</div>
-              <div className="p-4 font-mono text-gray-800 border-t border-gray-100">{PHASE_2_BUDGET.toLocaleString('de-DE')} €</div>
-              {!isTotalCollapsed && (
-                <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100">{totalBudget.toLocaleString('de-DE')} €</div>
-              )}
+                  {/* Formal Application Phase Bar (Gap Filler) */}
+                  <div
+                    className="absolute top-8 h-10 bg-gray-50 border border-gray-200 border-dashed rounded-md flex items-center justify-center shadow-sm group hover:bg-gray-100 transition-colors cursor-help z-10"
+                    style={{ left: '38.8%', width: '8.3%' }}
+                    title="Formale Antragstellung: 01.03.2026 – 31.05.2026"
+                  >
+                    <div className="text-[10px] font-bold text-gray-600 leading-tight text-center px-1 truncate w-full">Antrag</div>
+                  </div>
 
-              {/* Row: Sachkosten */}
-              <div className="p-4 font-medium text-gray-900 border-t border-gray-100">Sachkosten ({materialCostPercentage}%)</div>
-              <div className="p-4 font-mono text-red-600 border-t border-gray-100">-{phase1.materialCosts.toLocaleString('de-DE')} €</div>
-              <div className="p-4 font-mono text-red-600 border-t border-gray-100">-{phase2.materialCosts.toLocaleString('de-DE')} €</div>
-              {!isTotalCollapsed && (
-                <div className="p-4 font-mono font-bold text-red-600 border-t border-gray-100">-{totalMaterialCosts.toLocaleString('de-DE')} €</div>
-              )}
+                  {/* Phase 1 Bar */}
+                  <div
+                    className="absolute top-8 h-10 bg-green-100 border border-green-300 rounded-md flex items-center justify-center shadow-sm group hover:bg-green-200 transition-colors cursor-help z-10"
+                    style={{ left: '47.2%', width: '16.7%' }}
+                    title="Phase 1: 01.06.2026 – 01.12.2026"
+                  >
+                    <div className="flex flex-col items-center leading-none">
+                      <div className="text-[10px] font-bold text-green-800 truncate w-full text-center">Phase 1</div>
+                      <div className="text-[9px] text-green-700 font-medium mt-0.5">Start {formatDaysRelative('2026-06-01')}</div>
+                    </div>
+                  </div>
 
-              {/* Row: Personal */}
-              <div className="p-4 font-medium text-gray-900 border-t border-gray-100 bg-gray-50/50">Verfügbar für Personal</div>
-              <div className="p-4 font-mono font-bold text-green-600 border-t border-gray-100 bg-green-50/30">{phase1.personnel.toLocaleString('de-DE')} €</div>
-              <div className="p-4 font-mono font-bold text-purple-600 border-t border-gray-100 bg-purple-50/30">{phase2.personnel.toLocaleString('de-DE')} €</div>
-              {!isTotalCollapsed && (
-                <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100 bg-gray-50/50">{totalPersonnel.toLocaleString('de-DE')} €</div>
-              )}
-
-              {/* Row: Hours (Gross) */}
-              <div className="p-4 font-medium text-gray-900 border-t border-gray-100">
-                Geplante Stunden (Brutto)
-              </div>
-              <div className={`p-4 font-mono border-t border-gray-100 ${phase1.teamTotalHours > MAX_HOURS_PHASE_1 ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
-                {phase1.teamTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
-              </div>
-              <div className={`p-4 font-mono border-t border-gray-100 ${phase2.teamTotalHours > MAX_HOURS_PHASE_2 ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
-                {phase2.teamTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
-              </div>
-              {!isTotalCollapsed && (
-                <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100">
-                  {totalTeamHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
-                </div>
-              )}
-
-              {/* Row: Max Hours Limit */}
-              <div className="p-4 font-medium text-gray-500 border-t border-gray-100 bg-gray-50/30 italic">
-                Max. zulässig (Prototype Fund)
-              </div>
-              <div className="p-4 font-mono text-gray-500 border-t border-gray-100 bg-gray-50/30 italic">
-                {MAX_HOURS_PHASE_1.toLocaleString('de-DE')} h
-              </div>
-              <div className="p-4 font-mono text-gray-500 border-t border-gray-100 bg-gray-50/30 italic">
-                {MAX_HOURS_PHASE_2.toLocaleString('de-DE')} h
-              </div>
-              {!isTotalCollapsed && (
-                <div className="p-4 font-mono text-gray-500 border-t border-gray-100 bg-gray-50/30 italic">
-                  {(MAX_HOURS_PHASE_1 + MAX_HOURS_PHASE_2).toLocaleString('de-DE')} h
-                </div>
-              )}
-
-              {/* Row: Hours (Net/Productive) */}
-              <div className="p-4 font-medium text-gray-900 border-t border-gray-100 bg-yellow-50/50">
-                Produktiv-Stunden (Netto)
-                <div className="text-xs text-gray-500 font-normal mt-1 flex items-center gap-1">
-                  Abz. Urlaub (20 Tage/Jahr) & Feiertage
-                  <div className="group relative inline-block">
-                    <svg className="w-4 h-4 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-xl pointer-events-none">
-                      <div className="font-bold mb-2 text-green-300">Phase 1 (01.06.26 – 01.12.26)</div>
-                      <ul className="mb-3 space-y-1">
-                        <li className="flex justify-between"><span>03.10.26</span> <span>Tag d. Dt. Einheit</span></li>
-                        <li className="flex justify-between"><span>31.10.26</span> <span>Reformationstag</span></li>
-                      </ul>
-                      <div className="font-bold mb-2 text-purple-300">Phase 2 (01.12.26 – 31.03.27)</div>
-                      <ul className="space-y-1">
-                        <li className="flex justify-between"><span>25./26.12.26</span> <span>Weihnachten</span></li>
-                        <li className="flex justify-between"><span>01.01.27</span> <span>Neujahr</span></li>
-                        <li className="flex justify-between"><span>26.03.27</span> <span>Karfreitag</span></li>
-                        <li className="flex justify-between"><span>29.03.27</span> <span>Ostermontag</span></li>
-                      </ul>
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
+                  {/* Phase 2 Bar */}
+                  <div
+                    className="absolute top-8 h-10 bg-purple-100 border border-purple-300 rounded-md flex items-center justify-center shadow-sm group hover:bg-purple-200 transition-colors cursor-help z-10"
+                    style={{ left: '63.9%', width: '11.1%' }}
+                    title="Phase 2: 01.12.2026 – 31.03.2027"
+                  >
+                    <div className="flex flex-col items-center leading-none">
+                      <div className="text-[10px] font-bold text-purple-800 truncate w-full text-center">Phase 2</div>
+                      <div className="text-[9px] text-purple-700 font-medium mt-0.5">Start {formatDaysRelative('2026-12-01')}</div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="p-4 font-mono text-gray-700 border-t border-gray-100 bg-yellow-50/30">
-                {phase1.teamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
-              </div>
-              <div className="p-4 font-mono text-gray-700 border-t border-gray-100 bg-yellow-50/30">
-                {phase2.teamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
-              </div>
-              {!isTotalCollapsed && (
-                <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100 bg-yellow-50/50">
-                  {totalTeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
-                  <div className="text-xs text-gray-500 mt-1 font-normal">
-                    {((totalTeamNetHours / (MAX_HOURS_PHASE_1 + MAX_HOURS_PHASE_2)) * 100).toLocaleString('de-DE', { maximumFractionDigits: 1 })}% vom Limit
+                {/* Date Labels below */}
+                <div className="relative w-full h-12 mt-0 text-[10px] text-gray-400 font-mono">
+                  {/* Marker: Application Start */}
+                  <div className="absolute left-[25%] top-0 h-3 border-l border-dashed border-gray-300 transform -translate-x-1/2"></div>
+                  <div className="absolute left-[25%] top-3 transform -translate-x-1/2 text-center whitespace-nowrap">
+                    01. Okt. 2025
+                    <span className="block text-[9px] text-gray-300">{formatDaysRelative('2025-10-01')}</span>
+                  </div>
+
+                  {/* Marker: Selection Start */}
+                  <div className="absolute left-[30.5%] top-0 h-3 border-l border-dashed border-gray-300 transform -translate-x-1/2"></div>
+                  <div className="absolute left-[30.5%] top-10 transform -translate-x-1/2 text-center whitespace-nowrap">
+                    01. Dez. 2025
+                    <span className="block text-[9px] text-gray-300">{formatDaysRelative('2025-12-01')}</span>
+                  </div>
+
+                  {/* Marker: Formal Application Start */}
+                  <div className="absolute left-[38.8%] top-0 h-3 border-l border-dashed border-gray-300 transform -translate-x-1/2"></div>
+                  <div className="absolute left-[38.8%] top-3 transform -translate-x-1/2 text-center whitespace-nowrap">
+                    01. März 2026
+                    <span className="block text-[9px] text-gray-300">{formatDaysRelative('2026-03-01')}</span>
+                  </div>
+
+                  {/* Marker: Phase 1 Start */}
+                  <div className="absolute left-[47.2%] top-0 h-3 border-l border-dashed border-gray-300 transform -translate-x-1/2"></div>
+                  <div className="absolute left-[47.2%] top-10 transform -translate-x-1/2 text-center whitespace-nowrap">
+                    01. Juni 2026
+                    <span className="block text-[9px] text-gray-300">{formatDaysRelative('2026-06-01')}</span>
+                  </div>
+
+                  {/* Marker: Phase 2 Start */}
+                  <div className="absolute left-[63.9%] top-0 h-3 border-l border-dashed border-gray-300 transform -translate-x-1/2"></div>
+                  <div className="absolute left-[63.9%] top-3 transform -translate-x-1/2 text-center whitespace-nowrap">
+                    01. Dez. 2026
+                    <span className="block text-[9px] text-gray-300">{formatDaysRelative('2026-12-01')}</span>
+                  </div>
+
+                  {/* Marker: End */}
+                  <div className="absolute left-[75%] top-0 h-3 border-l border-dashed border-gray-300 transform -translate-x-1/2"></div>
+                  <div className="absolute left-[75%] top-10 transform -translate-x-1/2 text-center whitespace-nowrap">
+                    31. März 2027
+                    <span className="block text-[9px] text-gray-300">{formatDaysRelative('2027-03-31')}</span>
                   </div>
                 </div>
-              )}
+              </div>
 
-              {/* Row: Person Days (PT) */}
-              <div className="p-4 font-medium text-gray-900 border-t border-gray-100 bg-gray-50/50">
-                Personentage (PT)
-                <div className="text-xs text-gray-400 font-normal mt-1">1 PT = 8 Std. (Brutto)</div>
-              </div>
-              <div className="p-4 font-mono text-gray-600 border-t border-gray-100 bg-gray-50/30">{(phase1.teamTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              <div className="p-4 font-mono text-gray-600 border-t border-gray-100 bg-gray-50/30">{(phase2.teamTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              {!isTotalCollapsed && (
-                <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100 bg-gray-50/50">{(totalTeamHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              )}
-
-              {/* Row: Stundensatz */}
-              <div className="p-4 font-medium text-gray-900 border-t border-gray-100">Sich ergebender Stundensatz</div>
-              <div className="p-4 font-mono text-gray-600 border-t border-gray-100">{phase1.hourlyRate.toLocaleString('de-DE', { maximumFractionDigits: 2 })} €/h</div>
-              <div className="p-4 font-mono text-gray-600 border-t border-gray-100">{phase2.hourlyRate.toLocaleString('de-DE', { maximumFractionDigits: 2 })} €/h</div>
-              {!isTotalCollapsed && (
-                <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100">{totalWeightedHourlyRate.toLocaleString('de-DE', { maximumFractionDigits: 2 })} €/h (Ø)</div>
-              )}
-
-              {/* Spacer */}
-              <div className={`${isTotalCollapsed ? 'col-span-3' : 'col-span-4'} h-8 bg-gray-50 border-t border-gray-200`}></div>
-
-              {/* Egbal Section */}
-              <div className="p-4 font-bold text-indigo-900 border-t border-gray-200 bg-indigo-50 flex items-center gap-2">
-                <span>👨‍💻 Egbal</span>
-              </div>
-              <div className="p-4 border-t border-gray-200 bg-indigo-50/10">
-                <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-indigo-700">{phase1.egbalPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich</div>
-                <div className="font-mono text-gray-700">{(phase1.egbalPay / PHASE_1_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
-                <div className="font-mono text-gray-700">{phase1.egbalTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-700">{(phase1.egbalTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              </div>
-              <div className="p-4 border-t border-gray-200 bg-indigo-50/10">
-                <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-indigo-700">{phase2.egbalPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich</div>
-                <div className="font-mono text-gray-700">{(phase2.egbalPay / PHASE_2_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
-                <div className="font-mono text-gray-700">{phase2.egbalTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-700">{(phase2.egbalTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              </div>
-              {!isTotalCollapsed && (
-                <div className="p-4 border-t border-gray-200 bg-indigo-50/30">
-                  <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                  <div className="font-bold text-indigo-900 text-lg">{totalEgbalPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
-                  <div className="text-xs text-gray-500 mt-1 uppercase">Ø Monatlich</div>
-                  <div className="font-mono text-gray-900 font-bold">{(totalEgbalPay / totalMonths).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
-                  <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
-                  <div className="font-mono text-gray-900 font-bold">{(phase1.egbalTotalHours + phase2.egbalTotalHours).toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
-                  <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                  <div className="font-mono text-gray-900 font-bold">{((phase1.egbalTotalHours + phase2.egbalTotalHours) / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-                </div>
-              )}
-
-              {/* Manuela Section */}
-              <div className="p-4 font-bold text-purple-900 border-t border-gray-200 bg-purple-50 flex items-center gap-2">
-                <span>👩‍🔬 Manuela</span>
-              </div>
-              <div className="p-4 border-t border-gray-200 bg-purple-50/10">
-                <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-purple-700">{phase1.manuelaPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich</div>
-                <div className="font-mono text-gray-700">{(phase1.manuelaPay / PHASE_1_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
-                <div className="font-mono text-gray-700">{phase1.manuelaTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-700">{(phase1.manuelaTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              </div>
-              <div className="p-4 border-t border-gray-200 bg-purple-50/10">
-                <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-purple-700">{phase2.manuelaPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich</div>
-                <div className="font-mono text-gray-700">{(phase2.manuelaPay / PHASE_2_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
-                <div className="font-mono text-gray-700">{phase2.manuelaTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-700">{(phase2.manuelaTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              </div>
-              {!isTotalCollapsed && (
-                <div className="p-4 border-t border-gray-200 bg-purple-50/30">
-                  <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                  <div className="font-bold text-purple-900 text-lg">{totalManuelaPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
-                  <div className="text-xs text-gray-500 mt-1 uppercase">Ø Monatlich</div>
-                  <div className="font-mono text-gray-900 font-bold">{(totalManuelaPay / totalMonths).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
-                  <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
-                  <div className="font-mono text-gray-900 font-bold">{(phase1.manuelaTotalHours + phase2.manuelaTotalHours).toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
-                  <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                  <div className="font-mono text-gray-900 font-bold">{((phase1.manuelaTotalHours + phase2.manuelaTotalHours) / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-                </div>
-              )}
-
-              {/* Beide (Team) Section */}
-              <div className="p-4 font-bold text-gray-900 border-t-4 border-gray-300 bg-gray-100 flex items-center gap-2">
-                <span>👥 Beide (Team)</span>
-              </div>
-              <div className="p-4 border-t-4 border-gray-300 bg-gray-50">
-                <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-gray-900">{(phase1.egbalPay + phase1.manuelaPay).toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich (Kombiniert)</div>
-                <div className="font-mono text-gray-700">{((phase1.egbalPay + phase1.manuelaPay) / PHASE_1_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Stunden (Brutto / Netto)</div>
-                <div className="font-mono text-gray-700">
-                  {phase1.teamTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
-                  <span className="text-gray-400 mx-1">/</span>
-                  <span className="font-bold text-gray-800">{phase1.teamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</span>
-                </div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-700">{(phase1.teamTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              </div>
-              <div className="p-4 border-t-4 border-gray-300 bg-gray-50">
-                <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-gray-900">{(phase2.egbalPay + phase2.manuelaPay).toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich (Kombiniert)</div>
-                <div className="font-mono text-gray-700">{((phase2.egbalPay + phase2.manuelaPay) / PHASE_2_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Stunden (Brutto / Netto)</div>
-                <div className="font-mono text-gray-700">
-                  {phase2.teamTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
-                  <span className="text-gray-400 mx-1">/</span>
-                  <span className="font-bold text-gray-800">{phase2.teamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</span>
-                </div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-700">{(phase2.teamTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              </div>
-              {!isTotalCollapsed && (
-                <div className="p-4 border-t-4 border-gray-300 bg-gray-200">
-                  <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                  <div className="font-bold text-gray-900 text-lg">{(totalEgbalPay + totalManuelaPay).toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
-                  <div className="text-xs text-gray-500 mt-1 uppercase">Ø Monatlich (Kombiniert)</div>
-                  <div className="font-mono text-gray-900 font-bold">{((totalEgbalPay + totalManuelaPay) / totalMonths).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
-                  <div className="text-xs text-gray-500 mt-1 uppercase">Stunden (Brutto / Netto)</div>
-                  <div className="font-mono text-gray-900 font-bold">
-                    {totalTeamHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
-                    <span className="text-gray-400 mx-1">/</span>
-                    <span className="font-bold text-gray-900">{totalTeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</span>
+              {/* Detailed Breakdown Table */}
+              <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                <div className={`grid ${isTotalCollapsed ? 'grid-cols-3' : 'grid-cols-4'} divide-x divide-gray-200`}>
+                  {/* Headers */}
+                  <div className="p-6 bg-gray-50 font-bold text-gray-500 uppercase tracking-wider text-sm flex items-center">
+                    Bereich
                   </div>
-                  <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                  <div className="font-mono text-gray-900 font-bold">{(totalTeamHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                  <div className="p-6 bg-green-50">
+                    <div className="font-bold text-green-900 uppercase tracking-wider text-sm mb-1">Phase 1</div>
+                    <div className="text-xs text-green-700">Reguläre Förderung (6 Mon.)</div>
+                  </div>
+                  <div className="p-6 bg-purple-50 relative group">
+                    <div className="font-bold text-purple-900 uppercase tracking-wider text-sm mb-1">Phase 2</div>
+                    <div className="text-xs text-purple-700">Second-Stage (4 Mon.)</div>
+                    {isTotalCollapsed && (
+                      <button
+                        onClick={() => setIsTotalCollapsed(false)}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/50 hover:bg-white text-purple-900 p-1 rounded shadow-sm transition-all"
+                        title="Gesamt anzeigen"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                  {!isTotalCollapsed && (
+                    <div className="p-6 bg-gray-800 text-white relative">
+                      <div className="font-bold uppercase tracking-wider text-sm mb-1">Gesamt</div>
+                      <div className="text-xs text-gray-400">Projektlaufzeit (10 Mon.)</div>
+                      <button
+                        onClick={() => setIsTotalCollapsed(true)}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-700 hover:bg-gray-600 text-white p-1 rounded shadow-sm transition-all"
+                        title="Gesamt ausblenden"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Row: Budget */}
+                  <div className="p-4 font-medium text-gray-900 border-t border-gray-100">Budget</div>
+                  <div className="p-4 font-mono text-gray-800 border-t border-gray-100">{PHASE_1_BUDGET.toLocaleString('de-DE')} €</div>
+                  <div className="p-4 font-mono text-gray-800 border-t border-gray-100">{PHASE_2_BUDGET.toLocaleString('de-DE')} €</div>
+                  {!isTotalCollapsed && (
+                    <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100">{totalBudget.toLocaleString('de-DE')} €</div>
+                  )}
+
+                  {/* Row: Sachkosten */}
+                  <div className="p-4 font-medium text-gray-900 border-t border-gray-100 flex items-center justify-between">
+                    <span>Sachkosten</span>
+                    <div className="relative w-16">
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={materialCostPercentage}
+                        onChange={(e) => setMaterialCostPercentage(Number(e.target.value))}
+                        className="block w-full rounded border-gray-300 py-0.5 px-1 text-xs text-right pr-4 focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-1">
+                        <span className="text-gray-500 text-xs">%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-4 font-mono text-red-600 border-t border-gray-100">-{phase1.materialCosts.toLocaleString('de-DE')} €</div>
+                  <div className="p-4 font-mono text-red-600 border-t border-gray-100">-{phase2.materialCosts.toLocaleString('de-DE')} €</div>
+                  {!isTotalCollapsed && (
+                    <div className="p-4 font-mono font-bold text-red-600 border-t border-gray-100">-{totalMaterialCosts.toLocaleString('de-DE')} €</div>
+                  )}
+
+                  {/* Row: Personal */}
+                  <div className="p-4 font-medium text-gray-900 border-t border-gray-100 bg-gray-50/50">Verfügbar für Personal</div>
+                  <div className="p-4 font-mono font-bold text-green-600 border-t border-gray-100 bg-green-50/30">{phase1.personnel.toLocaleString('de-DE')} €</div>
+                  <div className="p-4 font-mono font-bold text-purple-600 border-t border-gray-100 bg-purple-50/30">{phase2.personnel.toLocaleString('de-DE')} €</div>
+                  {!isTotalCollapsed && (
+                    <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100 bg-gray-50/50">{totalPersonnel.toLocaleString('de-DE')} €</div>
+                  )}
+
+                  {/* Row: Hours (Gross) */}
+                  <div className="p-4 font-medium text-gray-900 border-t border-gray-100">
+                    Geplante Stunden (Brutto)
+                  </div>
+                  <div className={`p-4 font-mono border-t border-gray-100 ${phase1.teamTotalHours > MAX_HOURS_PHASE_1 ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
+                    {phase1.teamTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                  </div>
+                  <div className={`p-4 font-mono border-t border-gray-100 ${phase2.teamTotalHours > MAX_HOURS_PHASE_2 ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
+                    {phase2.teamTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                  </div>
+                  {!isTotalCollapsed && (
+                    <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100">
+                      {totalTeamHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                    </div>
+                  )}
+
+                  {/* Row: Max Hours Limit */}
+                  <div className="p-4 font-medium text-gray-500 border-t border-gray-100 bg-gray-50/30 italic">
+                    Max. zulässig (Prototype Fund)
+                  </div>
+                  <div className="p-4 font-mono text-gray-500 border-t border-gray-100 bg-gray-50/30 italic">
+                    {MAX_HOURS_PHASE_1.toLocaleString('de-DE')} h
+                  </div>
+                  <div className="p-4 font-mono text-gray-500 border-t border-gray-100 bg-gray-50/30 italic">
+                    {MAX_HOURS_PHASE_2.toLocaleString('de-DE')} h
+                  </div>
+                  {!isTotalCollapsed && (
+                    <div className="p-4 font-mono text-gray-500 border-t border-gray-100 bg-gray-50/30 italic">
+                      {(MAX_HOURS_PHASE_1 + MAX_HOURS_PHASE_2).toLocaleString('de-DE')} h
+                    </div>
+                  )}
+
+                  {/* Row: Hours (Net/Productive) */}
+                  <div className="p-4 font-medium text-gray-900 border-t border-gray-100 bg-yellow-50/50">
+                    Produktiv-Stunden (Netto)
+                    <div className="text-xs text-gray-500 font-normal mt-1 flex items-center gap-1">
+                      Abz. Urlaub (20 Tage/Jahr) & Feiertage
+                      <div className="group relative inline-block">
+                        <svg className="w-4 h-4 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-xl pointer-events-none">
+                          <div className="font-bold mb-2 text-green-300">Phase 1 (01.06.26 – 01.12.26)</div>
+                          <ul className="mb-3 space-y-1">
+                            <li className="flex justify-between"><span>03.10.26</span> <span>Tag d. Dt. Einheit</span></li>
+                            <li className="flex justify-between"><span>31.10.26</span> <span>Reformationstag</span></li>
+                          </ul>
+                          <div className="font-bold mb-2 text-purple-300">Phase 2 (01.12.26 – 31.03.27)</div>
+                          <ul className="space-y-1">
+                            <li className="flex justify-between"><span>25./26.12.26</span> <span>Weihnachten</span></li>
+                            <li className="flex justify-between"><span>01.01.27</span> <span>Neujahr</span></li>
+                            <li className="flex justify-between"><span>26.03.27</span> <span>Karfreitag</span></li>
+                            <li className="flex justify-between"><span>29.03.27</span> <span>Ostermontag</span></li>
+                          </ul>
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-4 font-mono text-gray-700 border-t border-gray-100 bg-yellow-50/30">
+                    {phase1.teamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                  </div>
+                  <div className="p-4 font-mono text-gray-700 border-t border-gray-100 bg-yellow-50/30">
+                    {phase2.teamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                  </div>
+                  {!isTotalCollapsed && (
+                    <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100 bg-yellow-50/50">
+                      {totalTeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                      <div className="text-xs text-gray-500 mt-1 font-normal">
+                        {((totalTeamNetHours / (MAX_HOURS_PHASE_1 + MAX_HOURS_PHASE_2)) * 100).toLocaleString('de-DE', { maximumFractionDigits: 1 })}% vom Limit
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Row: Person Days (PT) */}
+                  <div className="p-4 font-medium text-gray-900 border-t border-gray-100 bg-gray-50/50">
+                    Personentage (PT)
+                    <div className="text-xs text-gray-400 font-normal mt-1">1 PT = 8 Std. (Brutto)</div>
+                  </div>
+                  <div className="p-4 font-mono text-gray-600 border-t border-gray-100 bg-gray-50/30">{(phase1.teamTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                  <div className="p-4 font-mono text-gray-600 border-t border-gray-100 bg-gray-50/30">{(phase2.teamTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                  {!isTotalCollapsed && (
+                    <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100 bg-gray-50/50">{(totalTeamHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                  )}
+
+                  {/* Row: Stundensatz */}
+                  <div className="p-4 font-medium text-gray-900 border-t border-gray-100">Sich ergebender Stundensatz</div>
+                  <div className="p-4 font-mono text-gray-600 border-t border-gray-100">{phase1.hourlyRate.toLocaleString('de-DE', { maximumFractionDigits: 2 })} €/h</div>
+                  <div className="p-4 font-mono text-gray-600 border-t border-gray-100">{phase2.hourlyRate.toLocaleString('de-DE', { maximumFractionDigits: 2 })} €/h</div>
+                  {!isTotalCollapsed && (
+                    <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100">{totalWeightedHourlyRate.toLocaleString('de-DE', { maximumFractionDigits: 2 })} €/h (Ø)</div>
+                  )}
+
+                  {/* Spacer */}
+                  <div className={`${isTotalCollapsed ? 'col-span-3' : 'col-span-4'} h-8 bg-gray-50 border-t border-gray-200`}></div>
+
+                  {/* Egbal Section */}
+                  <div className="p-4 font-bold text-indigo-900 border-t border-gray-200 bg-indigo-50 flex items-center gap-2">
+                    <span>👨‍💻 Egbal</span>
+                  </div>
+                  <div className="p-4 border-t border-gray-200 bg-indigo-50/10">
+                    <div className="text-xs text-gray-500 uppercase">Gesamt</div>
+                    <div className="font-bold text-indigo-700">{phase1.egbalPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich</div>
+                    <div className="font-mono text-gray-700">{(phase1.egbalPay / PHASE_1_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
+                    <div className="font-mono text-gray-700">{phase1.egbalTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
+                    <div className="font-mono text-gray-700">{(phase1.egbalTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                  </div>
+                  <div className="p-4 border-t border-gray-200 bg-indigo-50/10">
+                    <div className="text-xs text-gray-500 uppercase">Gesamt</div>
+                    <div className="font-bold text-indigo-700">{phase2.egbalPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich</div>
+                    <div className="font-mono text-gray-700">{(phase2.egbalPay / PHASE_2_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
+                    <div className="font-mono text-gray-700">{phase2.egbalTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
+                    <div className="font-mono text-gray-700">{(phase2.egbalTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                  </div>
+                  {!isTotalCollapsed && (
+                    <div className="p-4 border-t border-gray-200 bg-indigo-50/30">
+                      <div className="text-xs text-gray-500 uppercase">Gesamt</div>
+                      <div className="font-bold text-indigo-900 text-lg">{totalEgbalPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                      <div className="text-xs text-gray-500 mt-1 uppercase">Ø Monatlich</div>
+                      <div className="font-mono text-gray-900 font-bold">{(totalEgbalPay / totalMonths).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                      <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
+                      <div className="font-mono text-gray-900 font-bold">{(phase1.egbalTotalHours + phase2.egbalTotalHours).toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
+                      <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
+                      <div className="font-mono text-gray-900 font-bold">{((phase1.egbalTotalHours + phase2.egbalTotalHours) / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                    </div>
+                  )}
+
+                  {/* Manuela Section */}
+                  <div className="p-4 font-bold text-purple-900 border-t border-gray-200 bg-purple-50 flex items-center gap-2">
+                    <span>👩‍🔬 Manuela</span>
+                  </div>
+                  <div className="p-4 border-t border-gray-200 bg-purple-50/10">
+                    <div className="text-xs text-gray-500 uppercase">Gesamt</div>
+                    <div className="font-bold text-purple-700">{phase1.manuelaPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich</div>
+                    <div className="font-mono text-gray-700">{(phase1.manuelaPay / PHASE_1_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
+                    <div className="font-mono text-gray-700">{phase1.manuelaTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
+                    <div className="font-mono text-gray-700">{(phase1.manuelaTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                  </div>
+                  <div className="p-4 border-t border-gray-200 bg-purple-50/10">
+                    <div className="text-xs text-gray-500 uppercase">Gesamt</div>
+                    <div className="font-bold text-purple-700">{phase2.manuelaPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich</div>
+                    <div className="font-mono text-gray-700">{(phase2.manuelaPay / PHASE_2_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
+                    <div className="font-mono text-gray-700">{phase2.manuelaTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
+                    <div className="font-mono text-gray-700">{(phase2.manuelaTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                  </div>
+                  {!isTotalCollapsed && (
+                    <div className="p-4 border-t border-gray-200 bg-purple-50/30">
+                      <div className="text-xs text-gray-500 uppercase">Gesamt</div>
+                      <div className="font-bold text-purple-900 text-lg">{totalManuelaPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                      <div className="text-xs text-gray-500 mt-1 uppercase">Ø Monatlich</div>
+                      <div className="font-mono text-gray-900 font-bold">{(totalManuelaPay / totalMonths).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                      <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
+                      <div className="font-mono text-gray-900 font-bold">{(phase1.manuelaTotalHours + phase2.manuelaTotalHours).toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
+                      <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
+                      <div className="font-mono text-gray-900 font-bold">{((phase1.manuelaTotalHours + phase2.manuelaTotalHours) / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                    </div>
+                  )}
+
+                  {/* Beide (Team) Section */}
+                  <div className="p-4 font-bold text-gray-900 border-t-4 border-gray-300 bg-gray-100 flex items-center gap-2">
+                    <span>👥 Beide (Team)</span>
+                  </div>
+                  <div className="p-4 border-t-4 border-gray-300 bg-gray-50">
+                    <div className="text-xs text-gray-500 uppercase">Gesamt</div>
+                    <div className="font-bold text-gray-900">{(phase1.egbalPay + phase1.manuelaPay).toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich (Kombiniert)</div>
+                    <div className="font-mono text-gray-700">{((phase1.egbalPay + phase1.manuelaPay) / PHASE_1_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Stunden (Brutto / Netto)</div>
+                    <div className="font-mono text-gray-700">
+                      {phase1.teamTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                      <span className="text-gray-400 mx-1">/</span>
+                      <span className="font-bold text-gray-800">{phase1.teamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
+                    <div className="font-mono text-gray-700">{(phase1.teamTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                  </div>
+                  <div className="p-4 border-t-4 border-gray-300 bg-gray-50">
+                    <div className="text-xs text-gray-500 uppercase">Gesamt</div>
+                    <div className="font-bold text-gray-900">{(phase2.egbalPay + phase2.manuelaPay).toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich (Kombiniert)</div>
+                    <div className="font-mono text-gray-700">{((phase2.egbalPay + phase2.manuelaPay) / PHASE_2_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Stunden (Brutto / Netto)</div>
+                    <div className="font-mono text-gray-700">
+                      {phase2.teamTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                      <span className="text-gray-400 mx-1">/</span>
+                      <span className="font-bold text-gray-800">{phase2.teamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
+                    <div className="font-mono text-gray-700">{(phase2.teamTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                  </div>
+                  {!isTotalCollapsed && (
+                    <div className="p-4 border-t-4 border-gray-300 bg-gray-200">
+                      <div className="text-xs text-gray-500 uppercase">Gesamt</div>
+                      <div className="font-bold text-gray-900 text-lg">{(totalEgbalPay + totalManuelaPay).toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                      <div className="text-xs text-gray-500 mt-1 uppercase">Ø Monatlich (Kombiniert)</div>
+                      <div className="font-mono text-gray-900 font-bold">{((totalEgbalPay + totalManuelaPay) / totalMonths).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                      <div className="text-xs text-gray-500 mt-1 uppercase">Stunden (Brutto / Netto)</div>
+                      <div className="font-mono text-gray-900 font-bold">
+                        {totalTeamHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                        <span className="text-gray-400 mx-1">/</span>
+                        <span className="font-bold text-gray-900">{totalTeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</span>
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
+                      <div className="font-mono text-gray-900 font-bold">{(totalTeamHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+            </>
+          )}
+
+          {/* FAQ Section */}
+          <div className="mt-16 border-t border-gray-200 pt-12 mb-12">
+            <div className="mb-8">
+              <SectionHeading id="faq" title="FAQ" className="text-2xl font-bold text-gray-900" />
+            </div>
+            <div className="space-y-4">
+              {APPLICATION_DATA.map((section, idx) => (
+                <div key={idx} className="border border-gray-200 rounded-lg overflow-hidden">
+                  <button
+                    onClick={() => setExpandedFAQ(expandedFAQ === section.category ? null : section.category)}
+                    className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+                  >
+                    <span className="font-bold text-gray-900">{section.category}</span>
+                    <svg
+                      className={`w-5 h-5 text-gray-500 transform transition-transform ${expandedFAQ === section.category ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {expandedFAQ === section.category && (
+                    <div className="p-4 bg-white border-t border-gray-200">
+                      <div className="space-y-6">
+                        {section.items.map((item, itemIdx) => (
+                          <div key={itemIdx}>
+                            <h4 className="font-semibold text-gray-800 text-sm mb-1">{item.q}</h4>
+                            {item.a.includes('http') ? (
+                              <div className="text-gray-600 text-sm whitespace-pre-wrap">
+                                {item.a.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
+                                  part.match(/https?:\/\/[^\s]+/) ? (
+                                    <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline break-all">{part}</a>
+                                  ) : (
+                                    part
+                                  )
+                                )}
+                              </div>
+                            ) : (
+                              <div className="text-gray-600 text-sm whitespace-pre-wrap">{item.a}</div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* Holidays Section */}
 
         </div>
       </div >
