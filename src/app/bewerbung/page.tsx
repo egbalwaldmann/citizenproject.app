@@ -29,29 +29,14 @@ const extractText = (content: React.ReactNode): string => {
   return '';
 };
 
-// ============================================
-// SINGLE SOURCE OF TRUTH: Column definitions
-// ============================================
-// Add/remove columns here - everything else adapts automatically
-const COLUMN_CONFIG = {
-  software: 'Software',
-  dsgvo: 'DSGVO',
-  zielgruppe: 'Zielgruppe',
-  socialAcademic: 'Geeignet für gesellschaftliche Institutionen (nicht-kommerziell)',
-  pmLevel: 'PM-Erfahrung',
-  templates: 'Prozess-Templates',
-  pmHilfe: 'Geführte Abläufe',
-  wissenstransfer: 'Wissenstransfer',
-  barrierefreiheit: 'Barrierefreiheit',
-  vendorLock: 'Anbieterabhängigkeit (Open-Core)',
-  anpassbar: 'Anpassbarkeit',
-  dateien: 'Dateimanagement',
-  ki: 'KI-Agenten (DSGVO?)',
-  kollaborativ: 'Kollaborative Bearbeitung von Dokumenten',
-} as const;
-
-// Column display order (derived from COLUMN_CONFIG)
-const COLUMN_ORDER = Object.keys(COLUMN_CONFIG) as (keyof typeof COLUMN_CONFIG)[];
+import {
+  BUDGET_CONFIG,
+  COLUMN_CONFIG,
+  COLUMN_ORDER,
+  TABLE_DATA,
+  TIMELINE_GROUPS,
+  ALL_TIMELINE_ITEMS
+} from './data';
 
 // Helper component for section headings with copy link
 const SectionHeading = ({ id, title, level = 'h2', className = '' }: { id: string, title: React.ReactNode, level?: 'h1' | 'h2', className?: string }) => {
@@ -98,6 +83,7 @@ export default function Intern() {
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const [columnOrderMode, setColumnOrderMode] = useState<'default' | 'alphabetical'>('default');
   const [selectedTimelineItem, setSelectedTimelineItem] = useState<any>(null);
+  const [isTotalCollapsed, setIsTotalCollapsed] = useState(true);
 
   React.useEffect(() => {
     moment.locale('de');
@@ -106,16 +92,18 @@ export default function Intern() {
   // ============================================
   // KALKULATION LOGIC & STATE
   // ============================================
-  const PHASE_1_BUDGET = 95000;
-  const PHASE_1_MONTHS = 6;
-  const MAX_HOURS_PHASE_1 = 1900;
-  const HOLIDAYS_PHASE_1_WEEKDAYS = 0;
-  const PHASE_2_BUDGET = 63000;
-  const PHASE_2_MONTHS = 4;
-  const MAX_HOURS_PHASE_2 = 1269;
-  const HOLIDAYS_PHASE_2_WEEKDAYS = 4;
-  const VACATION_DAYS_PER_MONTH = 20 / 12; // 20 days per year
-  const TEAM_SIZE = 2;
+  const {
+    PHASE_1_BUDGET,
+    PHASE_1_MONTHS,
+    MAX_HOURS_PHASE_1,
+    HOLIDAYS_PHASE_1_WEEKDAYS,
+    PHASE_2_BUDGET,
+    PHASE_2_MONTHS,
+    MAX_HOURS_PHASE_2,
+    HOLIDAYS_PHASE_2_WEEKDAYS,
+    VACATION_DAYS_PER_MONTH,
+    TEAM_SIZE
+  } = BUDGET_CONFIG;
 
   // Helper functions
   const getDaysUntil = (dateString: string) => {
@@ -153,54 +141,67 @@ export default function Intern() {
   const totalBudget = PHASE_1_BUDGET + PHASE_2_BUDGET;
   const totalMonths = PHASE_1_MONTHS + PHASE_2_MONTHS;
 
+  // Helper for phase calculations
+  const calculatePhase = (
+    budget: number,
+    months: number,
+    materialPercentage: number,
+    holidaysWeekdays: number,
+    egbalHoursPerWeek: number,
+    manuelaHoursPerWeek: number
+  ) => {
+    const materialCosts = budget * (materialPercentage / 100);
+    const personnel = budget - materialCosts;
+
+    const egbalTotalHours = egbalHoursPerWeek * 4.33 * months;
+    const manuelaTotalHours = manuelaHoursPerWeek * 4.33 * months;
+    const teamTotalHours = egbalTotalHours + manuelaTotalHours;
+
+    const hourlyRate = teamTotalHours > 0 ? personnel / teamTotalHours : 0;
+
+    const egbalPay = hourlyRate * egbalTotalHours;
+    const manuelaPay = hourlyRate * manuelaTotalHours;
+
+    // Net hours calculation
+    const vacationDays = VACATION_DAYS_PER_MONTH * months;
+    const deductibleDays = holidaysWeekdays + vacationDays;
+
+    const egbalDeduction = deductibleDays * (egbalHoursPerWeek / 5);
+    const manuelaDeduction = deductibleDays * (manuelaHoursPerWeek / 5);
+
+    const egbalNetHours = Math.max(0, egbalTotalHours - egbalDeduction);
+    const manuelaNetHours = Math.max(0, manuelaTotalHours - manuelaDeduction);
+
+    return {
+      materialCosts,
+      personnel,
+      egbalTotalHours,
+      manuelaTotalHours,
+      teamTotalHours,
+      hourlyRate,
+      egbalPay,
+      manuelaPay,
+      egbalNetHours,
+      manuelaNetHours,
+      teamNetHours: egbalNetHours + manuelaNetHours
+    };
+  };
+
   // Phase 1 Calculations
-  const phase1MaterialCosts = PHASE_1_BUDGET * (materialCostPercentage / 100);
-  const phase1Personnel = PHASE_1_BUDGET - phase1MaterialCosts;
-  const phase1EgbalHours = egbalHours * 4.33 * PHASE_1_MONTHS;
-  const phase1ManuelaHours = manuelaHours * 4.33 * PHASE_1_MONTHS;
-  const phase1TeamHours = phase1EgbalHours + phase1ManuelaHours;
-  const phase1HourlyRate = phase1TeamHours > 0 ? phase1Personnel / phase1TeamHours : 0;
-  const phase1EgbalPay = phase1HourlyRate * phase1EgbalHours;
-  const phase1ManuelaPay = phase1HourlyRate * phase1ManuelaHours;
-
-  // Phase 1 Net Calculations
-  const phase1VacationDays = VACATION_DAYS_PER_MONTH * PHASE_1_MONTHS;
-  const phase1DeductibleDays = HOLIDAYS_PHASE_1_WEEKDAYS + phase1VacationDays;
-  const phase1EgbalDeduction = phase1DeductibleDays * (egbalHours / 5);
-  const phase1ManuelaDeduction = phase1DeductibleDays * (manuelaHours / 5);
-  const phase1EgbalNetHours = Math.max(0, phase1EgbalHours - phase1EgbalDeduction);
-  const phase1ManuelaNetHours = Math.max(0, phase1ManuelaHours - phase1ManuelaDeduction);
-  const phase1TeamNetHours = phase1EgbalNetHours + phase1ManuelaNetHours;
-
+  const phase1 = calculatePhase(PHASE_1_BUDGET, PHASE_1_MONTHS, materialCostPercentage, HOLIDAYS_PHASE_1_WEEKDAYS, egbalHours, manuelaHours);
 
   // Phase 2 Calculations
-  const phase2MaterialCosts = PHASE_2_BUDGET * (materialCostPercentage / 100);
-  const phase2Personnel = PHASE_2_BUDGET - phase2MaterialCosts;
-  const phase2EgbalHours = egbalHours * 4.33 * PHASE_2_MONTHS;
-  const phase2ManuelaHours = manuelaHours * 4.33 * PHASE_2_MONTHS;
-  const phase2TeamHours = phase2EgbalHours + phase2ManuelaHours;
-  const phase2HourlyRate = phase2TeamHours > 0 ? phase2Personnel / phase2TeamHours : 0;
-  const phase2EgbalPay = phase2HourlyRate * phase2EgbalHours;
-  const phase2ManuelaPay = phase2HourlyRate * phase2ManuelaHours;
-
-  // Phase 2 Net Calculations
-  const phase2VacationDays = VACATION_DAYS_PER_MONTH * PHASE_2_MONTHS;
-  const phase2DeductibleDays = HOLIDAYS_PHASE_2_WEEKDAYS + phase2VacationDays;
-  const phase2EgbalDeduction = phase2DeductibleDays * (egbalHours / 5);
-  const phase2ManuelaDeduction = phase2DeductibleDays * (manuelaHours / 5);
-  const phase2EgbalNetHours = Math.max(0, phase2EgbalHours - phase2EgbalDeduction);
-  const phase2ManuelaNetHours = Math.max(0, phase2ManuelaHours - phase2ManuelaDeduction);
-  const phase2TeamNetHours = phase2EgbalNetHours + phase2ManuelaNetHours;
+  const phase2 = calculatePhase(PHASE_2_BUDGET, PHASE_2_MONTHS, materialCostPercentage, HOLIDAYS_PHASE_2_WEEKDAYS, egbalHours, manuelaHours);
 
   // Total Calculations
-  const totalMaterialCosts = phase1MaterialCosts + phase2MaterialCosts;
-  const totalPersonnel = phase1Personnel + phase2Personnel;
-  const totalEgbalPay = phase1EgbalPay + phase2EgbalPay;
-  const totalManuelaPay = phase1ManuelaPay + phase2ManuelaPay;
-  const totalAvgHourlyRate = (phase1HourlyRate + phase2HourlyRate) / 2; // Approximate or weighted? Weighted is better:
-  const totalTeamHours = phase1TeamHours + phase2TeamHours;
+  const totalMaterialCosts = phase1.materialCosts + phase2.materialCosts;
+  const totalPersonnel = phase1.personnel + phase2.personnel;
+  const totalEgbalPay = phase1.egbalPay + phase2.egbalPay;
+  const totalManuelaPay = phase1.manuelaPay + phase2.manuelaPay;
+  // Weighted average hourly rate
+  const totalTeamHours = phase1.teamTotalHours + phase2.teamTotalHours;
   const totalWeightedHourlyRate = totalTeamHours > 0 ? totalPersonnel / totalTeamHours : 0;
-  const totalTeamNetHours = phase1TeamNetHours + phase2TeamNetHours;
+  const totalTeamNetHours = phase1.teamNetHours + phase2.teamNetHours;
 
   // Timeline zoom state
   const [visibleTimeStart, setVisibleTimeStart] = useState(moment('2026-05-25').valueOf());
@@ -366,152 +367,7 @@ export default function Intern() {
   };
 
   // Table data for easy rendering
-  const tableData = [
-    {
-      software: { content: 'CitizenProject.App', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      dsgvo: 'Hoch',
-      zielgruppe: 'Bildung / Nonprofit',
-      pmLevel: 'Anfänger',
-      templates: 'Ja',
-      socialAcademic: 'Ja',
-      pmHilfe: 'Ja',
-      wissenstransfer: 'Ja',
-      barrierefreiheit: 'Hoch',
-      vendorLock: 'Kein / wenig',
-      anpassbar: 'Sehr Hoch',
-      dateien: 'Integriert',
-      ki: 'Geplant',
-      kollaborativ: 'Ja',
-    },
-    {
-      software: { content: 'OpenProject', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      dsgvo: 'Hoch',
-      zielgruppe: 'Unternehmen / Organisationen',
-      pmLevel: 'Fortgeschritten',
-      templates: 'Teilweise',
-      socialAcademic: 'Nein',
-      pmHilfe: 'Nein',
-      wissenstransfer: 'Begrenzt',
-      barrierefreiheit: 'Mittel',
-      vendorLock: 'Mittel',
-      anpassbar: 'Hoch',
-      dateien: 'Integriert',
-      ki: 'Nein',
-      kollaborativ: 'Nein',
-    },
-    {
-      software: { content: 'Redmine', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      dsgvo: 'Mittel',
-      zielgruppe: 'Tech / Engineering-Teams',
-      pmLevel: 'Experte',
-      templates: 'Nein',
-      socialAcademic: 'Nein',
-      pmHilfe: 'Nein',
-      wissenstransfer: 'Nein',
-      barrierefreiheit: 'Niedrig',
-      vendorLock: 'Kein / wenig',
-      anpassbar: 'Hoch',
-      dateien: 'Anhänge',
-      ki: 'Nein',
-      kollaborativ: 'Nein',
-    },
-    {
-      software: { content: 'Taiga', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      dsgvo: 'Mittel',
-      zielgruppe: 'Tech / Engineering-Teams',
-      pmLevel: 'Fortgeschritten',
-      templates: 'Agile/Scrum',
-      socialAcademic: 'Nein',
-      pmHilfe: 'Nein',
-      wissenstransfer: 'Begrenzt',
-      barrierefreiheit: 'Mittel',
-      vendorLock: 'Kein / wenig',
-      anpassbar: 'Mittel',
-      dateien: 'Anhänge',
-      ki: 'Nein',
-      kollaborativ: 'Nein',
-    },
-    {
-      software: { content: 'Tuleap', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      dsgvo: 'Hoch',
-      zielgruppe: 'Tech / Engineering-Teams',
-      pmLevel: 'Experte',
-      templates: 'Ja',
-      socialAcademic: 'Nein',
-      pmHilfe: 'Nein',
-      wissenstransfer: 'Begrenzt',
-      barrierefreiheit: 'Mittel',
-      vendorLock: 'Mittel',
-      anpassbar: 'Sehr Hoch',
-      dateien: 'Integriert',
-      ki: 'Nein',
-      kollaborativ: 'Nein',
-    },
-    {
-      software: { content: 'Kanboard', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      dsgvo: 'Niedrig',
-      zielgruppe: 'Kanban-Teams',
-      pmLevel: 'Anfänger',
-      templates: 'Nein',
-      socialAcademic: 'Nein',
-      pmHilfe: 'Nein',
-      wissenstransfer: 'Nein',
-      barrierefreiheit: 'Niedrig',
-      vendorLock: 'Kein / wenig',
-      anpassbar: 'Niedrig',
-      dateien: 'Anhänge',
-      ki: 'Nein',
-      kollaborativ: 'Nein',
-    },
-    {
-      software: { content: 'Wekan', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      dsgvo: 'Niedrig',
-      zielgruppe: 'Kanban-Teams',
-      pmLevel: 'Anfänger',
-      templates: 'Nein',
-      socialAcademic: 'Nein',
-      pmHilfe: 'Nein',
-      wissenstransfer: 'Nein',
-      barrierefreiheit: 'Niedrig',
-      vendorLock: 'Kein / wenig',
-      anpassbar: 'Niedrig',
-      dateien: 'Anhänge',
-      ki: 'Nein',
-      kollaborativ: 'Nein',
-    },
-    {
-      software: { content: 'Odoo Project', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      dsgvo: 'Mittel',
-      zielgruppe: 'Unternehmen / Organisationen',
-      pmLevel: 'Fortgeschritten',
-      templates: 'Teilweise',
-      socialAcademic: 'Nein',
-      pmHilfe: 'Nein',
-      wissenstransfer: 'Begrenzt',
-      barrierefreiheit: 'Niedrig',
-      vendorLock: 'Hoch',
-      anpassbar: 'Hoch',
-      dateien: 'Integriert',
-      ki: 'Nein',
-      kollaborativ: 'Nein',
-    },
-    {
-      software: { content: 'ERPNext Projects', className: 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200' },
-      dsgvo: 'Mittel',
-      zielgruppe: 'Unternehmen / Organisationen',
-      pmLevel: 'Fortgeschritten',
-      templates: 'Teilweise',
-      socialAcademic: 'Nein',
-      pmHilfe: 'Nein',
-      wissenstransfer: 'Begrenzt',
-      barrierefreiheit: 'Mittel',
-      vendorLock: 'Hoch',
-      anpassbar: 'Hoch',
-      dateien: 'Integriert',
-      ki: 'Nein',
-      kollaborativ: 'Nein',
-    }
-  ];
+  const tableData = TABLE_DATA;
 
   // Sort function
   const handleSort = (key: string) => {
@@ -639,109 +495,8 @@ export default function Intern() {
   // SCRUM ROADMAP (React-Calendar-Timeline)
   // ============================================
 
-  const groups = [
-    { id: 0, title: 'Förderphasen', stackItems: false, height: 50 },
-    { id: 5, title: 'Fördermonate', stackItems: false, height: 50 },
-    { id: 6, title: 'Kalenderwochen', stackItems: false, height: 50 },
-    { id: 1, title: 'Sprints', stackItems: false, height: 50 },
-    { id: 4, title: 'Meilensteine Konzept', stackItems: false, height: 50 },
-    { id: 7, title: 'Meilensteine Tech', stackItems: false, height: 50 },
-    { id: 8, title: 'Meilensteine Verstetigung', stackItems: false, height: 50 }
-  ];
-
-  // Helper to generate Funding Months (M1-M10)
-  const generateMonthItems = () => {
-    const months = [];
-    const startDate = moment('2026-06-01');
-    for (let i = 0; i < 10; i++) {
-      const start = startDate.clone().add(i, 'months');
-      const end = start.clone().endOf('month');
-      months.push({
-        id: 500 + i,
-        group: 5,
-        title: `${i + 1}`,
-        start_time: start,
-        end_time: end,
-        itemProps: { style: { background: i < 6 ? '#dbeafe' : '#fef3c7', color: i < 6 ? '#1e40af' : '#92400e', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', textAlign: 'center' as const, borderRadius: 0 } }
-      });
-    }
-    return months;
-  };
-
-  // Helper to generate Calendar Weeks
-  const generateWeekItems = () => {
-    const weeks = [];
-    const startDate = moment('2026-06-01').startOf('isoWeek');
-    const endDate = moment('2027-03-31').endOf('isoWeek');
-    let current = startDate.clone();
-    let idCounter = 600;
-
-    while (current.isBefore(endDate)) {
-      const end = current.clone().endOf('isoWeek');
-      weeks.push({
-        id: idCounter++,
-        group: 6,
-        title: `${current.isoWeek()}`,
-        start_time: current.clone(),
-        end_time: end,
-        itemProps: { style: { background: '#f3f4f6', color: '#6b7280', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', fontSize: '10px', textAlign: 'center' as const, borderRadius: 0 } }
-      });
-      current.add(1, 'weeks');
-    }
-    return weeks;
-  };
-
-  const staticItems = [
-    // --- FÖRDERPHASEN ---
-    { id: 1, group: 0, title: 'Förderphase 1', start_time: moment('2026-06-01'), end_time: moment('2026-11-30').endOf('day'), itemProps: { style: { background: '#64748b', borderStyle: 'none', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 2, group: 0, title: 'Förderphase 2', start_time: moment('2026-12-01'), end_time: moment('2027-03-31').endOf('day'), itemProps: { style: { background: '#f59e0b', borderStyle: 'none', borderRadius: 0, textAlign: 'center' as const } } },
-
-    // --- SPRINTS (2-week cycles) ---
-    // Phase 1 (June - Nov 2026)
-    { id: 101, group: 1, title: '1', start_time: moment('2026-06-01'), end_time: moment('2026-06-14').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 102, group: 1, title: '2', start_time: moment('2026-06-15'), end_time: moment('2026-06-28').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 103, group: 1, title: '3', start_time: moment('2026-06-29'), end_time: moment('2026-07-12').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 104, group: 1, title: '4', start_time: moment('2026-07-13'), end_time: moment('2026-07-26').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 105, group: 1, title: '5', start_time: moment('2026-07-27'), end_time: moment('2026-08-09').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 106, group: 1, title: '6', start_time: moment('2026-08-10'), end_time: moment('2026-08-23').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 107, group: 1, title: '7', start_time: moment('2026-08-24'), end_time: moment('2026-09-06').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 108, group: 1, title: '8', start_time: moment('2026-09-07'), end_time: moment('2026-09-20').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 109, group: 1, title: '9', start_time: moment('2026-09-21'), end_time: moment('2026-10-04').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 110, group: 1, title: '10', start_time: moment('2026-10-05'), end_time: moment('2026-10-18').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 111, group: 1, title: '11', start_time: moment('2026-10-19'), end_time: moment('2026-11-01').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 112, group: 1, title: '12', start_time: moment('2026-11-02'), end_time: moment('2026-11-15').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 113, group: 1, title: '13', start_time: moment('2026-11-16'), end_time: moment('2026-11-29').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-
-    // Phase 2 (Dec 2026 - Mar 2027)
-    { id: 114, group: 1, title: '14', start_time: moment('2026-12-01'), end_time: moment('2026-12-14').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 115, group: 1, title: '15', start_time: moment('2026-12-15'), end_time: moment('2026-12-28').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 116, group: 1, title: '16', start_time: moment('2026-12-29'), end_time: moment('2027-01-11').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 117, group: 1, title: '17', start_time: moment('2027-01-12'), end_time: moment('2027-01-25').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 118, group: 1, title: '18', start_time: moment('2027-01-26'), end_time: moment('2027-02-08').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 119, group: 1, title: '19', start_time: moment('2027-02-09'), end_time: moment('2027-02-22').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 120, group: 1, title: '20', start_time: moment('2027-02-23'), end_time: moment('2027-03-08').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 121, group: 1, title: '21', start_time: moment('2027-03-09'), end_time: moment('2027-03-22').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-    { id: 122, group: 1, title: '22', start_time: moment('2027-03-23'), end_time: moment('2027-04-05').endOf('day'), canMove: false, canResize: false, itemProps: { style: { background: '#e0e7ff', color: '#3730a3', borderWidth: '0 1px 0 0', borderStyle: 'solid', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } } },
-
-    // --- MEILENSTEINE ---
-    // First Stage
-    { id: 401, group: 4, title: 'M1 (Analyse & Konzept 1)', start_time: moment('2026-06-01').isoWeek(23).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(29).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Analyse & Konzept 1: Zielgruppenanalyse, Projektarten, Grundprozesse, Qualitätskriterien, Informationsarchitektur, Backlog' },
-    { id: 402, group: 7, title: 'M2 (Setup & Tech)', start_time: moment('2026-06-01').isoWeek(23).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(24).endOf('isoWeek'), itemProps: { style: { background: '#8b5cf6', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Setup & Tech: Analyse bestehender PM-Software, Repo, CI/CD, Hosting, DB, Auth, Rollenmodell, Sicherheits- und Datenschutzbasis' },
-    { id: 403, group: 4, title: 'M3 (Konzept 2)', start_time: moment('2026-06-01').isoWeek(30).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(31).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Konzept 2: Templates' },
-    { id: 404, group: 7, title: 'M4 (Core-Prototyp)', start_time: moment('2026-06-01').isoWeek(25).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(33).endOf('isoWeek'), itemProps: { style: { background: '#8b5cf6', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Core-Prototyp: Projektanlage, erste Projektarten, Basisprozesse, Projektrollen, Ansichten, geführte Schritte, Templates, Wissensstruktur' },
-    { id: 405, group: 7, title: 'M5 (Feature-Ausbau)', start_time: moment('2026-06-01').isoWeek(34).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(37).endOf('isoWeek'), itemProps: { style: { background: '#8b5cf6', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Feature-Ausbau: weitere Projektarten, Prozesspfade, Tipps, Kalenderlogik, Benachrichtigungen' },
-    { id: 406, group: 4, title: 'M6 (Pilotphase 1)', start_time: moment('2026-06-01').isoWeek(38).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(43).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Pilotphase 1: reale Pilotprojekte, Interviews, Usability-Tests, Logging, Priorisierung für Verbesserungen' },
-    { id: 407, group: 7, title: 'M7 (Stabilisierung)', start_time: moment('2026-06-01').isoWeek(44).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(48).endOf('isoWeek'), itemProps: { style: { background: '#8b5cf6', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Stabilisierung: technische Optimierung, UX-Verbesserungen, Prototyp-Release, Nutzer- und Entwicklerdokumentation, OSS-Release' },
-    { id: 408, group: 4, title: 'M8 (Revision)', start_time: moment('2026-06-01').isoWeek(47).startOf('isoWeek'), end_time: moment('2026-06-01').isoWeek(48).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Revision: Planung Second Stage' },
-
-    // Second Stage
-    { id: 409, group: 4, title: 'M9 (Erweiterung)', start_time: moment('2026-06-01').isoWeek(49).startOf('isoWeek'), end_time: moment('2027-01-01').isoWeek(4).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Erweiterung des Prototypen: zusätzliche Institutionen, strukturierte Tests, Kontextinterviews, Nutzungsanalyse, priorisierte Maßnahmen' },
-    { id: 410, group: 4, title: 'M10 (Wissen)', start_time: moment('2027-01-01').isoWeek(5).startOf('isoWeek'), end_time: moment('2027-01-01').isoWeek(8).endOf('isoWeek'), itemProps: { style: { background: '#ef4444', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Wissensaufbau: Best-Practice-Guides, Projektartenkatalog, verbesserte Templates, Onboarding-Materialien, Dokumentstruktur' },
-    { id: 411, group: 8, title: 'M11 (Community)', start_time: moment('2026-06-01').isoWeek(49).startOf('isoWeek'), end_time: moment('2027-01-01').isoWeek(12).endOf('isoWeek'), itemProps: { style: { background: '#10b981', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Communityaufbau: Kommunikationskanäle, Governance-Modell, Ankerinstitutionen, Workshops für frühe Nutzergruppen' },
-    { id: 412, group: 8, title: 'M12 (Verstetigung)', start_time: moment('2027-01-01').isoWeek(5).startOf('isoWeek'), end_time: moment('2027-01-01').isoWeek(12).endOf('isoWeek'), itemProps: { style: { background: '#10b981', borderStyle: 'solid', borderWidth: '0 1px 0 0', borderColor: 'white', borderRadius: 0, textAlign: 'center' as const } }, description: 'Verstetigung: Betriebsmodell, Finanzierungsszenarien, Roadmap, Implementierungsleitfaden, Abschlussbericht zur nachhaltigen Nutzung' },
-  ];
-
-  const items = [...staticItems, ...generateMonthItems(), ...generateWeekItems()];
+  const groups = TIMELINE_GROUPS;
+  const items = ALL_TIMELINE_ITEMS;
 
   const handleItemSelect = (itemId: number, e: any, time: number) => {
     const item = items.find(i => i.id === itemId);
@@ -931,7 +686,7 @@ export default function Intern() {
                         {DISPLAY_ORDER.map(key => {
                           const value = row[key as keyof typeof row];
                           if (key === 'software' && typeof value === 'object' && value !== null && 'content' in value) {
-                            return renderCell(key, value.content, value.className, isSelected);
+                            return renderCell(key, value.content, 'px-3 py-2 whitespace-nowrap text-xs text-gray-900 border-r border-gray-200', isSelected);
                           }
                           return renderCell(key, value as React.ReactNode, undefined, isSelected);
                         })}
@@ -1067,10 +822,11 @@ export default function Intern() {
         </div>
 
         {/* Divider for application questions */}
+        {/* Divider for application questions */}
+        {/*
         <div className="border-t border-gray-200 mt-12 pt-8">
           <SectionHeading id="faq" title="FAQ" className="text-2xl font-bold text-gray-900 mb-4" />
 
-          {/* 1. Projekttitel */}
           <details className="mb-4 bg-white rounded-lg shadow-sm">
             <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
               1. Projekttitel
@@ -1099,7 +855,6 @@ export default function Intern() {
             </div>
           </details>
 
-          {/* 2. Kurzbeschreibung */}
           <details className="mb-4 bg-white rounded-lg shadow-sm">
             <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
               2. Beschreibe dein Projekt kurz
@@ -1111,7 +866,6 @@ export default function Intern() {
             </div>
           </details>
 
-          {/* 3. Gesellschaftliche Herausforderung */}
           <details className="mb-4 bg-white rounded-lg shadow-sm">
             <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
               3. Gesellschaftliche Herausforderung
@@ -1160,7 +914,6 @@ export default function Intern() {
             </div>
           </details>
 
-          {/* 4. Technische Umsetzung */}
           <details className="mb-4 bg-white rounded-lg shadow-sm">
             <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
               4. Technische Umsetzung
@@ -1173,7 +926,6 @@ export default function Intern() {
             </div>
           </details>
 
-          {/* 5. Stand der Idee */}
           <details className="mb-4 bg-white rounded-lg shadow-sm">
             <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
               5. Stand der Idee
@@ -1186,7 +938,6 @@ export default function Intern() {
             </div>
           </details>
 
-          {/* 6. Marktanalyse & Vorteil */}
           <details className="mb-4 bg-white rounded-lg shadow-sm">
             <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
               6. Marktanalyse & unser Vorteil
@@ -1230,7 +981,6 @@ export default function Intern() {
             </div>
           </details>
 
-          {/* 7. Zielgruppen & Erreichung */}
           <details className="mb-4 bg-white rounded-lg shadow-sm">
             <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
               7. Zielgruppen & Erreichung
@@ -1261,7 +1011,6 @@ export default function Intern() {
             </div>
           </details>
 
-          {/* 8. Meilensteine */}
           <details className="mb-4 bg-white rounded-lg shadow-sm">
             <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
               8. Meilensteine im Förderzeitraum
@@ -1291,7 +1040,6 @@ export default function Intern() {
             </div>
           </details>
 
-          {/* 9. Team, Erfahrung & Motivation */}
           <details className="mb-4 bg-white rounded-lg shadow-sm">
             <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
               9. Team, Erfahrung & Motivation
@@ -1346,7 +1094,6 @@ export default function Intern() {
             </div>
           </details>
 
-          {/* 10. Second-Stage-Förderung */}
           <details className="mb-4 bg-white rounded-lg shadow-sm">
             <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-900 select-none">
               10. Second-Stage-Förderung
@@ -1360,6 +1107,7 @@ export default function Intern() {
             </div>
           </details>
         </div>
+        */}
         {/* Assuming a Timeline component would be rendered here or nearby */}
         {/* <Timeline items={timelineData} onItemSelect={handleItemSelect} /> */}
         {/* Kalkulation Section */}
@@ -1591,7 +1339,7 @@ export default function Intern() {
 
           {/* Detailed Breakdown Table */}
           <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-            <div className="grid grid-cols-4 divide-x divide-gray-200">
+            <div className={`grid ${isTotalCollapsed ? 'grid-cols-3' : 'grid-cols-4'} divide-x divide-gray-200`}>
               {/* Headers */}
               <div className="p-6 bg-gray-50 font-bold text-gray-500 uppercase tracking-wider text-sm flex items-center">
                 Bereich
@@ -1600,46 +1348,76 @@ export default function Intern() {
                 <div className="font-bold text-green-900 uppercase tracking-wider text-sm mb-1">Phase 1</div>
                 <div className="text-xs text-green-700">Reguläre Förderung (6 Mon.)</div>
               </div>
-              <div className="p-6 bg-purple-50">
+              <div className="p-6 bg-purple-50 relative group">
                 <div className="font-bold text-purple-900 uppercase tracking-wider text-sm mb-1">Phase 2</div>
                 <div className="text-xs text-purple-700">Second-Stage (4 Mon.)</div>
+                {isTotalCollapsed && (
+                  <button
+                    onClick={() => setIsTotalCollapsed(false)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/50 hover:bg-white text-purple-900 p-1 rounded shadow-sm transition-all"
+                    title="Gesamt anzeigen"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                )}
               </div>
-              <div className="p-6 bg-gray-800 text-white">
-                <div className="font-bold uppercase tracking-wider text-sm mb-1">Gesamt</div>
-                <div className="text-xs text-gray-400">Projektlaufzeit (10 Mon.)</div>
-              </div>
+              {!isTotalCollapsed && (
+                <div className="p-6 bg-gray-800 text-white relative">
+                  <div className="font-bold uppercase tracking-wider text-sm mb-1">Gesamt</div>
+                  <div className="text-xs text-gray-400">Projektlaufzeit (10 Mon.)</div>
+                  <button
+                    onClick={() => setIsTotalCollapsed(true)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-700 hover:bg-gray-600 text-white p-1 rounded shadow-sm transition-all"
+                    title="Gesamt ausblenden"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                </div>
+              )}
 
               {/* Row: Budget */}
               <div className="p-4 font-medium text-gray-900 border-t border-gray-100">Budget</div>
               <div className="p-4 font-mono text-gray-800 border-t border-gray-100">{PHASE_1_BUDGET.toLocaleString('de-DE')} €</div>
               <div className="p-4 font-mono text-gray-800 border-t border-gray-100">{PHASE_2_BUDGET.toLocaleString('de-DE')} €</div>
-              <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100">{totalBudget.toLocaleString('de-DE')} €</div>
+              {!isTotalCollapsed && (
+                <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100">{totalBudget.toLocaleString('de-DE')} €</div>
+              )}
 
               {/* Row: Sachkosten */}
               <div className="p-4 font-medium text-gray-900 border-t border-gray-100">Sachkosten ({materialCostPercentage}%)</div>
-              <div className="p-4 font-mono text-red-600 border-t border-gray-100">-{phase1MaterialCosts.toLocaleString('de-DE')} €</div>
-              <div className="p-4 font-mono text-red-600 border-t border-gray-100">-{phase2MaterialCosts.toLocaleString('de-DE')} €</div>
-              <div className="p-4 font-mono font-bold text-red-600 border-t border-gray-100">-{totalMaterialCosts.toLocaleString('de-DE')} €</div>
+              <div className="p-4 font-mono text-red-600 border-t border-gray-100">-{phase1.materialCosts.toLocaleString('de-DE')} €</div>
+              <div className="p-4 font-mono text-red-600 border-t border-gray-100">-{phase2.materialCosts.toLocaleString('de-DE')} €</div>
+              {!isTotalCollapsed && (
+                <div className="p-4 font-mono font-bold text-red-600 border-t border-gray-100">-{totalMaterialCosts.toLocaleString('de-DE')} €</div>
+              )}
 
               {/* Row: Personal */}
               <div className="p-4 font-medium text-gray-900 border-t border-gray-100 bg-gray-50/50">Verfügbar für Personal</div>
-              <div className="p-4 font-mono font-bold text-green-600 border-t border-gray-100 bg-green-50/30">{phase1Personnel.toLocaleString('de-DE')} €</div>
-              <div className="p-4 font-mono font-bold text-purple-600 border-t border-gray-100 bg-purple-50/30">{phase2Personnel.toLocaleString('de-DE')} €</div>
-              <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100 bg-gray-50/50">{totalPersonnel.toLocaleString('de-DE')} €</div>
+              <div className="p-4 font-mono font-bold text-green-600 border-t border-gray-100 bg-green-50/30">{phase1.personnel.toLocaleString('de-DE')} €</div>
+              <div className="p-4 font-mono font-bold text-purple-600 border-t border-gray-100 bg-purple-50/30">{phase2.personnel.toLocaleString('de-DE')} €</div>
+              {!isTotalCollapsed && (
+                <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100 bg-gray-50/50">{totalPersonnel.toLocaleString('de-DE')} €</div>
+              )}
 
               {/* Row: Hours (Gross) */}
               <div className="p-4 font-medium text-gray-900 border-t border-gray-100">
                 Geplante Stunden (Brutto)
               </div>
-              <div className={`p-4 font-mono border-t border-gray-100 ${phase1TeamHours > MAX_HOURS_PHASE_1 ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
-                {phase1TeamHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+              <div className={`p-4 font-mono border-t border-gray-100 ${phase1.teamTotalHours > MAX_HOURS_PHASE_1 ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
+                {phase1.teamTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
               </div>
-              <div className={`p-4 font-mono border-t border-gray-100 ${phase2TeamHours > MAX_HOURS_PHASE_2 ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
-                {phase2TeamHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+              <div className={`p-4 font-mono border-t border-gray-100 ${phase2.teamTotalHours > MAX_HOURS_PHASE_2 ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
+                {phase2.teamTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
               </div>
-              <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100">
-                {totalTeamHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
-              </div>
+              {!isTotalCollapsed && (
+                <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100">
+                  {totalTeamHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                </div>
+              )}
 
               {/* Row: Max Hours Limit */}
               <div className="p-4 font-medium text-gray-500 border-t border-gray-100 bg-gray-50/30 italic">
@@ -1651,9 +1429,11 @@ export default function Intern() {
               <div className="p-4 font-mono text-gray-500 border-t border-gray-100 bg-gray-50/30 italic">
                 {MAX_HOURS_PHASE_2.toLocaleString('de-DE')} h
               </div>
-              <div className="p-4 font-mono text-gray-500 border-t border-gray-100 bg-gray-50/30 italic">
-                {(MAX_HOURS_PHASE_1 + MAX_HOURS_PHASE_2).toLocaleString('de-DE')} h
-              </div>
+              {!isTotalCollapsed && (
+                <div className="p-4 font-mono text-gray-500 border-t border-gray-100 bg-gray-50/30 italic">
+                  {(MAX_HOURS_PHASE_1 + MAX_HOURS_PHASE_2).toLocaleString('de-DE')} h
+                </div>
+              )}
 
               {/* Row: Hours (Net/Productive) */}
               <div className="p-4 font-medium text-gray-900 border-t border-gray-100 bg-yellow-50/50">
@@ -1683,35 +1463,41 @@ export default function Intern() {
                 </div>
               </div>
               <div className="p-4 font-mono text-gray-700 border-t border-gray-100 bg-yellow-50/30">
-                {phase1TeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                {phase1.teamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
               </div>
               <div className="p-4 font-mono text-gray-700 border-t border-gray-100 bg-yellow-50/30">
-                {phase2TeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                {phase2.teamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
               </div>
-              <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100 bg-yellow-50/50">
-                {totalTeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
-                <div className="text-xs text-gray-500 mt-1 font-normal">
-                  {((totalTeamNetHours / (MAX_HOURS_PHASE_1 + MAX_HOURS_PHASE_2)) * 100).toLocaleString('de-DE', { maximumFractionDigits: 1 })}% vom Limit
+              {!isTotalCollapsed && (
+                <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100 bg-yellow-50/50">
+                  {totalTeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                  <div className="text-xs text-gray-500 mt-1 font-normal">
+                    {((totalTeamNetHours / (MAX_HOURS_PHASE_1 + MAX_HOURS_PHASE_2)) * 100).toLocaleString('de-DE', { maximumFractionDigits: 1 })}% vom Limit
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Row: Person Days (PT) */}
               <div className="p-4 font-medium text-gray-900 border-t border-gray-100 bg-gray-50/50">
                 Personentage (PT)
                 <div className="text-xs text-gray-400 font-normal mt-1">1 PT = 8 Std. (Brutto)</div>
               </div>
-              <div className="p-4 font-mono text-gray-600 border-t border-gray-100 bg-gray-50/30">{(phase1TeamHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              <div className="p-4 font-mono text-gray-600 border-t border-gray-100 bg-gray-50/30">{(phase2TeamHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100 bg-gray-50/50">{(totalTeamHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+              <div className="p-4 font-mono text-gray-600 border-t border-gray-100 bg-gray-50/30">{(phase1.teamTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+              <div className="p-4 font-mono text-gray-600 border-t border-gray-100 bg-gray-50/30">{(phase2.teamTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+              {!isTotalCollapsed && (
+                <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100 bg-gray-50/50">{(totalTeamHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+              )}
 
               {/* Row: Stundensatz */}
               <div className="p-4 font-medium text-gray-900 border-t border-gray-100">Sich ergebender Stundensatz</div>
-              <div className="p-4 font-mono text-gray-600 border-t border-gray-100">{phase1HourlyRate.toLocaleString('de-DE', { maximumFractionDigits: 2 })} €/h</div>
-              <div className="p-4 font-mono text-gray-600 border-t border-gray-100">{phase2HourlyRate.toLocaleString('de-DE', { maximumFractionDigits: 2 })} €/h</div>
-              <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100">{totalWeightedHourlyRate.toLocaleString('de-DE', { maximumFractionDigits: 2 })} €/h (Ø)</div>
+              <div className="p-4 font-mono text-gray-600 border-t border-gray-100">{phase1.hourlyRate.toLocaleString('de-DE', { maximumFractionDigits: 2 })} €/h</div>
+              <div className="p-4 font-mono text-gray-600 border-t border-gray-100">{phase2.hourlyRate.toLocaleString('de-DE', { maximumFractionDigits: 2 })} €/h</div>
+              {!isTotalCollapsed && (
+                <div className="p-4 font-mono font-bold text-gray-900 border-t border-gray-100">{totalWeightedHourlyRate.toLocaleString('de-DE', { maximumFractionDigits: 2 })} €/h (Ø)</div>
+              )}
 
               {/* Spacer */}
-              <div className="col-span-4 h-8 bg-gray-50 border-t border-gray-200"></div>
+              <div className={`${isTotalCollapsed ? 'col-span-3' : 'col-span-4'} h-8 bg-gray-50 border-t border-gray-200`}></div>
 
               {/* Egbal Section */}
               <div className="p-4 font-bold text-indigo-900 border-t border-gray-200 bg-indigo-50 flex items-center gap-2">
@@ -1719,34 +1505,36 @@ export default function Intern() {
               </div>
               <div className="p-4 border-t border-gray-200 bg-indigo-50/10">
                 <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-indigo-700">{phase1EgbalPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                <div className="font-bold text-indigo-700">{phase1.egbalPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich</div>
-                <div className="font-mono text-gray-700">{(phase1EgbalPay / PHASE_1_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                <div className="font-mono text-gray-700">{(phase1.egbalPay / PHASE_1_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
-                <div className="font-mono text-gray-700">{phase1EgbalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
+                <div className="font-mono text-gray-700">{phase1.egbalTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-700">{(phase1EgbalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                <div className="font-mono text-gray-700">{(phase1.egbalTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
               </div>
               <div className="p-4 border-t border-gray-200 bg-indigo-50/10">
                 <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-indigo-700">{phase2EgbalPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                <div className="font-bold text-indigo-700">{phase2.egbalPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich</div>
-                <div className="font-mono text-gray-700">{(phase2EgbalPay / PHASE_2_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                <div className="font-mono text-gray-700">{(phase2.egbalPay / PHASE_2_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
-                <div className="font-mono text-gray-700">{phase2EgbalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
+                <div className="font-mono text-gray-700">{phase2.egbalTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-700">{(phase2EgbalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                <div className="font-mono text-gray-700">{(phase2.egbalTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
               </div>
-              <div className="p-4 border-t border-gray-200 bg-indigo-50/30">
-                <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-indigo-900 text-lg">{totalEgbalPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Ø Monatlich</div>
-                <div className="font-mono text-gray-900 font-bold">{(totalEgbalPay / totalMonths).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
-                <div className="font-mono text-gray-900 font-bold">{(phase1EgbalHours + phase2EgbalHours).toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-900 font-bold">{((phase1EgbalHours + phase2EgbalHours) / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              </div>
+              {!isTotalCollapsed && (
+                <div className="p-4 border-t border-gray-200 bg-indigo-50/30">
+                  <div className="text-xs text-gray-500 uppercase">Gesamt</div>
+                  <div className="font-bold text-indigo-900 text-lg">{totalEgbalPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                  <div className="text-xs text-gray-500 mt-1 uppercase">Ø Monatlich</div>
+                  <div className="font-mono text-gray-900 font-bold">{(totalEgbalPay / totalMonths).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                  <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
+                  <div className="font-mono text-gray-900 font-bold">{(phase1.egbalTotalHours + phase2.egbalTotalHours).toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
+                  <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
+                  <div className="font-mono text-gray-900 font-bold">{((phase1.egbalTotalHours + phase2.egbalTotalHours) / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                </div>
+              )}
 
               {/* Manuela Section */}
               <div className="p-4 font-bold text-purple-900 border-t border-gray-200 bg-purple-50 flex items-center gap-2">
@@ -1754,34 +1542,36 @@ export default function Intern() {
               </div>
               <div className="p-4 border-t border-gray-200 bg-purple-50/10">
                 <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-purple-700">{phase1ManuelaPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                <div className="font-bold text-purple-700">{phase1.manuelaPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich</div>
-                <div className="font-mono text-gray-700">{(phase1ManuelaPay / PHASE_1_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                <div className="font-mono text-gray-700">{(phase1.manuelaPay / PHASE_1_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
-                <div className="font-mono text-gray-700">{phase1ManuelaHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
+                <div className="font-mono text-gray-700">{phase1.manuelaTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-700">{(phase1ManuelaHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                <div className="font-mono text-gray-700">{(phase1.manuelaTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
               </div>
               <div className="p-4 border-t border-gray-200 bg-purple-50/10">
                 <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-purple-700">{phase2ManuelaPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                <div className="font-bold text-purple-700">{phase2.manuelaPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich</div>
-                <div className="font-mono text-gray-700">{(phase2ManuelaPay / PHASE_2_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                <div className="font-mono text-gray-700">{(phase2.manuelaPay / PHASE_2_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
-                <div className="font-mono text-gray-700">{phase2ManuelaHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
+                <div className="font-mono text-gray-700">{phase2.manuelaTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-700">{(phase2ManuelaHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                <div className="font-mono text-gray-700">{(phase2.manuelaTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
               </div>
-              <div className="p-4 border-t border-gray-200 bg-purple-50/30">
-                <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-purple-900 text-lg">{totalManuelaPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Ø Monatlich</div>
-                <div className="font-mono text-gray-900 font-bold">{(totalManuelaPay / totalMonths).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
-                <div className="font-mono text-gray-900 font-bold">{(phase1ManuelaHours + phase2ManuelaHours).toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-900 font-bold">{((phase1ManuelaHours + phase2ManuelaHours) / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              </div>
+              {!isTotalCollapsed && (
+                <div className="p-4 border-t border-gray-200 bg-purple-50/30">
+                  <div className="text-xs text-gray-500 uppercase">Gesamt</div>
+                  <div className="font-bold text-purple-900 text-lg">{totalManuelaPay.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                  <div className="text-xs text-gray-500 mt-1 uppercase">Ø Monatlich</div>
+                  <div className="font-mono text-gray-900 font-bold">{(totalManuelaPay / totalMonths).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                  <div className="text-xs text-gray-500 mt-1 uppercase">Stunden</div>
+                  <div className="font-mono text-gray-900 font-bold">{(phase1.manuelaTotalHours + phase2.manuelaTotalHours).toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</div>
+                  <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
+                  <div className="font-mono text-gray-900 font-bold">{((phase1.manuelaTotalHours + phase2.manuelaTotalHours) / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                </div>
+              )}
 
               {/* Beide (Team) Section */}
               <div className="p-4 font-bold text-gray-900 border-t-4 border-gray-300 bg-gray-100 flex items-center gap-2">
@@ -1789,46 +1579,48 @@ export default function Intern() {
               </div>
               <div className="p-4 border-t-4 border-gray-300 bg-gray-50">
                 <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-gray-900">{(phase1EgbalPay + phase1ManuelaPay).toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                <div className="font-bold text-gray-900">{(phase1.egbalPay + phase1.manuelaPay).toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich (Kombiniert)</div>
-                <div className="font-mono text-gray-700">{((phase1EgbalPay + phase1ManuelaPay) / PHASE_1_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                <div className="font-mono text-gray-700">{((phase1.egbalPay + phase1.manuelaPay) / PHASE_1_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Stunden (Brutto / Netto)</div>
                 <div className="font-mono text-gray-700">
-                  {phase1TeamHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                  {phase1.teamTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
                   <span className="text-gray-400 mx-1">/</span>
-                  <span className="font-bold text-gray-800">{phase1TeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</span>
+                  <span className="font-bold text-gray-800">{phase1.teamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</span>
                 </div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-700">{(phase1TeamHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                <div className="font-mono text-gray-700">{(phase1.teamTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
               </div>
               <div className="p-4 border-t-4 border-gray-300 bg-gray-50">
                 <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-gray-900">{(phase2EgbalPay + phase2ManuelaPay).toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                <div className="font-bold text-gray-900">{(phase2.egbalPay + phase2.manuelaPay).toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Monatlich (Kombiniert)</div>
-                <div className="font-mono text-gray-700">{((phase2EgbalPay + phase2ManuelaPay) / PHASE_2_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                <div className="font-mono text-gray-700">{((phase2.egbalPay + phase2.manuelaPay) / PHASE_2_MONTHS).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Stunden (Brutto / Netto)</div>
                 <div className="font-mono text-gray-700">
-                  {phase2TeamHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                  {phase2.teamTotalHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
                   <span className="text-gray-400 mx-1">/</span>
-                  <span className="font-bold text-gray-800">{phase2TeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</span>
+                  <span className="font-bold text-gray-800">{phase2.teamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</span>
                 </div>
                 <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-700">{(phase2TeamHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
+                <div className="font-mono text-gray-700">{(phase2.teamTotalHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
               </div>
-              <div className="p-4 border-t-4 border-gray-300 bg-gray-200">
-                <div className="text-xs text-gray-500 uppercase">Gesamt</div>
-                <div className="font-bold text-gray-900 text-lg">{(totalEgbalPay + totalManuelaPay).toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Ø Monatlich (Kombiniert)</div>
-                <div className="font-mono text-gray-900 font-bold">{((totalEgbalPay + totalManuelaPay) / totalMonths).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Stunden (Brutto / Netto)</div>
-                <div className="font-mono text-gray-900 font-bold">
-                  {totalTeamHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
-                  <span className="text-gray-400 mx-1">/</span>
-                  <span className="font-bold text-gray-900">{totalTeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</span>
+              {!isTotalCollapsed && (
+                <div className="p-4 border-t-4 border-gray-300 bg-gray-200">
+                  <div className="text-xs text-gray-500 uppercase">Gesamt</div>
+                  <div className="font-bold text-gray-900 text-lg">{(totalEgbalPay + totalManuelaPay).toLocaleString('de-DE', { maximumFractionDigits: 0 })} €</div>
+                  <div className="text-xs text-gray-500 mt-1 uppercase">Ø Monatlich (Kombiniert)</div>
+                  <div className="font-mono text-gray-900 font-bold">{((totalEgbalPay + totalManuelaPay) / totalMonths).toLocaleString('de-DE', { maximumFractionDigits: 2 })} €</div>
+                  <div className="text-xs text-gray-500 mt-1 uppercase">Stunden (Brutto / Netto)</div>
+                  <div className="font-mono text-gray-900 font-bold">
+                    {totalTeamHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h
+                    <span className="text-gray-400 mx-1">/</span>
+                    <span className="font-bold text-gray-900">{totalTeamNetHours.toLocaleString('de-DE', { maximumFractionDigits: 1 })} h</span>
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
+                  <div className="font-mono text-gray-900 font-bold">{(totalTeamHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
                 </div>
-                <div className="text-xs text-gray-500 mt-1 uppercase">Personentage (PT)</div>
-                <div className="font-mono text-gray-900 font-bold">{(totalTeamHours / 8).toLocaleString('de-DE', { maximumFractionDigits: 1 })} PT</div>
-              </div>
+              )}
             </div>
           </div>
 
